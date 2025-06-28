@@ -42,7 +42,62 @@ import {
   TrendingUp,
   Award,
   Sparkles,
+  Menu,
+  X,
+  Shield,
+  Lightbulb,
+  Rocket,
+  ArrowUp,
+  ExternalLink,
+  Download,
+  Play,
+  ChevronDown,
+  ChevronUp,
+  Quote,
+  Globe,
+  Smartphone,
+  Monitor
 } from "lucide-react";
+
+// FAQ Item Component
+function FAQItem({ faq, index }: { faq: { question: string; answer: string }; index: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="mb-4"
+    >
+      <Card className="service-card">
+        <CardContent className="p-0">
+          <button
+            className="w-full p-6 text-left flex justify-between items-center"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <h3 className="text-lg font-semibold text-white">{faq.question}</h3>
+            {isOpen ? (
+              <ChevronUp className="w-5 h-5 text-primary" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-primary" />
+            )}
+          </button>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="px-6 pb-6"
+            >
+              <p className="text-gray-400 leading-relaxed">{faq.answer}</p>
+            </motion.div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
 
 const iconMap = {
   stethoscope: Stethoscope,
@@ -368,6 +423,107 @@ export default function Home() {
           
           <div className="text-center mt-12">
             <p className="text-gray-500 text-sm">+ 5000 more integrations</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials & Trust Signals */}
+      <section className="py-20 bg-gray-950">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Trusted by Growing Businesses</h2>
+            <p className="text-xl text-gray-400">Join 100+ companies that have automated their success</p>
+          </div>
+          
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+            {[
+              { number: "100+", label: "Businesses Served" },
+              { number: "250+", label: "Automations Built" },
+              { number: "40hrs", label: "Average Weekly Savings" },
+              { number: "350%", label: "Average ROI" }
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-4xl font-bold text-primary mb-2">{stat.number}</div>
+                <div className="text-gray-400">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+          
+          {/* Testimonials */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                quote: "GrowFastWithUs transformed our workflow completely. We went from 20 hours of manual work per week to just 2 hours.",
+                author: "Sarah Johnson",
+                title: "CEO, TechStart Solutions",
+                rating: 5
+              },
+              {
+                quote: "The ROI was incredible. We saved £15,000 in the first year alone and our team can focus on strategic work now.",
+                author: "Michael Chen",
+                title: "Operations Director, ScaleUp Ltd",
+                rating: 5
+              },
+              {
+                quote: "Professional, reliable, and results-driven. The automation they built has been running flawlessly for 8 months.",
+                author: "Emma Rodriguez",
+                title: "Founder, Digital Agency Pro",
+                rating: 5
+              }
+            ].map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+              >
+                <Card className="service-card h-full">
+                  <CardContent className="p-8 relative z-10">
+                    <div className="flex mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-5 h-5 text-primary fill-current" />
+                      ))}
+                    </div>
+                    <Quote className="w-8 h-8 text-primary/30 mb-4" />
+                    <p className="text-gray-300 mb-6 leading-relaxed">"{testimonial.quote}"</p>
+                    <div>
+                      <div className="font-semibold text-white">{testimonial.author}</div>
+                      <div className="text-sm text-gray-400">{testimonial.title}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+          
+          {/* Trust Badges */}
+          <div className="mt-16 text-center">
+            <p className="text-gray-400 mb-8">Trusted & Secure</p>
+            <div className="flex flex-wrap justify-center items-center gap-8">
+              <div className="flex items-center gap-2 text-gray-400">
+                <Shield className="w-5 h-5 text-primary" />
+                <span>SSL Secured</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-400">
+                <CheckCircle className="w-5 h-5 text-primary" />
+                <span>GDPR Compliant</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-400">
+                <Award className="w-5 h-5 text-primary" />
+                <span>Certified Partners</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-400">
+                <Globe className="w-5 h-5 text-primary" />
+                <span>Global Support</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -721,6 +877,124 @@ export default function Home() {
                       </Button>
                       <p className="text-xs text-center text-gray-400 mt-2">
                         No obligation • Free consultation
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-black">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Frequently Asked Questions</h2>
+            <p className="text-xl text-gray-400">Everything you need to know about automation</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto space-y-4">
+            <Card className="service-card">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-3">How long does it take to set up automation?</h3>
+                <p className="text-gray-400 leading-relaxed">Most automations are completed within 1-2 weeks. Simple workflows can be ready in 2-3 days, while complex multi-system integrations may take up to 4 weeks.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="service-card">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-3">What if I don't have technical knowledge?</h3>
+                <p className="text-gray-400 leading-relaxed">No technical knowledge required! We handle everything from setup to maintenance. We also provide training so your team can understand and use the automations effectively.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="service-card">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-3">Can you integrate with our existing tools?</h3>
+                <p className="text-gray-400 leading-relaxed">Yes! We work with 5000+ popular business tools including CRMs, email platforms, accounting software, project management tools, and custom APIs.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="service-card">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-3">What's included in ongoing support?</h3>
+                <p className="text-gray-400 leading-relaxed">24/7 monitoring, bug fixes, performance optimization, and updates when your connected tools change. Plus monthly check-ins to identify new automation opportunities.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="service-card">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-3">How do you ensure data security?</h3>
+                <p className="text-gray-400 leading-relaxed">We follow enterprise-grade security practices including encrypted connections, minimal data access, regular security audits, and GDPR compliance for all automations.</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="service-card">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-white mb-3">What's your refund policy?</h3>
+                <p className="text-gray-400 leading-relaxed">30-day money-back guarantee if you're not satisfied with the initial automation setup. Ongoing monthly fees can be cancelled anytime with 30 days notice.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Lead Magnet Section */}
+      <section className="py-20 bg-gradient-to-br from-primary/10 to-primary/5">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Free Automation Audit</h2>
+              <p className="text-xl text-gray-400 mb-8">
+                Get a comprehensive analysis of your business processes and discover 
+                automation opportunities worth thousands in savings
+              </p>
+              
+              <Card className="service-card p-8 max-w-2xl mx-auto">
+                <CardContent className="p-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div className="text-left">
+                      <h3 className="text-2xl font-bold mb-4 text-white">What You'll Get:</h3>
+                      <ul className="space-y-3">
+                        {[
+                          "Process efficiency analysis",
+                          "Cost savings projections", 
+                          "Custom automation roadmap",
+                          "ROI timeline estimates",
+                          "Priority implementation plan"
+                        ].map((item) => (
+                          <li key={item} className="flex items-center text-gray-300">
+                            <CheckCircle className="w-5 h-5 text-primary mr-3 flex-shrink-0" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="mb-6">
+                        <Download className="w-16 h-16 text-primary mx-auto mb-4" />
+                        <div className="text-3xl font-bold text-primary mb-2">£2,500 Value</div>
+                        <div className="text-lg text-white">Completely Free</div>
+                      </div>
+                      
+                      <Button 
+                        size="lg" 
+                        className="w-full bg-primary hover:bg-primary/90 text-white"
+                        onClick={() => scrollToSection('contact')}
+                      >
+                        <Download className="w-5 h-5 mr-2" />
+                        Claim Your Free Audit
+                      </Button>
+                      
+                      <p className="text-xs text-gray-400 mt-4">
+                        No spam, unsubscribe anytime. Usually delivered within 24 hours.
                       </p>
                     </div>
                   </div>
