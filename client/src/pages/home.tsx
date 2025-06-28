@@ -441,8 +441,8 @@ export default function Home() {
             animate={templatesInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Ready-to-Go Templates</h2>
-            <p className="text-xl text-muted-foreground mb-8">Launch in days, not months</p>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Ready-to-Go Templates</h2>
+            <p className="text-xl text-gray-400 mb-8">Launch in days, not months</p>
             
             {/* Template Filter */}
             <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -471,29 +471,29 @@ export default function Home() {
                   whileHover={{ y: -5, scale: 1.02 }}
                   className="group"
                 >
-                  <Card className="glass-card h-full hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                  <Card className="service-card h-full relative overflow-hidden">
                     {template.popular && (
-                      <Badge className="absolute top-4 right-4 bg-primary text-white">
+                      <Badge className="absolute top-4 right-4 bg-primary/20 text-primary border-primary/30 z-20">
                         Popular
                       </Badge>
                     )}
-                    <CardContent className="p-8">
-                      <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/80 transition-colors">
+                    <CardContent className="p-8 relative z-10">
+                      <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
                         <IconComponent className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="text-2xl font-bold mb-4">{template.title}</h3>
-                      <p className="text-muted-foreground mb-6">{template.description}</p>
+                      <h3 className="text-2xl font-bold mb-4 text-white">{template.title}</h3>
+                      <p className="text-gray-400 mb-6 leading-relaxed">{template.description}</p>
                       <div className="space-y-2 mb-6">
                         {template.features.slice(0, 3).map((feature) => (
-                          <div key={feature} className="flex items-center text-sm">
-                            <CheckCircle className="w-4 h-4 text-primary mr-2" />
+                          <div key={feature} className="flex items-center text-sm text-gray-300">
+                            <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
                             {feature}
                           </div>
                         ))}
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="text-3xl font-bold text-primary">£{template.price}/mo</div>
-                        <Button variant="outline" className="group-hover:bg-primary group-hover:text-white transition-all">
+                        <Button variant="outline" className="group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all border-gray-600 text-gray-300">
                           Learn More
                         </Button>
                       </div>
@@ -513,7 +513,7 @@ export default function Home() {
       </section>
 
       {/* Advanced Pricing Calculator */}
-      <section id="pricing" ref={pricingRef} className="py-20 bg-white dark:bg-gray-800">
+      <section id="pricing" ref={pricingRef} className="py-20 bg-black">
         <div className="container mx-auto px-6">
           <motion.div
             className="text-center mb-16"
@@ -521,8 +521,8 @@ export default function Home() {
             animate={pricingInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Calculate Your Automation Investment</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Calculate Your Automation Investment</h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
               See your potential ROI and cost savings with our interactive calculator
             </p>
           </motion.div>
@@ -536,11 +536,11 @@ export default function Home() {
             >
               <Card className="glass-card p-8">
                 <CardContent className="p-0 space-y-8">
-                  <h3 className="text-2xl font-bold mb-6">Business Details</h3>
+                  <h3 className="text-2xl font-bold mb-6 text-white">Business Details</h3>
                   
                   {/* Business Size */}
                   <div>
-                    <h4 className="font-semibold mb-4">Business Size</h4>
+                    <h4 className="font-semibold mb-4 text-white">Business Size</h4>
                     <div className="grid grid-cols-1 gap-3">
                       {businessSizes.map((size) => (
                         <Button
@@ -558,7 +558,7 @@ export default function Home() {
 
                   {/* Pain Points */}
                   <div>
-                    <h4 className="font-semibold mb-4">Current Pain Points (Select all that apply)</h4>
+                    <h4 className="font-semibold mb-4 text-white">Current Pain Points (Select all that apply)</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {painPointOptions.map((painPoint) => (
                         <div key={painPoint} className="flex items-center space-x-2">
