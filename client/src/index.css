@@ -97,7 +97,8 @@
   }
   
   .floating-particle {
-    @apply absolute w-1 h-1 bg-primary/60 rounded-full animate-pulse;
+    @apply absolute w-1 h-1 rounded-full animate-pulse;
+    background: rgba(255, 107, 53, 0.6);
   }
 }
 
