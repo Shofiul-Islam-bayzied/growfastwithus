@@ -35,19 +35,22 @@ GrowFastWithUs is a modern React-based website for a digital automation agency s
 ## Key Components
 
 ### Database Schema
-- **Users Table**: Basic user authentication structure
-- **Contacts Table**: Lead capture and contact management
-- **Templates Table**: Automation template catalog with pricing and features
+- **Users Table**: User authentication with username/password
+- **Contacts Table**: Lead capture with business details, pain points, and automation goals
+- **Templates Table**: Automation template catalog with pricing, features, and categories
 
 ### Frontend Components
-- **Multi-step Form**: Progressive contact capture with validation
-- **Template Gallery**: Showcase of automation templates with filtering
-- **Theme Provider**: Light/dark mode theming system
-- **UI Components**: Comprehensive set of reusable components (buttons, cards, forms, etc.)
+- **Advanced Contact Form**: 4-step progressive form with validation and database integration
+- **Pricing Calculator**: Interactive ROI calculator with real-time cost breakdown
+- **Template Gallery**: Showcase of 15 automation templates with category filtering
+- **Theme Provider**: Light/dark mode theming system with localStorage persistence
+- **Glassmorphism UI**: Custom components with backdrop blur and transparency effects
 
 ### Backend Services
-- **Storage Interface**: Abstracted data layer with in-memory and database implementations
-- **Route Registration**: Modular API route organization
+- **Database Storage**: PostgreSQL integration with Drizzle ORM and type-safe operations
+- **API Routes**: RESTful endpoints for contacts, templates, and user management
+- **Storage Interface**: Abstracted data layer supporting both database and in-memory implementations
+- **Route Registration**: Modular API route organization with validation
 - **Development Server**: Vite integration for hot module replacement
 
 ## Data Flow
@@ -91,8 +94,29 @@ GrowFastWithUs is a modern React-based website for a digital automation agency s
 - TypeScript compilation checking
 - Database schema migrations with Drizzle Kit
 
+## Recent Changes
+- **December 28, 2024**: Added PostgreSQL database integration with Drizzle ORM
+- **December 28, 2024**: Implemented advanced pricing calculator with real-time ROI calculations
+- **December 28, 2024**: Created 4-step contact form with database persistence
+- **December 28, 2024**: Added API endpoints for contact submission and template management
+- **December 28, 2024**: Upgraded from in-memory storage to full database operations
+
+## API Endpoints
+- **POST /api/contacts**: Submit contact form data with validation
+- **GET /api/contacts**: Retrieve all contacts (admin endpoint)
+- **GET /api/templates**: Fetch all automation templates
+- **GET /api/templates/:id**: Get specific template details
+- **POST /api/templates**: Create new template (admin endpoint)
+
+## Database Integration
+- **Connection**: Neon PostgreSQL serverless with WebSocket support
+- **ORM**: Drizzle with type-safe operations and automatic migrations
+- **Schema**: Users, contacts, and templates tables with proper relationships
+- **Storage**: DatabaseStorage class implementing IStorage interface for data operations
+
 ## Changelog
-- June 28, 2025. Initial setup
+- June 28, 2025: Initial setup
+- December 28, 2024: Database integration and advanced features implementation
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
