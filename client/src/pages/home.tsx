@@ -757,23 +757,23 @@ export default function Home() {
               <div className="space-y-8">
                 <Card className="glass-card p-8">
                   <CardContent className="p-0">
-                    <h3 className="text-2xl font-bold mb-6">Why Choose Us?</h3>
+                    <h3 className="text-2xl font-bold mb-6 text-white">Why Choose Us?</h3>
                     <div className="space-y-4">
                       <div className="flex items-center">
                         <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                        <span>30-minute consultation with automation expert</span>
+                        <span className="text-gray-300">30-minute consultation with automation expert</span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                        <span>Custom automation strategy for your business</span>
+                        <span className="text-gray-300">Custom automation strategy for your business</span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                        <span>ROI projections and timeline estimates</span>
+                        <span className="text-gray-300">ROI projections and timeline estimates</span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                        <span>No obligation, completely free</span>
+                        <span className="text-gray-300">No obligation, completely free</span>
                       </div>
                     </div>
                   </CardContent>
@@ -781,34 +781,34 @@ export default function Home() {
 
                 <Card className="glass-card p-8">
                   <CardContent className="p-0">
-                    <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+                    <h3 className="text-2xl font-bold mb-6 text-white">Contact Information</h3>
                     <div className="space-y-6">
                       <div className="flex items-center">
                         <Mail className="w-6 h-6 text-primary mr-4" />
                         <div>
-                          <p className="font-semibold">Email</p>
-                          <p className="text-muted-foreground">hello@growfastwithus.com</p>
+                          <p className="font-semibold text-white">Email</p>
+                          <p className="text-gray-400">hello@growfastwithus.com</p>
                         </div>
                       </div>
                       <div className="flex items-center">
                         <Phone className="w-6 h-6 text-primary mr-4" />
                         <div>
-                          <p className="font-semibold">Phone</p>
-                          <p className="text-muted-foreground">+44 20 7946 0958</p>
+                          <p className="font-semibold text-white">Phone</p>
+                          <p className="text-gray-400">+44 20 7946 0958</p>
                         </div>
                       </div>
                       <div className="flex items-center">
                         <Clock className="w-6 h-6 text-primary mr-4" />
                         <div>
-                          <p className="font-semibold">Business Hours</p>
-                          <p className="text-muted-foreground">Mon-Fri: 9AM-6PM GMT</p>
+                          <p className="font-semibold text-white">Business Hours</p>
+                          <p className="text-gray-400">Mon-Fri: 9AM-6PM GMT</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <MapPin className="w-6 h-6 text-primary mr-4 mt-1" />
                         <div>
-                          <p className="font-semibold">Regions Served</p>
-                          <div className="text-muted-foreground space-y-1">
+                          <p className="font-semibold text-white">Regions Served</p>
+                          <div className="text-gray-400 space-y-1">
                             <div>🇬🇧 United Kingdom</div>
                             <div>🇺🇸 United States</div>
                             <div>🇦🇺 Australia</div>
@@ -826,7 +826,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
+      <footer className="bg-black text-white py-16">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
