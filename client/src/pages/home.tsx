@@ -5,6 +5,8 @@ import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import { Checkbox } from "@/components/ui/checkbox";
 import { templates } from "@/lib/templates";
 import {
   Sun,
@@ -63,6 +65,10 @@ export default function Home() {
   const { theme, setTheme } = useTheme();
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Templates");
+  const [businessSize, setBusinessSize] = useState("Small Business (1-10 employees)");
+  const [painPoints, setPainPoints] = useState<string[]>([]);
+  const [timeSpent, setTimeSpent] = useState([20]);
+  const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,15 +81,74 @@ export default function Home() {
   const heroRef = useRef(null);
   const servicesRef = useRef(null);
   const templatesRef = useRef(null);
+  const pricingRef = useRef(null);
 
   const heroInView = useInView(heroRef, { once: true });
   const servicesInView = useInView(servicesRef, { once: true });
   const templatesInView = useInView(templatesRef, { once: true });
+  const pricingInView = useInView(pricingRef, { once: true });
 
   const categories = ["All Templates", ...Array.from(new Set(templates.map(t => t.category)))];
   const filteredTemplates = selectedCategory === "All Templates" 
     ? templates 
     : templates.filter(t => t.category === selectedCategory);
+
+  const businessSizes = [
+    "Small Business (1-10 employees)",
+    "Medium Business (11-50 employees)", 
+    "Large Business (51-200 employees)",
+    "Enterprise (200+ employees)",
+  ];
+
+  const painPointOptions = [
+    "Manual data entry",
+    "Customer support overload",
+    "Inventory management",
+    "Lead follow-up", 
+    "Appointment scheduling",
+    "Invoice processing",
+    "Report generation",
+    "Email marketing",
+  ];
+
+  const calculatePricing = () => {
+    const baseSetup = businessSize.includes("Small") ? 2499 : 
+                     businessSize.includes("Medium") ? 4999 :
+                     businessSize.includes("Large") ? 7499 : 9999;
+    
+    const templateCosts = selectedTemplates.reduce((total, templateId) => {
+      const template = templates.find(t => t.id === templateId);
+      return total + (template ? template.price : 0);
+    }, 0);
+    
+    const baseMonthly = painPoints.length * 150 + 299 + templateCosts;
+    const timeSavings = timeSpent[0] * 4; // 4 weeks per month
+    const costSavings = timeSavings * 40; // £40 per hour saved
+    const roi = ((costSavings * 12 - baseSetup - baseMonthly * 12) / (baseSetup + baseMonthly * 12)) * 100;
+    
+    return {
+      setupFee: baseSetup,
+      monthlyFee: baseMonthly,
+      timeSaved: timeSavings,
+      costSavings,
+      roi: Math.round(roi),
+      breakEven: Math.ceil((baseSetup + baseMonthly * 12) / costSavings),
+    };
+  };
+
+  const pricing = calculatePricing();
+
+  const handlePainPointChange = (painPoint: string, checked: boolean) => {
+    setPainPoints(prev => 
+      checked ? [...prev, painPoint] : prev.filter(p => p !== painPoint)
+    );
+  };
+
+  const handleTemplateSelect = (templateId: string, checked: boolean) => {
+    setSelectedTemplates(prev =>
+      checked ? [...prev, templateId] : prev.filter(t => t !== templateId)
+    );
+  };
 
   const scrollToSection = (elementId: string) => {
     const element = document.getElementById(elementId);
@@ -140,6 +205,7 @@ export default function Home() {
               <a href="#home" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a>
               <a href="#services" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
               <a href="#templates" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('templates'); }}>Templates</a>
+              <a href="#pricing" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('pricing'); }}>Pricing</a>
               <a href="#contact" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
             </div>
             
@@ -375,6 +441,225 @@ export default function Home() {
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
               View All Templates
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Advanced Pricing Calculator */}
+      <section id="pricing" ref={pricingRef} className="py-20 bg-white dark:bg-gray-800">
+        <div className="container mx-auto px-6">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            animate={pricingInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Calculate Your Automation Investment</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              See your potential ROI and cost savings with our interactive calculator
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Calculator Input */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={pricingInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <Card className="glass-card p-8">
+                <CardContent className="p-0 space-y-8">
+                  <h3 className="text-2xl font-bold mb-6">Business Details</h3>
+                  
+                  {/* Business Size */}
+                  <div>
+                    <h4 className="font-semibold mb-4">Business Size</h4>
+                    <div className="grid grid-cols-1 gap-3">
+                      {businessSizes.map((size) => (
+                        <Button
+                          key={size}
+                          type="button"
+                          variant={businessSize === size ? "default" : "outline"}
+                          className="h-auto p-4 text-left justify-start"
+                          onClick={() => setBusinessSize(size)}
+                        >
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Pain Points */}
+                  <div>
+                    <h4 className="font-semibold mb-4">Current Pain Points (Select all that apply)</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {painPointOptions.map((painPoint) => (
+                        <div key={painPoint} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={painPoint}
+                            checked={painPoints.includes(painPoint)}
+                            onCheckedChange={(checked) =>
+                              handlePainPointChange(painPoint, checked as boolean)
+                            }
+                          />
+                          <label htmlFor={painPoint} className="text-sm cursor-pointer">
+                            {painPoint}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Time Investment */}
+                  <div>
+                    <h4 className="font-semibold mb-4">Hours spent on manual tasks per week: {timeSpent[0]}</h4>
+                    <div className="space-y-4">
+                      <Slider
+                        value={timeSpent}
+                        onValueChange={setTimeSpent}
+                        max={40}
+                        min={1}
+                        step={1}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>1 hour</span>
+                        <span>40+ hours</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Templates Selection */}
+                  <div>
+                    <h4 className="font-semibold mb-4">Select Templates (Optional)</h4>
+                    <div className="space-y-3 max-h-48 overflow-y-auto">
+                      {templates.slice(0, 8).map((template) => (
+                        <div key={template.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <Checkbox
+                              id={template.id}
+                              checked={selectedTemplates.includes(template.id)}
+                              onCheckedChange={(checked) =>
+                                handleTemplateSelect(template.id, checked as boolean)
+                              }
+                            />
+                            <div>
+                              <label htmlFor={template.id} className="text-sm font-medium cursor-pointer">
+                                {template.title}
+                              </label>
+                              <p className="text-xs text-muted-foreground">{template.category}</p>
+                            </div>
+                          </div>
+                          <div className="text-sm font-semibold text-primary">
+                            £{template.price}/mo
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Results Display */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={pricingInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <Card className="glass-card p-8 sticky top-24">
+                <CardContent className="p-0">
+                  <h3 className="text-2xl font-bold mb-6">Your Investment Breakdown</h3>
+                  
+                  <div className="space-y-6">
+                    {/* Cost Breakdown */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span className="font-medium">Setup Fee</span>
+                        <span className="text-xl font-bold">£{pricing.setupFee.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span className="font-medium">Monthly Fee</span>
+                        <span className="text-xl font-bold">£{pricing.monthlyFee.toLocaleString()}/mo</span>
+                      </div>
+                    </div>
+
+                    {/* Savings */}
+                    <div className="border-t pt-6">
+                      <h4 className="font-semibold mb-4 text-green-600">Your Savings</h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span>Time Saved Monthly</span>
+                          <span className="font-semibold">{pricing.timeSaved} hours</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Cost Savings Monthly</span>
+                          <span className="font-semibold text-green-600">£{pricing.costSavings.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Annual Savings</span>
+                          <span className="font-semibold text-green-600">£{(pricing.costSavings * 12).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* ROI */}
+                    <div className="border-t pt-6">
+                      <div className="text-center">
+                        <div className="text-4xl font-bold text-primary mb-2">
+                          {pricing.roi > 0 ? '+' : ''}{pricing.roi}%
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-4">12-Month ROI</p>
+                        {pricing.roi > 0 && (
+                          <p className="text-sm text-green-600">
+                            Break-even in {pricing.breakEven} months
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Visual ROI Chart */}
+                    <div className="border-t pt-6">
+                      <h4 className="font-semibold mb-4">ROI Timeline</h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Investment</span>
+                          <span>Savings</span>
+                        </div>
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 relative overflow-hidden">
+                          <div 
+                            className="bg-red-500 h-full absolute left-0"
+                            style={{ width: '40%' }}
+                          ></div>
+                          <div 
+                            className="bg-green-500 h-full absolute"
+                            style={{ left: '40%', width: '60%' }}
+                          ></div>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>£{(pricing.setupFee + pricing.monthlyFee * 12).toLocaleString()}</span>
+                          <span>£{(pricing.costSavings * 12).toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="border-t pt-6">
+                      <Button 
+                        size="lg" 
+                        className="w-full bg-primary hover:bg-primary/90 text-white"
+                        onClick={() => scrollToSection('contact')}
+                      >
+                        Get Custom Quote
+                      </Button>
+                      <p className="text-xs text-center text-muted-foreground mt-2">
+                        No obligation • Free consultation
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
       </section>
