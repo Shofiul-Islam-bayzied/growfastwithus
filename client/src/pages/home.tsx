@@ -569,7 +569,7 @@ export default function Home() {
                               handlePainPointChange(painPoint, checked as boolean)
                             }
                           />
-                          <label htmlFor={painPoint} className="text-sm cursor-pointer">
+                          <label htmlFor={painPoint} className="text-sm cursor-pointer text-gray-300">
                             {painPoint}
                           </label>
                         </div>
@@ -579,7 +579,7 @@ export default function Home() {
 
                   {/* Time Investment */}
                   <div>
-                    <h4 className="font-semibold mb-4">Hours spent on manual tasks per week: {timeSpent[0]}</h4>
+                    <h4 className="font-semibold mb-4 text-white">Hours spent on manual tasks per week: {timeSpent[0]}</h4>
                     <div className="space-y-4">
                       <Slider
                         value={timeSpent}
@@ -598,10 +598,10 @@ export default function Home() {
 
                   {/* Templates Selection */}
                   <div>
-                    <h4 className="font-semibold mb-4">Select Templates (Optional)</h4>
+                    <h4 className="font-semibold mb-4 text-white">Select Templates (Optional)</h4>
                     <div className="space-y-3 max-h-48 overflow-y-auto">
                       {templates.slice(0, 8).map((template) => (
-                        <div key={template.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div key={template.id} className="flex items-center justify-between p-3 border border-gray-700 rounded-lg bg-gray-800/50">
                           <div className="flex items-center space-x-3">
                             <Checkbox
                               id={template.id}
@@ -611,10 +611,10 @@ export default function Home() {
                               }
                             />
                             <div>
-                              <label htmlFor={template.id} className="text-sm font-medium cursor-pointer">
+                              <label htmlFor={template.id} className="text-sm font-medium cursor-pointer text-white">
                                 {template.title}
                               </label>
-                              <p className="text-xs text-muted-foreground">{template.category}</p>
+                              <p className="text-xs text-gray-400">{template.category}</p>
                             </div>
                           </div>
                           <div className="text-sm font-semibold text-primary">
@@ -636,36 +636,36 @@ export default function Home() {
             >
               <Card className="glass-card p-8 sticky top-24">
                 <CardContent className="p-0">
-                  <h3 className="text-2xl font-bold mb-6">Your Investment Breakdown</h3>
+                  <h3 className="text-2xl font-bold mb-6 text-white">Your Investment Breakdown</h3>
                   
                   <div className="space-y-6">
                     {/* Cost Breakdown */}
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <span className="font-medium">Setup Fee</span>
-                        <span className="text-xl font-bold">£{pricing.setupFee.toLocaleString()}</span>
+                      <div className="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                        <span className="font-medium text-gray-300">Setup Fee</span>
+                        <span className="text-xl font-bold text-white">£{pricing.setupFee.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <span className="font-medium">Monthly Fee</span>
-                        <span className="text-xl font-bold">£{pricing.monthlyFee.toLocaleString()}/mo</span>
+                      <div className="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                        <span className="font-medium text-gray-300">Monthly Fee</span>
+                        <span className="text-xl font-bold text-white">£{pricing.monthlyFee.toLocaleString()}/mo</span>
                       </div>
                     </div>
 
                     {/* Savings */}
                     <div className="border-t pt-6">
-                      <h4 className="font-semibold mb-4 text-green-600">Your Savings</h4>
+                      <h4 className="font-semibold mb-4 text-primary">Your Savings</h4>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span>Time Saved Monthly</span>
-                          <span className="font-semibold">{pricing.timeSaved} hours</span>
+                          <span className="text-gray-300">Time Saved Monthly</span>
+                          <span className="font-semibold text-white">{pricing.timeSaved} hours</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Cost Savings Monthly</span>
-                          <span className="font-semibold text-green-600">£{pricing.costSavings.toLocaleString()}</span>
+                          <span className="text-gray-300">Cost Savings Monthly</span>
+                          <span className="font-semibold text-primary">£{pricing.costSavings.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Annual Savings</span>
-                          <span className="font-semibold text-green-600">£{(pricing.costSavings * 12).toLocaleString()}</span>
+                          <span className="text-gray-300">Annual Savings</span>
+                          <span className="font-semibold text-primary">£{(pricing.costSavings * 12).toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
