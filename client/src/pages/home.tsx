@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useTheme } from "@/components/theme-provider";
-import { MultiStepForm } from "@/components/ui/multi-step-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { templates } from "@/lib/templates";
 import {
   Sun,
@@ -17,7 +14,7 @@ import {
   Clock,
   MapPin,
   Stethoscope,
-  Home,
+  Home as HomeIcon,
   ShoppingCart,
   Briefcase,
   Utensils,
@@ -46,7 +43,7 @@ import {
 
 const iconMap = {
   stethoscope: Stethoscope,
-  home: Home,
+  home: HomeIcon,
   "shopping-cart": ShoppingCart,
   briefcase: Briefcase,
   utensils: Utensils,
@@ -66,10 +63,6 @@ export default function Home() {
   const { theme, setTheme } = useTheme();
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Templates");
-  const [businessSize, setBusinessSize] = useState("Small Business (1-10 employees)");
-  const [painPoints, setPainPoints] = useState<string[]>([]);
-  const [timeSpent, setTimeSpent] = useState([20]);
-  const [showContactForm, setShowContactForm] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,63 +75,15 @@ export default function Home() {
   const heroRef = useRef(null);
   const servicesRef = useRef(null);
   const templatesRef = useRef(null);
-  const pricingRef = useRef(null);
-  const caseStudiesRef = useRef(null);
 
   const heroInView = useInView(heroRef, { once: true });
   const servicesInView = useInView(servicesRef, { once: true });
   const templatesInView = useInView(templatesRef, { once: true });
-  const pricingInView = useInView(pricingRef, { once: true });
-  const caseStudiesInView = useInView(caseStudiesRef, { once: true });
 
   const categories = ["All Templates", ...Array.from(new Set(templates.map(t => t.category)))];
   const filteredTemplates = selectedCategory === "All Templates" 
     ? templates 
     : templates.filter(t => t.category === selectedCategory);
-
-  const businessSizes = [
-    "Small Business (1-10 employees)",
-    "Medium Business (11-50 employees)",
-    "Large Business (51-200 employees)",
-    "Enterprise (200+ employees)",
-  ];
-
-  const painPointOptions = [
-    "Manual data entry",
-    "Customer support overload",
-    "Inventory management", 
-    "Lead follow-up",
-    "Appointment scheduling",
-    "Invoice processing",
-    "Report generation",
-    "Email marketing",
-  ];
-
-  const calculatePricing = () => {
-    const baseSetup = businessSize.includes("Small") ? 2499 : 
-                     businessSize.includes("Medium") ? 4999 :
-                     businessSize.includes("Large") ? 7499 : 9999;
-    
-    const baseMonthly = painPoints.length * 150 + 299;
-    const timeSavings = timeSpent[0] * 4; // 4 weeks per month
-    const costSavings = timeSavings * 40; // £40 per hour saved
-    const roi = ((costSavings * 12 - baseSetup - baseMonthly * 12) / (baseSetup + baseMonthly * 12)) * 100;
-    
-    return {
-      setupFee: baseSetup,
-      monthlyFee: baseMonthly,
-      timeSaved: timeSavings,
-      costSavings,
-      roi: Math.round(roi),
-    };
-  };
-
-  const pricing = calculatePricing();
-
-  const handleContactFormSubmit = (data: any) => {
-    console.log("Contact form submitted:", data);
-    // TODO: Submit to API
-  };
 
   const scrollToSection = (elementId: string) => {
     const element = document.getElementById(elementId);
@@ -195,8 +140,6 @@ export default function Home() {
               <a href="#home" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('home'); }}>Home</a>
               <a href="#services" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
               <a href="#templates" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('templates'); }}>Templates</a>
-              <a href="#pricing" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('pricing'); }}>Pricing</a>
-              <a href="#case-studies" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('case-studies'); }}>Case Studies</a>
               <a href="#contact" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
             </div>
             
@@ -395,350 +338,123 @@ export default function Home() {
                   whileHover={{ y: -5, scale: 1.02 }}
                   className="group"
                 >
-                  <Card className="glass-card overflow-hidden hover:shadow-2xl transition-all duration-300">
-                    <div className="h-48 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                      <IconComponent className="w-16 h-16 text-primary" />
-                    </div>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                          <IconComponent className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-primary">£{template.price}</div>
-                          <div className="text-sm text-muted-foreground">/month</div>
-                        </div>
+                  <Card className="glass-card h-full hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+                    {template.popular && (
+                      <Badge className="absolute top-4 right-4 bg-primary text-white">
+                        Popular
+                      </Badge>
+                    )}
+                    <CardContent className="p-8">
+                      <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/80 transition-colors">
+                        <IconComponent className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold mb-3">{template.title}</h3>
-                      <p className="text-muted-foreground mb-4">{template.description}</p>
-                      {template.popular && (
-                        <Badge className="mb-3 bg-primary/10 text-primary">
-                          <Star className="w-3 h-3 mr-1" />
-                          Popular
-                        </Badge>
-                      )}
-                      <Button className="w-full">Learn More</Button>
+                      <h3 className="text-2xl font-bold mb-4">{template.title}</h3>
+                      <p className="text-muted-foreground mb-6">{template.description}</p>
+                      <div className="space-y-2 mb-6">
+                        {template.features.slice(0, 3).map((feature) => (
+                          <div key={feature} className="flex items-center text-sm">
+                            <CheckCircle className="w-4 h-4 text-primary mr-2" />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-3xl font-bold text-primary">£{template.price}/mo</div>
+                        <Button variant="outline" className="group-hover:bg-primary group-hover:text-white transition-all">
+                          Learn More
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
               );
             })}
           </div>
-          
+
           <div className="text-center mt-12">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-lg">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
               View All Templates
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Pricing Calculator */}
-      <section id="pricing" ref={pricingRef} className="py-20 bg-white dark:bg-gray-800">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={pricingInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Calculate Your Automation Investment</h2>
-            <p className="text-xl text-muted-foreground">Get a personalized quote based on your business needs</p>
-          </motion.div>
-          
-          <div className="max-w-6xl mx-auto">
-            <Card className="glass-card shadow-xl">
-              <CardContent className="p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  {/* Calculator Inputs */}
-                  <div className="space-y-8">
-                    {/* Business Size */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Business Size</h3>
-                      <div className="grid grid-cols-1 gap-4">
-                        {businessSizes.map((size) => (
-                          <Button
-                            key={size}
-                            variant={businessSize === size ? "default" : "outline"}
-                            className="h-auto p-4 text-left justify-start"
-                            onClick={() => setBusinessSize(size)}
-                          >
-                            {size}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Pain Points */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Current Pain Points</h3>
-                      <div className="space-y-3">
-                        {painPointOptions.map((painPoint) => (
-                          <div key={painPoint} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={painPoint}
-                              checked={painPoints.includes(painPoint)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setPainPoints([...painPoints, painPoint]);
-                                } else {
-                                  setPainPoints(painPoints.filter(p => p !== painPoint));
-                                }
-                              }}
-                            />
-                            <label htmlFor={painPoint} className="text-sm cursor-pointer">
-                              {painPoint}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Time Investment */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">
-                        Hours spent on manual tasks per week: {timeSpent[0]}
-                      </h3>
-                      <Slider
-                        value={timeSpent}
-                        onValueChange={setTimeSpent}
-                        max={40}
-                        min={1}
-                        step={1}
-                        className="w-full"
-                      />
-                      <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                        <span>1 hour</span>
-                        <span>40+ hours</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Results */}
-                  <motion.div
-                    className="glass-card p-6 rounded-xl"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <h3 className="text-2xl font-bold mb-6">Your Investment Breakdown</h3>
-                    
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Setup Fee:</span>
-                        <span className="font-semibold">£{pricing.setupFee.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Monthly Cost:</span>
-                        <span className="font-semibold">£{pricing.monthlyFee}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Time Saved (per month):</span>
-                        <span className="font-semibold text-primary">{pricing.timeSaved} hours</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Cost Savings (per month):</span>
-                        <span className="font-semibold text-green-500">£{pricing.costSavings.toLocaleString()}</span>
-                      </div>
-                      <hr className="border-border" />
-                      <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold">ROI (12 months):</span>
-                        <span className="text-2xl font-bold text-green-500">{pricing.roi}%</span>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-8 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                      <p className="text-green-700 dark:text-green-300 font-semibold flex items-center">
-                        <TrendingUp className="w-4 h-4 mr-2" />
-                        Break-even in {Math.ceil((pricing.setupFee + pricing.monthlyFee) / (pricing.costSavings - pricing.monthlyFee))} months
-                      </p>
-                    </div>
-                    
-                    <Button className="w-full mt-6 bg-primary hover:bg-primary/90" size="lg">
-                      Get Custom Quote
-                    </Button>
-                  </motion.div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Case Studies */}
-      <section id="case-studies" ref={caseStudiesRef} className="py-20 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={caseStudiesInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Real Results, Real Impact</h2>
-            <p className="text-xl text-muted-foreground">See how our automation solutions transform businesses</p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            {[
-              { metric: "40%", title: "Increase in Lead Conversion", client: "Real Estate Client", detail: "60 hours/month saved" },
-              { metric: "25%", title: "Increase in Recovery Sales", client: "E-Commerce Client", detail: "£15K additional monthly revenue" },
-              { metric: "35%", title: "Reduction in No-Show Rates", client: "Medical Clinic", detail: "95% appointment efficiency" },
-            ].map((study, index) => (
-              <motion.div
-                key={study.title}
-                initial={{ opacity: 0, y: 30 }}
-                animate={caseStudiesInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                whileHover={{ y: -5 }}
-              >
-                <Card className="glass-card text-center hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-8">
-                    <div className="w-full h-48 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl mb-6 flex items-center justify-center">
-                      <Award className="w-16 h-16 text-primary" />
-                    </div>
-                    <div className="text-4xl font-bold text-primary mb-2">{study.metric}</div>
-                    <div className="text-lg font-semibold mb-2">{study.title}</div>
-                    <div className="text-muted-foreground mb-4">{study.client}</div>
-                    <div className="text-2xl font-bold text-green-500 flex items-center justify-center">
-                      <CheckCircle className="w-5 h-5 mr-2" />
-                      {study.detail}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-          
-          {/* Statistics */}
-          <Card className="glass-card shadow-xl">
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                {[
-                  { value: "250+", label: "Happy Clients" },
-                  { value: "50,000+", label: "Hours Saved" },
-                  { value: "£2.5M+", label: "Revenue Generated" },
-                  { value: "500+", label: "Automations Deployed" },
-                ].map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={caseStudiesInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
-                  >
-                    <div className="text-4xl font-bold text-primary mb-2">{stat.value}</div>
-                    <div className="text-lg font-semibold">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 bg-white dark:bg-gray-800">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">What Our Clients Say</h2>
-            <p className="text-xl text-muted-foreground">Success stories from businesses just like yours</p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <Card className="glass-card shadow-xl">
-              <CardContent className="p-8 text-center">
-                <div className="w-20 h-20 bg-primary rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <Star className="w-10 h-10 text-white" />
-                </div>
-                <blockquote className="text-2xl font-medium mb-6 italic">
-                  "The automation system saved us 40 hours per week and increased our lead conversion by 60%. The ROI was immediate and the support team is exceptional."
-                </blockquote>
-                <div className="text-lg font-semibold text-primary">Sarah Johnson</div>
-                <div className="text-muted-foreground">CEO, Johnson Real Estate Group</div>
-                
-                <div className="flex justify-center mt-6 space-x-2">
-                  {[0, 1, 2].map((i) => (
-                    <Button
-                      key={i}
-                      variant="ghost"
-                      size="sm"
-                      className={`w-3 h-3 rounded-full p-0 ${i === 0 ? 'bg-primary' : 'bg-gray-300'}`}
-                    />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-black dark:from-black dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
-        <div className="absolute inset-0 gradient-mesh opacity-50"></div>
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="floating-particle"
-            style={{
-              top: `${30 + i * 20}%`,
-              left: `${20 + i * 30}%`,
-            }}
-            animate={{
-              y: [-10, 10],
-              opacity: [0.3, 0.7, 0.3],
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-        ))}
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">Ready to Automate Your Success?</h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">Get started with a free consultation and see how automation can transform your business</p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <Card className="glass-card shadow-2xl">
-              <CardContent className="p-8">
-                {!showContactForm ? (
-                  <div className="text-center">
-                    <Button 
-                      size="lg" 
-                      className="bg-primary hover:bg-primary/90 text-white"
-                      onClick={() => setShowContactForm(true)}
-                    >
-                      Start Your Free Consultation
-                    </Button>
-                  </div>
-                ) : (
-                  <MultiStepForm onSubmit={handleContactFormSubmit} />
-                )}
-              </CardContent>
-            </Card>
+      <section id="contact" className="py-20 bg-gradient-to-br from-primary/10 to-primary/5 dark:from-gray-800 dark:to-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Ready to Automate Your Success?</h2>
+            <p className="text-xl text-muted-foreground mb-12">
+              Get started with a free discovery call to explore how automation can transform your business
+            </p>
             
-            {/* Contact Info */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="glass-card text-center text-white">
-                <CardContent className="p-6">
-                  <Phone className="w-8 h-8 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Call Us</h3>
-                  <p className="text-gray-300">+44 20 7000 0000</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <Card className="glass-card p-8">
+                <CardContent className="p-0">
+                  <h3 className="text-2xl font-bold mb-6">Book Your Discovery Call</h3>
+                  <div className="space-y-4 text-left">
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                      <span>30-minute consultation with automation expert</span>
+                    </div>
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                      <span>Custom automation strategy for your business</span>
+                    </div>
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                      <span>ROI projections and timeline estimates</span>
+                    </div>
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                      <span>No obligation, completely free</span>
+                    </div>
+                  </div>
+                  <Button size="lg" className="w-full mt-8 bg-primary hover:bg-primary/90 text-white">
+                    <Phone className="w-5 h-5 mr-2" />
+                    Schedule Free Discovery Call
+                  </Button>
                 </CardContent>
               </Card>
-              <Card className="glass-card text-center text-white">
-                <CardContent className="p-6">
-                  <Mail className="w-8 h-8 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Email Us</h3>
-                  <p className="text-gray-300">hello@growfastwithus.com</p>
-                </CardContent>
-              </Card>
-              <Card className="glass-card text-center text-white">
-                <CardContent className="p-6">
-                  <Clock className="w-8 h-8 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Business Hours</h3>
-                  <p className="text-gray-300">Mon-Fri: 9AM-6PM GMT</p>
+
+              <Card className="glass-card p-8">
+                <CardContent className="p-0">
+                  <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+                  <div className="space-y-6 text-left">
+                    <div className="flex items-center">
+                      <Mail className="w-6 h-6 text-primary mr-4" />
+                      <div>
+                        <p className="font-semibold">Email</p>
+                        <p className="text-muted-foreground">hello@growfastwithus.com</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="w-6 h-6 text-primary mr-4" />
+                      <div>
+                        <p className="font-semibold">Phone</p>
+                        <p className="text-muted-foreground">+44 20 7946 0958</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="w-6 h-6 text-primary mr-4" />
+                      <div>
+                        <p className="font-semibold">Business Hours</p>
+                        <p className="text-muted-foreground">Mon-Fri: 9AM-6PM GMT</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <MapPin className="w-6 h-6 text-primary mr-4 mt-1" />
+                      <div>
+                        <p className="font-semibold">Regions Served</p>
+                        <div className="text-muted-foreground space-y-1">
+                          <div>🇬🇧 United Kingdom</div>
+                          <div>🇺🇸 United States</div>
+                          <div>🇦🇺 Australia</div>
+                          <div>🇪🇺 Europe</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -755,34 +471,36 @@ export default function Home() {
                 <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                   <Sparkles className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">Digital Empire Grow Fast</span>
+                <span className="text-xl font-bold">GrowFastWithUs</span>
               </div>
-              <p className="text-gray-400 mb-6">Automating success for businesses worldwide through cutting-edge workflow automation and AI integration.</p>
+              <p className="text-gray-400 mb-4">
+                Automating business success through intelligent workflow solutions.
+              </p>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-6">Services</h3>
-              <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">Workflow Automation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">AI Integration</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">Custom SaaS</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">Templates</a></li>
+              <h4 className="font-semibold mb-4">Services</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Workflow Automation</li>
+                <li>AI Agent Integration</li>
+                <li>Custom SaaS Solutions</li>
+                <li>Business Intelligence</li>
               </ul>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-6">Company</h3>
-              <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">About Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">Case Studies</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">Blog</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-primary transition-colors">Careers</a></li>
+              <h4 className="font-semibold mb-4">Templates</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Healthcare Automation</li>
+                <li>E-commerce Solutions</li>
+                <li>Real Estate Tools</li>
+                <li>Professional Services</li>
               </ul>
             </div>
             
             <div>
-              <h3 className="text-lg font-semibold mb-6">Regions Served</h3>
-              <ul className="space-y-3">
+              <h4 className="font-semibold mb-4">Regions</h4>
+              <ul className="space-y-2">
                 <li className="text-gray-400 flex items-center"><MapPin className="w-4 h-4 mr-2" /> United Kingdom</li>
                 <li className="text-gray-400 flex items-center"><MapPin className="w-4 h-4 mr-2" /> United States</li>
                 <li className="text-gray-400 flex items-center"><MapPin className="w-4 h-4 mr-2" /> Australia</li>
