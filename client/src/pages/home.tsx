@@ -125,10 +125,12 @@ export default function Home() {
   const [painPoints, setPainPoints] = useState<string[]>([]);
   const [timeSpent, setTimeSpent] = useState([20]);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setHeaderScrolled(window.scrollY > 100);
+      setScrolled(window.scrollY > 300);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -1005,6 +1007,46 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Back to Top Button */}
+      <motion.button
+        className="fixed bottom-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all z-50"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: scrolled ? 1 : 0, scale: scrolled ? 1 : 0 }}
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        <ArrowUp className="w-6 h-6 text-white" />
+      </motion.button>
+
+      {/* Newsletter Section */}
+      <section className="py-20 bg-gradient-to-r from-primary/20 to-primary/10">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Stay Updated</h2>
+            <p className="text-xl text-gray-400 mb-8">
+              Get weekly automation tips, case studies, and exclusive templates delivered to your inbox
+            </p>
+            
+            <Card className="service-card p-8 max-w-2xl mx-auto">
+              <CardContent className="p-0">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-primary focus:outline-none"
+                  />
+                  <Button className="bg-primary hover:bg-primary/90 text-white px-8">
+                    Subscribe
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-400 mt-4">
+                  Join 2,500+ business owners. No spam, unsubscribe anytime.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-gray-950">
         <div className="container mx-auto px-6">
@@ -1110,9 +1152,25 @@ export default function Home() {
                 </div>
                 <span className="text-xl font-bold">GrowFastWithUs</span>
               </div>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-400 mb-6">
                 Automating business success through intelligent workflow solutions.
               </p>
+              
+              {/* Social Media Links */}
+              <div className="flex space-x-4">
+                <a href="https://linkedin.com/company/growfastwithus" target="_blank" rel="noopener noreferrer" 
+                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors group">
+                  <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                </a>
+                <a href="https://twitter.com/growfastwithus" target="_blank" rel="noopener noreferrer"
+                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors group">
+                  <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                </a>
+                <a href="https://youtube.com/@growfastwithus" target="_blank" rel="noopener noreferrer"
+                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors group">
+                  <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                </a>
+              </div>
             </div>
             
             <div>
