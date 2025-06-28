@@ -221,7 +221,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" ref={heroRef} className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black dark:from-black dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
+      <section id="home" ref={heroRef} className="min-h-screen bg-black relative overflow-hidden">
         <div className="absolute inset-0 gradient-mesh"></div>
         
         {/* Floating Particles */}
@@ -291,7 +291,7 @@ export default function Home() {
       </section>
 
       {/* Services Overview */}
-      <section id="services" ref={servicesRef} className="py-20 bg-cream-primary/50 dark:bg-gray-900">
+      <section id="services" ref={servicesRef} className="py-20 bg-black tech-grid">
         <div className="container mx-auto px-6">
           <motion.div
             className="text-center mb-16"
@@ -322,13 +322,13 @@ export default function Home() {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="group"
               >
-                <Card className="glass-card h-full hover:shadow-2xl transition-all duration-300">
-                  <CardContent className="p-8">
-                    <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/80 transition-colors">
+                <Card className="service-card h-full">
+                  <CardContent className="p-8 relative z-10">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
                       <service.icon className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-                    <p className="text-muted-foreground">{service.description}</p>
+                    <h3 className="text-2xl font-bold mb-4 text-white">{service.title}</h3>
+                    <p className="text-gray-400 leading-relaxed">{service.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -338,36 +338,102 @@ export default function Home() {
       </section>
 
       {/* Technology Stack */}
-      <section className="py-20 bg-white dark:bg-gray-800">
+      <section className="py-20 bg-gray-950">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Powered by Cutting-Edge Technology</h2>
-            <p className="text-xl text-muted-foreground">We use the best tools in the industry to deliver exceptional results</p>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Your tools, seamlessly connected</h2>
+            <p className="text-xl text-gray-400">We integrate with the platforms you already use</p>
           </div>
           
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex justify-center items-center flex-wrap gap-8"
-              animate={{ x: [0, -100, 0] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              {["n8n", "Make.com", "Langflow", "OpenAI", "ElevenLabs", "Pinecone", "Stripe", "Shopify"].map((tech) => (
-                <Card key={tech} className="glass-card p-6 hover:shadow-lg transition-all duration-300 hover:scale-110">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6 max-w-6xl mx-auto">
+            {["n8n", "Zapier", "Make", "Slack", "HubSpot", "Shopify", "Gmail", "Trello"].map((tech, index) => (
+              <motion.div
+                key={tech}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group"
+              >
+                <Card className="glass-card p-6 hover:border-primary/30 transition-all duration-300 aspect-square flex items-center justify-center">
                   <CardContent className="p-0 text-center">
-                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-2">
-                      <Zap className="w-6 h-6 text-white" />
+                    <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/20 transition-colors">
+                      <Zap className="w-4 h-4 text-gray-400 group-hover:text-primary" />
                     </div>
-                    <p className="text-sm font-semibold">{tech}</p>
+                    <p className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">{tech}</p>
                   </CardContent>
                 </Card>
-              ))}
-            </motion.div>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <p className="text-gray-500 text-sm">+ 5000 more integrations</p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 bg-black">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">How It <span className="text-primary">Works</span></h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              From consultation to implementation, we make automation simple and stress-free.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+            {[
+              {
+                number: "01",
+                title: "Free Discovery Call",
+                description: "Tell us your goals and challenges. We'll map the best automation path for your business in just 30 minutes.",
+                icon: Phone,
+                duration: "30 min"
+              },
+              {
+                number: "02", 
+                title: "Custom Automation Setup",
+                description: "We build and connect automations tailored to your business, testing everything before you go live.",
+                icon: Cog,
+                duration: "1-2 weeks"
+              },
+              {
+                number: "03",
+                title: "Launch & Ongoing Support", 
+                description: "Go live with peace of mind. We provide monitoring, optimization, and continuous support as you scale.",
+                icon: TrendingUp,
+                duration: "Ongoing"
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                className="text-center group"
+              >
+                <div className="relative mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
+                    <span className="text-white font-bold text-lg">{step.number}</span>
+                  </div>
+                  <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mx-auto group-hover:bg-gray-700 transition-colors">
+                    <step.icon className="w-6 h-6 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-white">{step.title}</h3>
+                <p className="text-gray-400 leading-relaxed mb-4">{step.description}</p>
+                <div className="inline-flex items-center px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+                  <span className="text-primary text-sm font-medium">{step.duration}</span>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Templates Showcase */}
-      <section id="templates" ref={templatesRef} className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section id="templates" ref={templatesRef} className="py-20 bg-gray-950">
         <div className="container mx-auto px-6">
           <motion.div
             className="text-center mb-16"
