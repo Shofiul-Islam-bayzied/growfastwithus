@@ -20,7 +20,8 @@ GrowFastWithUs is a modern React-based website for a digital automation agency s
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js for RESTful API endpoints
 - **Database ORM**: Drizzle ORM for type-safe database operations
-- **Database**: PostgreSQL (configured for Neon serverless)
+- **Database**: PostgreSQL (Neon serverless) with WebSocket support
+- **Storage Layer**: DatabaseStorage class implementing IStorage interface
 - **Session Management**: PostgreSQL session store with connect-pg-simple
 - **Build System**: ESBuild for production bundling
 

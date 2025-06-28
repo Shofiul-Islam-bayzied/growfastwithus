@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AdvancedContactForm } from "@/components/advanced-contact-form";
 import { templates } from "@/lib/templates";
 import {
   Sun,
@@ -667,81 +668,92 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-gradient-to-br from-primary/10 to-primary/5 dark:from-gray-800 dark:to-gray-900">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">Ready to Automate Your Success?</h2>
-            <p className="text-xl text-muted-foreground mb-12">
-              Get started with a free discovery call to explore how automation can transform your business
-            </p>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4">Ready to Automate Your Success?</h2>
+              <p className="text-xl text-muted-foreground">
+                Get started with a free discovery call to explore how automation can transform your business
+              </p>
+            </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <Card className="glass-card p-8">
-                <CardContent className="p-0">
-                  <h3 className="text-2xl font-bold mb-6">Book Your Discovery Call</h3>
-                  <div className="space-y-4 text-left">
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                      <span>30-minute consultation with automation expert</span>
-                    </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                      <span>Custom automation strategy for your business</span>
-                    </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                      <span>ROI projections and timeline estimates</span>
-                    </div>
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-primary mr-3" />
-                      <span>No obligation, completely free</span>
-                    </div>
-                  </div>
-                  <Button size="lg" className="w-full mt-8 bg-primary hover:bg-primary/90 text-white">
-                    <Phone className="w-5 h-5 mr-2" />
-                    Schedule Free Discovery Call
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              {/* Contact Form */}
+              <div className="lg:col-span-2">
+                <Card className="glass-card p-8">
+                  <CardContent className="p-0">
+                    <h3 className="text-2xl font-bold mb-6">Start Your Automation Journey</h3>
+                    <AdvancedContactForm />
+                  </CardContent>
+                </Card>
+              </div>
 
-              <Card className="glass-card p-8">
-                <CardContent className="p-0">
-                  <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-                  <div className="space-y-6 text-left">
-                    <div className="flex items-center">
-                      <Mail className="w-6 h-6 text-primary mr-4" />
-                      <div>
-                        <p className="font-semibold">Email</p>
-                        <p className="text-muted-foreground">hello@growfastwithus.com</p>
+              {/* Contact Information */}
+              <div className="space-y-8">
+                <Card className="glass-card p-8">
+                  <CardContent className="p-0">
+                    <h3 className="text-2xl font-bold mb-6">Why Choose Us?</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                        <span>30-minute consultation with automation expert</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                        <span>Custom automation strategy for your business</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                        <span>ROI projections and timeline estimates</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-5 h-5 text-primary mr-3" />
+                        <span>No obligation, completely free</span>
                       </div>
                     </div>
-                    <div className="flex items-center">
-                      <Phone className="w-6 h-6 text-primary mr-4" />
-                      <div>
-                        <p className="font-semibold">Phone</p>
-                        <p className="text-muted-foreground">+44 20 7946 0958</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass-card p-8">
+                  <CardContent className="p-0">
+                    <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+                    <div className="space-y-6">
+                      <div className="flex items-center">
+                        <Mail className="w-6 h-6 text-primary mr-4" />
+                        <div>
+                          <p className="font-semibold">Email</p>
+                          <p className="text-muted-foreground">hello@growfastwithus.com</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center">
-                      <Clock className="w-6 h-6 text-primary mr-4" />
-                      <div>
-                        <p className="font-semibold">Business Hours</p>
-                        <p className="text-muted-foreground">Mon-Fri: 9AM-6PM GMT</p>
+                      <div className="flex items-center">
+                        <Phone className="w-6 h-6 text-primary mr-4" />
+                        <div>
+                          <p className="font-semibold">Phone</p>
+                          <p className="text-muted-foreground">+44 20 7946 0958</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-start">
-                      <MapPin className="w-6 h-6 text-primary mr-4 mt-1" />
-                      <div>
-                        <p className="font-semibold">Regions Served</p>
-                        <div className="text-muted-foreground space-y-1">
-                          <div>🇬🇧 United Kingdom</div>
-                          <div>🇺🇸 United States</div>
-                          <div>🇦🇺 Australia</div>
-                          <div>🇪🇺 Europe</div>
+                      <div className="flex items-center">
+                        <Clock className="w-6 h-6 text-primary mr-4" />
+                        <div>
+                          <p className="font-semibold">Business Hours</p>
+                          <p className="text-muted-foreground">Mon-Fri: 9AM-6PM GMT</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <MapPin className="w-6 h-6 text-primary mr-4 mt-1" />
+                        <div>
+                          <p className="font-semibold">Regions Served</p>
+                          <div className="text-muted-foreground space-y-1">
+                            <div>🇬🇧 United Kingdom</div>
+                            <div>🇺🇸 United States</div>
+                            <div>🇦🇺 Australia</div>
+                            <div>🇪🇺 Europe</div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
