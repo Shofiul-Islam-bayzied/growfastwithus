@@ -139,6 +139,82 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Cal.com embed custom styling */
+.cal-embed-container {
+  --cal-brand-color: #FF6B35;
+  --cal-bg-color: #1a1a1a;
+  --cal-text-color: #ffffff;
+  --cal-border-color: #333333;
+  --cal-hover-color: #2a2a2a;
+}
+
+/* Override Cal.com default styles to match site theme */
+#my-cal-inline * {
+  color-scheme: dark !important;
+}
+
+#my-cal-inline [data-cal-namespace="30min"] {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline .cal-header,
+#my-cal-inline .cal-month-view,
+#my-cal-inline .cal-day-view {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline button {
+  background-color: #FF6B35 !important;
+  border-color: #FF6B35 !important;
+}
+
+#my-cal-inline button:hover {
+  background-color: #e55a2b !important;
+  border-color: #e55a2b !important;
+}
+
+#my-cal-inline .cal-available-slot {
+  background-color: #2a2a2a !important;
+  border-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline .cal-available-slot:hover {
+  background-color: #FF6B35 !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline .cal-date-picker,
+#my-cal-inline .cal-time-picker {
+  background-color: #1a1a1a !important;
+  border-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline input,
+#my-cal-inline select,
+#my-cal-inline textarea {
+  background-color: #2a2a2a !important;
+  border-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline .cal-form-field {
+  background-color: #1a1a1a !important;
+}
+
+#my-cal-inline .cal-primary-button {
+  background-color: #FF6B35 !important;
+  border-color: #FF6B35 !important;
+  color: #ffffff !important;
+}
+
+#my-cal-inline .cal-primary-button:hover {
+  background-color: #e55a2b !important;
+}
+
 .service-card:hover {
   transform: translateY(-8px);
   border-color: rgba(99, 102, 241, 0.4);

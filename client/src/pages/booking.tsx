@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import Cal, { getCalApi } from "@calcom/embed-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -18,10 +17,67 @@ import {
 
 export default function Booking() {
   useEffect(() => {
-    (async function () {
-      const cal = await getCalApi({"namespace":"30min"});
-      cal("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
-    })();
+    // Cal.com inline embed initialization
+    const script = document.createElement('script');
+    script.innerHTML = `
+      (function (C, A, L) { 
+        let p = function (a, ar) { a.q.push(ar); }; 
+        let d = C.document; 
+        C.Cal = C.Cal || function () { 
+          let cal = C.Cal; 
+          let ar = arguments; 
+          if (!cal.loaded) { 
+            cal.ns = {}; 
+            cal.q = cal.q || []; 
+            d.head.appendChild(d.createElement("script")).src = A; 
+            cal.loaded = true; 
+          } 
+          if (ar[0] === L) { 
+            const api = function () { p(api, arguments); }; 
+            const namespace = ar[1]; 
+            api.q = api.q || []; 
+            if(typeof namespace === "string"){
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              p(cal.ns[namespace], ar);
+              p(cal, ["initNamespace", namespace]);
+            } else p(cal, ar); 
+            return;
+          } 
+          p(cal, ar); 
+        }; 
+      })(window, "https://app.cal.com/embed/embed.js", "init");
+      
+      Cal("init", "30min", {origin:"https://app.cal.com"});
+      
+      Cal.ns["30min"]("inline", {
+        elementOrSelector:"#my-cal-inline",
+        config: {
+          "layout":"month_view",
+          "theme": "dark",
+          "branding": {
+            "brandColor": "#FF6B35"
+          }
+        },
+        calLink: "grow-fast-with-us/30min",
+      });
+      
+      Cal.ns["30min"]("ui", {
+        "hideEventTypeDetails":false,
+        "layout":"month_view",
+        "theme": "dark",
+        "styles": {
+          "branding": {
+            "brandColor": "#FF6B35"
+          }
+        }
+      });
+    `;
+    document.head.appendChild(script);
+    
+    return () => {
+      // Cleanup script on unmount
+      document.head.removeChild(script);
+    };
   }, []);
 
   return (
@@ -99,13 +155,17 @@ export default function Booking() {
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-white rounded-lg overflow-hidden" style={{minHeight: "600px"}}>
-                    <Cal 
-                      namespace="30min"
-                      calLink="grow-fast-with-us/30min"
-                      style={{width:"100%",height:"600px",overflow:"scroll"}}
-                      config={{"layout":"month_view"}}
-                    />
+                  <div className="rounded-lg overflow-hidden" style={{minHeight: "600px"}}>
+                    <div 
+                      id="my-cal-inline" 
+                      style={{
+                        width: "100%", 
+                        height: "600px", 
+                        overflow: "scroll",
+                        backgroundColor: "#1a1a1a",
+                        borderRadius: "8px"
+                      }}
+                    ></div>
                   </div>
                 </CardContent>
               </Card>
