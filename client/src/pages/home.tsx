@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { useTheme } from "@/components/theme-provider";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -121,7 +121,7 @@ const iconMap = {
 };
 
 export default function Home() {
-  const { theme, setTheme } = useTheme();
+
   const { toast } = useToast();
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Templates");
@@ -251,21 +251,7 @@ export default function Home() {
         </Button>
       </motion.div>
 
-      {/* Theme Toggle */}
-      <motion.div
-        className="fixed top-4 right-4 z-50"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="glass-card rounded-full"
-          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        >
-          {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-        </Button>
-      </motion.div>
+
 
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${headerScrolled ? 'glass-card shadow-lg' : ''}`}>

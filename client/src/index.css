@@ -17,27 +17,27 @@
   --border: hsl(217, 33%, 15%);
   --input: hsl(217, 33%, 12%);
   
-  /* Primary Brand Colors - Modern Indigo */
-  --primary: hsl(238, 82%, 66%);
-  --primary-dark: hsl(238, 82%, 56%);
+  /* Primary Brand Colors - Digital Empire Orange */
+  --primary: hsl(14, 100%, 56%);
+  --primary-dark: hsl(14, 100%, 46%);
   --primary-foreground: hsl(0, 0%, 100%);
   
   /* Secondary & Accent Colors */
-  --secondary: hsl(16, 100%, 60%);
+  --secondary: hsl(14, 100%, 56%);
   --secondary-foreground: hsl(0, 0%, 100%);
-  --accent: hsl(322, 81%, 57%);
+  --accent: hsl(14, 100%, 66%);
   --accent-foreground: hsl(0, 0%, 100%);
   
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(238, 82%, 66%);
+  --ring: hsl(14, 100%, 56%);
   --radius: 0.75rem;
   
   /* Custom Brand Variables */
-  --brand-indigo: hsl(238, 82%, 66%);
-  --brand-indigo-dark: hsl(238, 82%, 56%);
-  --brand-orange: hsl(16, 100%, 60%);
-  --brand-pink: hsl(322, 81%, 57%);
+  --brand-orange: hsl(14, 100%, 56%);
+  --brand-orange-light: hsl(14, 100%, 66%);
+  --brand-orange-dark: hsl(14, 100%, 46%);
+  --brand-secondary: hsl(14, 100%, 56%);
   --brand-success: hsl(142, 76%, 36%);
   --brand-warning: hsl(43, 96%, 56%);
 }
