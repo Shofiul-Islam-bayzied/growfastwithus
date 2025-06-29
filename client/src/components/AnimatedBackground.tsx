@@ -22,7 +22,7 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     containerRef.current.appendChild(renderer.domElement);
 
     // Create animated particles with brand colors
-    const particleCount = 80;
+    const particleCount = 40;
     const particles = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -64,10 +64,10 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
 
     // Simple particle material
     const particleMaterial = new THREE.PointsMaterial({
-      size: 3,
+      size: 2,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.4,
       blending: THREE.AdditiveBlending
     });
 
@@ -82,22 +82,25 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     ];
 
     const shapes: THREE.Mesh[] = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       const geometry = geometries[Math.floor(Math.random() * geometries.length)];
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.08,
+        opacity: 0.03,
         wireframe: true
       });
       
       const mesh = new THREE.Mesh(geometry, material);
+      // Position cubes more towards edges to avoid center text area
+      const angle = (i / 8) * Math.PI * 2;
+      const radius = 25 + Math.random() * 10;
       mesh.position.set(
-        (Math.random() - 0.5) * 30,
-        (Math.random() - 0.5) * 30,
-        (Math.random() - 0.5) * 15
+        Math.cos(angle) * radius,
+        (Math.random() - 0.5) * 20,
+        Math.sin(angle) * radius
       );
-      mesh.scale.setScalar(Math.random() * 2 + 0.5);
+      mesh.scale.setScalar(Math.random() * 1.5 + 0.3);
       
       shapes.push(mesh);
       scene.add(mesh);
@@ -108,7 +111,7 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     const waveMaterial = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       transparent: true,
-      opacity: 0.02,
+      opacity: 0.01,
       wireframe: true
     });
 

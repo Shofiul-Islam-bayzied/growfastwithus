@@ -257,12 +257,11 @@ export default function Home() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center shadow-lg">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                GrowFastWithUs
-              </span>
+              <img 
+                src="/attached_assets/white tect logo_1751155829782.png" 
+                alt="GrowFastWithUs Logo" 
+                className="h-8 w-auto"
+              />
             </div>
             
             <div className="hidden lg:flex items-center space-x-8">
@@ -320,10 +319,11 @@ export default function Home() {
               animate={heroInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.8, delay: 0.1 }}
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-semibold text-white">GrowFastWithUs</span>
+              <img 
+                src="/attached_assets/white tect logo_1751155829782.png" 
+                alt="GrowFastWithUs Logo" 
+                className="h-10 w-auto"
+              />
               <Badge className="bg-primary text-white px-3 py-1">AI-Powered</Badge>
             </motion.div>
 
