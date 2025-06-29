@@ -288,27 +288,7 @@ export default function Home() {
         <div className="absolute inset-0 gradient-mesh"></div>
 
         
-        {/* Floating Particles */}
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="floating-particle"
-            style={{
-              top: `${20 + i * 15}%`,
-              left: `${10 + i * 20}%`,
-            }}
-            animate={{
-              y: [-20, 20],
-              opacity: [0.3, 0.8, 0.3],
-            }}
-            transition={{
-              duration: 6 + i,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: i * 0.5,
-            }}
-          />
-        ))}
+
         
         <div className="container mx-auto px-6 py-32 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -328,46 +308,34 @@ export default function Home() {
             </motion.div>
 
             <motion.h1
-              className="text-hero bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-6"
-              initial={{ opacity: 0, y: 50 }}
+              className="text-5xl md:text-6xl font-bold text-white mb-6"
+              initial={{ opacity: 0, y: 30 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
               Automate Your Business
-              <span className="block bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                Growth & Success
-              </span>
+              <span className="block text-primary">Growth & Success</span>
             </motion.h1>
             
             <motion.p
-              className="text-large text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 30 }}
+              className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
             >
-              Transform your workflow with intelligent automation solutions that scale your business, 
-              eliminate repetitive tasks, and unlock unprecedented growth potential through cutting-edge AI technology.
+              Scale your business with smart automation that eliminates repetitive tasks and drives growth.
             </motion.p>
 
-            {/* Feature Highlights */}
+            {/* Simple Stats */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-wrap justify-center gap-4 mb-8"
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex justify-center gap-8 mb-8 text-gray-400 text-sm"
             >
-              <div className="flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
-                <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="text-sm text-gray-300">2,500+ Happy Clients</span>
-              </div>
-              <div className="flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
-                <Star className="w-5 h-5 text-yellow-400" />
-                <span className="text-sm text-gray-300">4.9/5 Rating</span>
-              </div>
-              <div className="flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
-                <Shield className="w-5 h-5 text-green-400" />
-                <span className="text-sm text-gray-300">Enterprise Security</span>
-              </div>
+              <span>2,500+ Clients</span>
+              <span>4.9/5 Rating</span>
+              <span>Enterprise Security</span>
             </motion.div>
             <motion.div
               className="flex flex-col sm:flex-row gap-6 justify-center items-center"

@@ -21,18 +21,16 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     containerRef.current.appendChild(renderer.domElement);
 
-    // Create animated particles with brand colors
-    const particleCount = 40;
+    // Create minimal particles
+    const particleCount = 15;
     const particles = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const velocities: number[] = [];
 
-    // Brand colors
+    // Minimal brand colors
     const brandColors = [
       new THREE.Color('#FF5722'), // Primary Orange
-      new THREE.Color('#FF7043'), // Orange Light
-      new THREE.Color('#E64A19'), // Orange Dark
     ];
 
     for (let i = 0; i < particleCount; i++) {
@@ -62,12 +60,12 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Simple particle material
+    // Minimal particle material
     const particleMaterial = new THREE.PointsMaterial({
-      size: 2,
+      size: 1.5,
       vertexColors: true,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.2,
       blending: THREE.AdditiveBlending
     });
 
@@ -81,26 +79,27 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
       new THREE.BoxGeometry(0.8, 0.8, 0.8)
     ];
 
+    // Minimal geometric shapes
     const shapes: THREE.Mesh[] = [];
-    for (let i = 0; i < 8; i++) {
-      const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+    for (let i = 0; i < 3; i++) {
+      const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.03,
+        opacity: 0.015,
         wireframe: true
       });
       
       const mesh = new THREE.Mesh(geometry, material);
-      // Position cubes more towards edges to avoid center text area
-      const angle = (i / 8) * Math.PI * 2;
-      const radius = 25 + Math.random() * 10;
+      // Position cubes far from center
+      const angle = (i / 3) * Math.PI * 2;
+      const radius = 35;
       mesh.position.set(
         Math.cos(angle) * radius,
-        (Math.random() - 0.5) * 20,
+        (Math.random() - 0.5) * 15,
         Math.sin(angle) * radius
       );
-      mesh.scale.setScalar(Math.random() * 1.5 + 0.3);
+      mesh.scale.setScalar(0.8);
       
       shapes.push(mesh);
       scene.add(mesh);
