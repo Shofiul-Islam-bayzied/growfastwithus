@@ -690,9 +690,11 @@ export default function Home() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="text-3xl font-bold text-primary">£{template.price}/mo</div>
-                        <Button variant="outline" className="group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all border-gray-600 text-gray-300">
-                          Learn More
-                        </Button>
+                        <Link href={`/template/${template.id}`}>
+                          <Button variant="outline" className="group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all border-gray-600 text-gray-300">
+                            Learn More
+                          </Button>
+                        </Link>
                       </div>
                     </CardContent>
                   </Card>

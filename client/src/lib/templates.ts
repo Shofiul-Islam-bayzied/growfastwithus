@@ -1,10 +1,12 @@
+import { LucideIcon, Stethoscope, Home, ShoppingCart, Users, UtensilsCrossed, Briefcase, TrendingUp, Calendar, UserCheck, MessageCircle, Phone, Target, ShoppingBag, Dumbbell } from "lucide-react";
+
 export interface Template {
   id: string;
   title: string;
   description: string;
   price: number;
   category: string;
-  icon: string;
+  icon: LucideIcon;
   features: string[];
   popular?: boolean;
 }
@@ -16,7 +18,7 @@ export const templates: Template[] = [
     description: "Automate appointment scheduling, patient reminders, and follow-up communications with AI-powered workflows.",
     price: 449,
     category: "Healthcare",
-    icon: "stethoscope",
+    icon: Stethoscope,
     features: ["Appointment scheduling", "Patient reminders", "Follow-up automation", "AI chat support"],
     popular: true,
   },
