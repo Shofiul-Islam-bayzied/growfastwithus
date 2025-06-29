@@ -72,22 +72,7 @@ export interface IStorage {
   logActivity(activity: any): Promise<any>;
   getActivityLogs(userId?: string): Promise<any[]>;
   
-  // Email Campaigns
-  createEmailCampaign(campaign: any): Promise<any>;
-  getEmailCampaigns(): Promise<any[]>;
-  updateEmailCampaign(id: number, updates: any): Promise<any>;
-  sendEmailCampaign(id: number): Promise<void>;
-  
-  // A/B Testing
-  createAbTest(test: any): Promise<any>;
-  getAbTests(): Promise<any[]>;
-  updateAbTest(id: number, updates: any): Promise<any>;
-  getAbTestResults(id: number): Promise<any>;
-  
-  // Lead Scoring
-  calculateLeadScore(contactId: number): Promise<any>;
-  getLeadScores(): Promise<any[]>;
-  updateLeadScore(contactId: number, score: number, factors: any): Promise<any>;
+
   
   // Performance Monitoring
   recordPerformanceMetric(metric: any): Promise<any>;
