@@ -59,6 +59,18 @@ import {
   Monitor
 } from "lucide-react";
 
+// Company logos from react-icons
+import { 
+  SiSlack, 
+  SiShopify, 
+  SiGmail, 
+  SiTrello, 
+  SiHubspot,
+  SiZapier,
+  SiMake,
+  SiN8N
+} from "react-icons/si";
+
 // FAQ Item Component
 function FAQItem({ faq, index }: { faq: { question: string; answer: string }; index: number }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -565,9 +577,18 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6 max-w-6xl mx-auto">
-            {["n8n", "Zapier", "Make", "Slack", "HubSpot", "Shopify", "Gmail", "Trello"].map((tech, index) => (
+            {[
+              { name: "n8n", icon: SiN8N },
+              { name: "Zapier", icon: SiZapier },
+              { name: "Make", icon: SiMake },
+              { name: "Slack", icon: SiSlack },
+              { name: "HubSpot", icon: SiHubspot },
+              { name: "Shopify", icon: SiShopify },
+              { name: "Gmail", icon: SiGmail },
+              { name: "Trello", icon: SiTrello }
+            ].map((tech, index) => (
               <motion.div
-                key={tech}
+                key={tech.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -575,10 +596,10 @@ export default function Home() {
               >
                 <Card className="glass-card p-6 hover:border-primary/30 transition-all duration-300 aspect-square flex items-center justify-center">
                   <CardContent className="p-0 text-center">
-                    <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/20 transition-colors">
-                      <Zap className="w-4 h-4 text-gray-400 group-hover:text-primary" />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/20 transition-colors">
+                      <tech.icon className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
                     </div>
-                    <p className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">{tech}</p>
+                    <p className="text-xs font-medium text-gray-300 group-hover:text-white transition-colors">{tech.name}</p>
                   </CardContent>
                 </Card>
               </motion.div>
