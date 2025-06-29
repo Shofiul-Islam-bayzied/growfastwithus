@@ -32,6 +32,15 @@ import {
   Clock,
   Target
 } from "lucide-react";
+import {
+  ThemeCustomizerSkeleton,
+  SiteSettingsSkeleton,
+  MediaLibrarySkeleton,
+  ReviewManagerSkeleton,
+  AnalyticsSkeleton,
+  AdminSettingsSkeleton,
+  ContactManagerSkeleton
+} from "@/components/admin/loading-skeletons";
 
 // Theme Customizer Component
 function ThemeCustomizer() {
@@ -234,7 +243,7 @@ function SiteSettingsManager() {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center p-8"><RefreshCw className="h-6 w-6 animate-spin" /></div>;
+    return <SiteSettingsSkeleton />;
   }
 
   return (
@@ -433,8 +442,15 @@ function MediaLibrary() {
 
         {/* Media Gallery */}
         {isLoading ? (
-          <div className="flex items-center justify-center p-8">
-            <RefreshCw className="h-6 w-6 animate-spin" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="border rounded-lg p-3">
+                <div className="aspect-square bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded mb-1 animate-pulse"></div>
+                <div className="h-3 bg-gray-200 rounded w-16 mb-2 animate-pulse"></div>
+                <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -581,8 +597,26 @@ function ReviewManager() {
 
         {/* Reviews List */}
         {isLoading ? (
-          <div className="flex items-center justify-center p-8">
-            <RefreshCw className="h-6 w-6 animate-spin" />
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="border rounded-lg p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <div key={star} className="h-4 w-4 bg-gray-200 rounded-full animate-pulse"></div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="h-16 w-full bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="space-y-4">
@@ -631,8 +665,19 @@ function Analytics() {
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center p-8">
-          <RefreshCw className="h-6 w-6 animate-spin" />
+        <CardHeader>
+          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="text-center p-4 bg-gray-50 rounded-lg">
+                <div className="h-8 w-8 mx-auto mb-2 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="h-8 w-16 mx-auto mb-1 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-24 mx-auto bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     );
