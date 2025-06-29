@@ -28,7 +28,7 @@ export const templates: Template[] = [
     description: "Lead capture, nurturing, and conversion automation for real estate professionals.",
     price: 399,
     category: "Real Estate",
-    icon: "home",
+    icon: Home,
     features: ["Lead capture", "Automated nurturing", "CRM integration", "Performance tracking"],
   },
   {
@@ -37,7 +37,7 @@ export const templates: Template[] = [
     description: "Inventory management, order processing, and customer service automation.",
     price: 349,
     category: "E-commerce",
-    icon: "shopping-cart",
+    icon: ShoppingCart,
     features: ["Inventory management", "Order processing", "Customer service", "Analytics"],
   },
   {
@@ -46,7 +46,7 @@ export const templates: Template[] = [
     description: "Client management, project tracking, and billing automation for service businesses.",
     price: 399,
     category: "Professional Services",
-    icon: "briefcase",
+    icon: Briefcase,
     features: ["Client management", "Project tracking", "Billing automation", "Time tracking"],
   },
   {
@@ -55,7 +55,7 @@ export const templates: Template[] = [
     description: "Online ordering, kitchen management, and customer feedback collection.",
     price: 299,
     category: "Restaurant",
-    icon: "utensils",
+    icon: UtensilsCrossed,
     features: ["Online ordering", "Kitchen management", "Feedback collection", "Loyalty programs"],
   },
   {
@@ -64,7 +64,7 @@ export const templates: Template[] = [
     description: "Appointment booking, technician dispatch, and customer communication automation.",
     price: 249,
     category: "Home Services",
-    icon: "wrench",
+    icon: Users,
     features: ["Appointment booking", "Technician dispatch", "Customer updates", "Invoice automation"],
   },
   {
@@ -73,7 +73,7 @@ export const templates: Template[] = [
     description: "Multi-channel campaign management, lead scoring, and performance tracking.",
     price: 399,
     category: "Marketing",
-    icon: "chart-line",
+    icon: TrendingUp,
     features: ["Campaign management", "Lead scoring", "Performance tracking", "Multi-channel"],
   },
   {
@@ -82,7 +82,7 @@ export const templates: Template[] = [
     description: "Member management, class booking, and health tracking automation.",
     price: 279,
     category: "Fitness",
-    icon: "dumbbell",
+    icon: Dumbbell,
     features: ["Member management", "Class booking", "Health tracking", "Payment processing"],
   },
   {
@@ -91,7 +91,7 @@ export const templates: Template[] = [
     description: "Event coordination, vendor management, and guest communication automation.",
     price: 349,
     category: "Events",
-    icon: "calendar",
+    icon: Calendar,
     features: ["Event coordination", "Vendor management", "Guest communication", "Budget tracking"],
   },
   {
@@ -100,7 +100,7 @@ export const templates: Template[] = [
     description: "Client onboarding, session scheduling, and progress tracking automation.",
     price: 299,
     category: "Coaching",
-    icon: "user-check",
+    icon: UserCheck,
     features: ["Client onboarding", "Session scheduling", "Progress tracking", "Resource delivery"],
   },
   {
@@ -109,7 +109,7 @@ export const templates: Template[] = [
     description: "24/7 customer support via WhatsApp with AI-powered responses and escalation.",
     price: 399,
     category: "Customer Support",
-    icon: "message-circle",
+    icon: MessageCircle,
     features: ["24/7 availability", "AI responses", "Escalation management", "Multi-language"],
     popular: true,
   },
@@ -119,7 +119,7 @@ export const templates: Template[] = [
     description: "Automated voice calls for appointments, payments, and important notifications.",
     price: 299,
     category: "Communication",
-    icon: "phone",
+    icon: Phone,
     features: ["Voice calls", "Appointment reminders", "Payment reminders", "Custom messages"],
   },
   {
