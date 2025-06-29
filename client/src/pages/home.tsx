@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AdvancedContactForm } from "@/components/advanced-contact-form";
 import { templates } from "@/lib/templates";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sun,
   Moon,

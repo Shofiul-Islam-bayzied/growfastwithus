@@ -1,35 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 8%);
-  --foreground: hsl(0, 0%, 95%);
-  --muted: hsl(0, 0%, 12%);
-  --muted-foreground: hsl(0, 0%, 65%);
-  --popover: hsl(0, 0%, 8%);
-  --popover-foreground: hsl(0, 0%, 95%);
-  --card: hsl(0, 0%, 10%);
-  --card-foreground: hsl(0, 0%, 95%);
-  --border: hsl(0, 0%, 15%);
-  --input: hsl(0, 0%, 12%);
-  --primary: hsl(16, 100%, 60%);
+  /* Modern Brand Color Palette */
+  --background: hsl(222, 84%, 5%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(217, 33%, 8%);
+  --muted-foreground: hsl(215, 25%, 70%);
+  --popover: hsl(222, 84%, 5%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 6%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(217, 33%, 15%);
+  --input: hsl(217, 33%, 12%);
+  
+  /* Primary Brand Colors - Modern Indigo */
+  --primary: hsl(238, 82%, 66%);
+  --primary-dark: hsl(238, 82%, 56%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(0, 0%, 12%);
-  --secondary-foreground: hsl(0, 0%, 95%);
-  --accent: hsl(0, 0%, 15%);
-  --accent-foreground: hsl(0, 0%, 95%);
-  --destructive: hsl(0, 84.2%, 60.2%);
+  
+  /* Secondary & Accent Colors */
+  --secondary: hsl(16, 100%, 60%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(322, 81%, 57%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  
+  --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(16, 100%, 60%);
+  --ring: hsl(238, 82%, 66%);
   --radius: 0.75rem;
   
-  /* Custom brand colors */
-  --orange-primary: hsl(16, 100%, 60%);
-  --orange-light: hsl(16, 100%, 67%);
-  --orange-dark: hsl(16, 85%, 52%);
-  --dark-primary: hsl(0, 0%, 8%);
-  --cream-primary: hsl(0, 0%, 12%);
+  /* Custom Brand Variables */
+  --brand-indigo: hsl(238, 82%, 66%);
+  --brand-indigo-dark: hsl(238, 82%, 56%);
+  --brand-orange: hsl(16, 100%, 60%);
+  --brand-pink: hsl(322, 81%, 57%);
+  --brand-success: hsl(142, 76%, 36%);
+  --brand-warning: hsl(43, 96%, 56%);
 }
 
 .dark {
