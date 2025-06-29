@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users } from "lucide-react";
@@ -11,46 +10,15 @@ interface BookingWidgetProps {
 }
 
 export function BookingWidget({ 
-  calLink = "growfastwithus/consultation", 
+  calLink = "grow-fast-with-us/30min", 
   title = "Schedule a Consultation",
   description = "Book a free 30-minute consultation to discuss your automation needs",
   className = "" 
 }: BookingWidgetProps) {
   
-  useEffect(() => {
-    // Check if script already exists
-    const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
-    if (!existingScript) {
-      // Load Cal.com embed script
-      const script = document.createElement('script');
-      script.src = 'https://app.cal.com/embed/embed.js';
-      script.async = true;
-      document.head.appendChild(script);
-    }
-  }, []);
-
   const openCalModal = () => {
-    try {
-      // @ts-ignore - Cal.com global function
-      if (typeof window !== 'undefined' && window.Cal) {
-        // @ts-ignore
-        window.Cal("ui", {
-          styles: { branding: { brandColor: "#FF6B35" } },
-          hideEventTypeDetails: false,
-          layout: "month_view"
-        });
-        // @ts-ignore
-        window.Cal("preload", { calLink });
-        // @ts-ignore
-        window.Cal("openmodal", { calLink });
-      } else {
-        // Fallback to direct Cal.com link
-        window.open(`https://cal.com/${calLink}`, '_blank');
-      }
-    } catch (error) {
-      // Fallback to direct Cal.com link if there's an error
-      window.open(`https://cal.com/${calLink}`, '_blank');
-    }
+    // Use your actual Cal.com booking link
+    window.open(`https://cal.com/${calLink}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -92,85 +60,7 @@ export function BookingWidget({
   );
 }
 
-// Inline booking component for embedding directly in pages
-export function InlineBooking({ 
-  calLink = "growfastwithus/consultation",
-  className = "" 
-}: { calLink?: string; className?: string }) {
-  
-  useEffect(() => {
-    // Check if script already exists
-    const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
-    if (!existingScript) {
-      // Load Cal.com embed script
-      const script = document.createElement('script');
-      script.src = 'https://app.cal.com/embed/embed.js';
-      script.async = true;
-      document.head.appendChild(script);
 
-      // Initialize inline embed after script loads
-      script.onload = () => {
-        setTimeout(() => {
-          try {
-            // @ts-ignore
-            if (typeof window !== 'undefined' && window.Cal) {
-              // @ts-ignore
-              window.Cal("inline", {
-                elementOrSelector: "#cal-inline",
-                calLink,
-                layout: "month_view",
-                theme: "light",
-                styles: {
-                  branding: {
-                    brandColor: "#FF6B35"
-                  }
-                }
-              });
-            }
-          } catch (error) {
-            console.log('Cal.com embed initialization error:', error);
-          }
-        }, 500);
-      };
-    } else {
-      // Script already exists, try to initialize
-      setTimeout(() => {
-        try {
-          // @ts-ignore
-          if (typeof window !== 'undefined' && window.Cal) {
-            // @ts-ignore
-            window.Cal("inline", {
-              elementOrSelector: "#cal-inline",
-              calLink,
-              layout: "month_view",
-              theme: "light",
-              styles: {
-                branding: {
-                  brandColor: "#FF6B35"
-                }
-              }
-            });
-          }
-        } catch (error) {
-          console.log('Cal.com embed initialization error:', error);
-        }
-      }, 500);
-    }
-  }, [calLink]);
-
-  return (
-    <div className={className}>
-      <div 
-        id="cal-inline" 
-        style={{ 
-          width: "100%", 
-          height: "630px", 
-          overflow: "scroll" 
-        }}
-      />
-    </div>
-  );
-}
 
 // Simple booking button component
 export function BookingButton({ 
@@ -187,36 +77,9 @@ export function BookingButton({
   className?: string;
 }) {
   
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://app.cal.com/embed/embed.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
-      if (existingScript) {
-        document.body.removeChild(existingScript);
-      }
-    };
-  }, []);
-
   const handleClick = () => {
-    // @ts-ignore
-    if (typeof window !== 'undefined' && window.Cal) {
-      // @ts-ignore
-      window.Cal("ui", {
-        styles: { branding: { brandColor: "#FF6B35" } },
-        hideEventTypeDetails: false,
-        layout: "month_view"
-      });
-      // @ts-ignore
-      window.Cal("preload", { calLink });
-      // @ts-ignore
-      window.Cal("openmodal", { calLink });
-    } else {
-      window.open(`https://cal.com/${calLink}`, '_blank');
-    }
+    // Simplified approach - always use direct Cal.com link
+    window.open(`https://cal.com/${calLink}`, '_blank', 'noopener,noreferrer');
   };
 
   return (

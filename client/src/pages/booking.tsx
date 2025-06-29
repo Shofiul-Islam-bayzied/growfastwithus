@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { InlineBooking, BookingWidget } from "@/components/BookingWidget";
+import { BookingWidget } from "@/components/BookingWidget";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -91,10 +91,19 @@ export default function Booking() {
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <InlineBooking 
-                    calLink="growfastwithus/consultation" 
-                    className="rounded-lg overflow-hidden"
-                  />
+                  <div className="text-center py-12">
+                    <Calendar className="w-16 h-16 text-primary mx-auto mb-6" />
+                    <h3 className="text-xl font-semibold text-white mb-4">Ready to Schedule?</h3>
+                    <p className="text-gray-400 mb-6">
+                      Click the button below to open our booking calendar and select your preferred time slot.
+                    </p>
+                    <BookingWidget 
+                      calLink="growfastwithus/consultation"
+                      title="Book Your Consultation"
+                      description="Select your preferred time for a 30-minute consultation"
+                      className="max-w-md mx-auto"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
