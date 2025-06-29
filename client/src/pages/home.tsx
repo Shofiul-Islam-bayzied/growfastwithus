@@ -57,12 +57,7 @@ import {
   Quote,
   Globe,
   Smartphone,
-  Monitor,
-  Settings,
-  Cog,
-  Bot,
-  Puzzle,
-  Server
+  Monitor
 } from "lucide-react";
 
 // FAQ Item Component
@@ -470,12 +465,12 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: Cog, title: "Workflow Automation", description: "Streamline your business processes with intelligent workflow automation that works 24/7." },
-              { icon: Bot, title: "AI Agent Integration", description: "Deploy intelligent AI agents that handle customer support, lead qualification, and more." },
+              { icon: Zap, title: "Workflow Automation", description: "Streamline your business processes with intelligent workflow automation that works 24/7." },
+              { icon: MessageCircle, title: "AI Agent Integration", description: "Deploy intelligent AI agents that handle customer support, lead qualification, and more." },
               { icon: Briefcase, title: "Custom SaaS Automation", description: "Build custom automation solutions tailored to your specific business needs." },
               { icon: BarChart3, title: "Business Intelligence", description: "Create powerful dashboards and reports that provide actionable business insights." },
-              { icon: Puzzle, title: "Pre-Built Templates", description: "Launch faster with our library of proven automation templates for every industry." },
-              { icon: Server, title: "Hosting & API Management", description: "Reliable hosting and API management to keep your automations running smoothly." },
+              { icon: Target, title: "Pre-Built Templates", description: "Launch faster with our library of proven automation templates for every industry." },
+              { icon: Globe, title: "Hosting & API Management", description: "Reliable hosting and API management to keep your automations running smoothly." },
             ].map((service, index) => (
               <motion.div
                 key={service.title}
@@ -1199,40 +1194,61 @@ export default function Home() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/20 to-primary/10">
-        <div className="container mx-auto px-6">
+      <section className="py-24 bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40"></div>
+        <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Stay Updated</h2>
-            <p className="text-xl text-gray-400 mb-8">
-              Get weekly automation tips, case studies, and exclusive templates delivered to your inbox
+            <div className="inline-flex items-center space-x-2 glass-card px-4 py-2 rounded-full mb-8">
+              <Mail className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-gray-300">Newsletter</span>
+            </div>
+            
+            <h2 className="text-section-title text-white mb-6">Stay Ahead of the Automation Curve</h2>
+            <p className="text-large text-gray-300 mb-12 max-w-3xl mx-auto">
+              Get weekly automation insights, industry case studies, and exclusive templates delivered to your inbox. 
+              Join 2,500+ business leaders who trust our expertise.
             </p>
             
-            <Card className="service-card p-8 max-w-2xl mx-auto">
+            <Card className="glass-card p-10 max-w-2xl mx-auto border border-primary/20">
               <CardContent className="p-0">
                 <div className="flex flex-col md:flex-row gap-4">
                   <input
                     type="email"
-                    placeholder="Enter your email address"
-                    className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-primary focus:outline-none"
+                    placeholder="Enter your business email"
+                    className="flex-1 px-6 py-4 bg-black/30 border-2 border-gray-700 rounded-xl text-white placeholder-gray-400 focus:border-primary focus:outline-none transition-all duration-300 text-lg"
                   />
                   <Button 
-                    className="bg-primary hover:bg-primary/90 text-white px-8"
+                    className="btn-primary text-white px-8 py-4 text-lg rounded-xl"
                     onClick={handleEmailSubscription}
                     disabled={emailSubscribed}
                   >
                     {emailSubscribed ? (
                       <div className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4" />
-                        <span>Subscribed</span>
+                        <CheckCircle className="w-5 h-5" />
+                        <span>Subscribed!</span>
                       </div>
                     ) : (
-                      "Subscribe"
+                      <>
+                        <Mail className="w-5 h-5 mr-2" />
+                        Subscribe Now
+                      </>
                     )}
                   </Button>
                 </div>
-                <p className="text-xs text-gray-400 mt-4">
-                  Join 2,500+ business owners. No spam, unsubscribe anytime.
-                </p>
+                <div className="flex items-center justify-center mt-6 space-x-6 text-sm text-gray-400">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <span>No spam guarantee</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <span>Unsubscribe anytime</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <span>Weekly insights</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -1334,33 +1350,35 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-16">
+      <footer className="bg-gradient-to-t from-black via-gray-950 to-gray-900 text-white py-20">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
+                  <Sparkles className="w-7 h-7 text-white" />
                 </div>
-                <span className="text-xl font-bold">GrowFastWithUs</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  GrowFastWithUs
+                </span>
               </div>
-              <p className="text-gray-400 mb-6">
-                Automating business success through intelligent workflow solutions.
+              <p className="text-lg text-gray-300 mb-8 max-w-md leading-relaxed">
+                Empowering businesses worldwide with intelligent automation solutions that drive growth, efficiency, and success.
               </p>
               
               {/* Social Media Links */}
               <div className="flex space-x-4">
                 <a href="https://linkedin.com/company/growfastwithus" target="_blank" rel="noopener noreferrer" 
-                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors group">
-                  <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                   className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg">
+                  <ExternalLink className="w-6 h-6 text-gray-400 group-hover:text-white" />
                 </a>
                 <a href="https://twitter.com/growfastwithus" target="_blank" rel="noopener noreferrer"
-                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors group">
-                  <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                   className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg">
+                  <ExternalLink className="w-6 h-6 text-gray-400 group-hover:text-white" />
                 </a>
                 <a href="https://youtube.com/@growfastwithus" target="_blank" rel="noopener noreferrer"
-                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors group">
-                  <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white" />
+                   className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg">
+                  <ExternalLink className="w-6 h-6 text-gray-400 group-hover:text-white" />
                 </a>
               </div>
             </div>
