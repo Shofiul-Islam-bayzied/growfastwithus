@@ -95,15 +95,15 @@ GrowFastWithUs is a modern React-based website for a digital automation agency s
 - Database schema migrations with Drizzle Kit
 
 ## Recent Changes
+- **June 29, 2025**: Removed Clerk authentication system completely and cleaned up all dependencies
+- **June 29, 2025**: Updated admin authentication to use simple username-based system (admin/growfast2025)
+- **June 29, 2025**: Modified database schema to use username instead of clerkId for admin users
 - **June 29, 2025**: Integrated Cal.com inline embed with custom brand theme (#FF5B29) for seamless booking experience
 - **June 29, 2025**: Replaced external booking links with embedded calendar that loads directly on the booking page
 - **June 29, 2025**: Applied dark theme styling to Cal.com embed using cssVarsPerTheme configuration
 - **June 29, 2025**: Implemented secure admin panel authentication system with login/logout functionality
 - **June 29, 2025**: Removed admin link from main navigation for security (now requires direct access)
 - **June 29, 2025**: Created super responsive mobile menu with enhanced animations and better UX
-- **June 29, 2025**: Updated Cal.com integration to use actual booking link (https://cal.com/grow-fast-with-us/30min)
-- **June 29, 2025**: Added admin login page with username/password authentication (admin/growfast2025)
-- **June 29, 2025**: Enhanced mobile navigation with glassmorphism effects, staggered animations, and improved touch targets
 - **June 29, 2025**: Integrated Cal.com booking system with professional appointment scheduling
 - **June 29, 2025**: Added BookingWidget components with modal and inline booking functionality
 - **June 29, 2025**: Created dedicated booking page (/booking) with full calendar integration
