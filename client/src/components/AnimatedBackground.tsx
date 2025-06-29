@@ -74,20 +74,20 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     const particleSystem = new THREE.Points(particles, particleMaterial);
     scene.add(particleSystem);
 
-    // Create floating geometric shapes
+    // Create floating geometric shapes - focusing on cubes for mirror effect
     const geometries = [
-      new THREE.OctahedronGeometry(0.5),
-      new THREE.TetrahedronGeometry(0.5),
-      new THREE.IcosahedronGeometry(0.5)
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.BoxGeometry(1.5, 1.5, 1.5),
+      new THREE.BoxGeometry(0.8, 0.8, 0.8)
     ];
 
     const shapes: THREE.Mesh[] = [];
     for (let i = 0; i < 6; i++) {
       const geometry = geometries[Math.floor(Math.random() * geometries.length)];
       const material = new THREE.MeshBasicMaterial({
-        color: brandColors[Math.floor(Math.random() * brandColors.length)],
+        color: 0xffffff,
         transparent: true,
-        opacity: 0.15,
+        opacity: 0.08,
         wireframe: true
       });
       
@@ -103,12 +103,12 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
       scene.add(mesh);
     }
 
-    // Create flowing background waves
+    // Create subtle mirror effect waves
     const waveGeometry = new THREE.PlaneGeometry(60, 60, 16, 16);
     const waveMaterial = new THREE.MeshBasicMaterial({
-      color: new THREE.Color('#FF5722'),
+      color: 0xffffff,
       transparent: true,
-      opacity: 0.05,
+      opacity: 0.02,
       wireframe: true
     });
 
@@ -116,13 +116,6 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     wave1.rotation.x = -Math.PI * 0.3;
     wave1.position.y = -10;
     scene.add(wave1);
-
-    const wave2 = new THREE.Mesh(waveGeometry.clone(), waveMaterial.clone());
-    wave2.material.color.setHex(0xFF7043);
-    wave2.rotation.x = -Math.PI * 0.3;
-    wave2.position.y = -12;
-    wave2.position.z = -5;
-    scene.add(wave2);
 
     camera.position.z = 25;
 
@@ -168,9 +161,8 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
         shape.position.y += Math.sin(time + index) * 0.01;
       });
       
-      // Animate waves
+      // Animate wave
       wave1.rotation.z += 0.0005;
-      wave2.rotation.z -= 0.0003;
       
       // Rotate particle system
       particleSystem.rotation.y += 0.0003;

@@ -200,9 +200,12 @@ export default function Home() {
   const pricing = calculatePricing();
 
   const handlePainPointChange = (painPoint: string, checked: boolean) => {
-    setPainPoints(prev => 
-      checked ? [...prev, painPoint] : prev.filter(p => p !== painPoint)
-    );
+    // Prevent scroll jumping by using requestAnimationFrame
+    requestAnimationFrame(() => {
+      setPainPoints(prev => 
+        checked ? [...prev, painPoint] : prev.filter(p => p !== painPoint)
+      );
+    });
   };
 
   const handleTemplateSelect = (templateId: string, checked: boolean) => {

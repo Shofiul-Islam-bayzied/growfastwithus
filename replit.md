@@ -95,6 +95,10 @@ GrowFastWithUs is a modern React-based website for a digital automation agency s
 - Database schema migrations with Drizzle Kit
 
 ## Recent Changes
+- **December 29, 2024**: Updated brand colors to Digital Empire orange (#FF5722) per user brand assets
+- **December 29, 2024**: Removed dark mode functionality and toggle button completely
+- **December 29, 2024**: Added Three.js animated background with mirror-effect cubes and particles
+- **December 29, 2024**: Fixed pain points selection scrolling issue in pricing calculator
 - **December 28, 2024**: Added PostgreSQL database integration with Drizzle ORM
 - **December 28, 2024**: Implemented advanced pricing calculator with real-time ROI calculations
 - **December 28, 2024**: Created 4-step contact form with database persistence
