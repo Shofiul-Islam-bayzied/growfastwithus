@@ -10,7 +10,7 @@ import TemplateDetail from "@/pages/template-detail-new";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
 import GDPR from "@/pages/gdpr";
-import AdminDashboard from "@/pages/admin/dashboard";
+import SimpleDashboard from "@/pages/admin/simple-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,7 +19,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/templates" component={Templates} />
       <Route path="/template/:id" component={TemplateDetail} />
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin" component={SimpleDashboard} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/gdpr" component={GDPR} />

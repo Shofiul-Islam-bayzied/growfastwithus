@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -78,7 +77,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <Badge className="bg-green-100 text-green-800">
-                {user?.emailAddresses[0]?.emailAddress}
+                Admin Access
               </Badge>
               <Button variant="outline" onClick={() => window.location.href = "/"}>
                 View Website
