@@ -17,7 +17,7 @@ import {
 
 export default function Booking() {
   useEffect(() => {
-    // Cal.com inline embed initialization
+    // Cal.com inline embed initialization with custom brand theme
     const script = document.createElement('script');
     script.innerHTML = `
       (function (C, A, L) { 
@@ -51,32 +51,23 @@ export default function Booking() {
       
       Cal.ns["30min"]("inline", {
         elementOrSelector:"#my-cal-inline",
-        config: {
-          "layout":"month_view",
-          "theme": "dark",
-          "branding": {
-            "brandColor": "#FF6B35"
-          }
-        },
+        config: {"layout":"month_view"},
         calLink: "grow-fast-with-us/30min",
       });
       
       Cal.ns["30min"]("ui", {
+        "cssVarsPerTheme":{"dark":{"cal-brand":"#FF5B29"}},
         "hideEventTypeDetails":false,
-        "layout":"month_view",
-        "theme": "dark",
-        "styles": {
-          "branding": {
-            "brandColor": "#FF6B35"
-          }
-        }
+        "layout":"month_view"
       });
     `;
     document.head.appendChild(script);
     
     return () => {
       // Cleanup script on unmount
-      document.head.removeChild(script);
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
     };
   }, []);
 
