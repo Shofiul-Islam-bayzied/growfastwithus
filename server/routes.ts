@@ -120,7 +120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       
       const monthlyContacts = contacts.filter(c => 
-        new Date(c.createdAt) >= thisMonth
+        c.createdAt && new Date(c.createdAt) >= thisMonth
       ).length;
 
       res.json({

@@ -272,6 +272,7 @@ export default function Home() {
               <a href="#templates" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('templates'); }}>Templates</a>
               <a href="#pricing" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('pricing'); }}>Pricing</a>
               <a href="#contact" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+              <Link href="/admin" className="hover:text-primary transition-colors text-sm opacity-75">Admin</Link>
             </div>
             
             {/* Desktop CTA Button */}
