@@ -31,6 +31,12 @@ export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("content");
 
+  // All hooks must be called before any conditional returns
+  const { data: stats = {} } = useQuery({
+    queryKey: ["/api/admin/stats"],
+    enabled: isAuthenticated,
+  });
+
   // Redirect to login if not authenticated
   if (!isLoading && !isAuthenticated) {
     setLocation("/admin-login");
@@ -45,11 +51,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const { data: stats = {} } = useQuery({
-    queryKey: ["/api/admin/stats"],
-    enabled: isAuthenticated,
-  });
 
   const handleLogout = () => {
     logout();
