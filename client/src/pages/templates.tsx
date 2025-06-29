@@ -70,6 +70,39 @@ export default function Templates() {
               )}
             </button>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden mt-4 pb-4 border-t border-white/20"
+            >
+              <div className="flex flex-col space-y-4 pt-4">
+                <Link href="/" className="block">
+                  <Button 
+                    variant="outline" 
+                    className="w-full text-white border-white/30 hover:bg-white/10 text-lg py-3"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <ArrowLeft className="w-5 h-5 mr-3" />
+                    Back to Home
+                  </Button>
+                </Link>
+                <div className="px-2 pt-2">
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Get Started Today
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </nav>
       </header>
 
