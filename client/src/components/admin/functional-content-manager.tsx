@@ -456,20 +456,32 @@ export function MediaLibrary() {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: (formData: FormData) => apiRequest("/api/admin/media/upload", "POST", formData),
-    onSuccess: () => {
+    mutationFn: async (formData: FormData) => {
+      const file = formData.get('file') as File;
+      if (!file) throw new Error('No file selected');
+      
+      // Validate file type and size
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Please select an image file');
+      }
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        throw new Error('File size must be less than 5MB');
+      }
+      
+      return apiRequest("/api/admin/media/upload", "POST", formData);
+    },
+    onSuccess: (response: any) => {
       toast({
         title: "Upload Successful",
-        description: "Your file has been uploaded successfully.",
+        description: `${response.file.name} has been uploaded successfully.`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/media"] });
       setSelectedFile(null);
-      setUploadUrl("");
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: "Upload Failed",
-        description: "Failed to upload file. Please try again.",
+        description: error.message || "Failed to upload file. Please try again.",
         variant: "destructive",
       });
     },
@@ -509,6 +521,29 @@ export function MediaLibrary() {
     urlUploadMutation.mutate({ url: uploadUrl, name: fileName });
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      setSelectedFile(files[0]);
+    }
+  };
+
+  const copyToClipboard = (url: string) => {
+    navigator.clipboard.writeText(url).then(() => {
+      toast({
+        title: "URL Copied",
+        description: "Image URL has been copied to clipboard.",
+      });
+    });
+  };
+
   const mockMediaFiles = [
     { id: 1, name: "hero-background.jpg", url: "/images/hero-bg.jpg", size: "2.3 MB", type: "image" },
     { id: 2, name: "company-logo.png", url: "/images/logo.png", size: "156 KB", type: "image" },
@@ -526,11 +561,16 @@ export function MediaLibrary() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* File Upload Section */}
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+        <div 
+          className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary transition-colors"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
           <div className="text-center">
             <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
             <h3 className="text-lg font-semibold mb-2">Upload Media Files</h3>
             <p className="text-gray-600 mb-4">Drag and drop files here, or click to select</p>
+            <p className="text-xs text-gray-500 mb-4">Supports: JPG, PNG, GIF, WebP • Max size: 5MB</p>
             
             <input
               type="file"
@@ -547,18 +587,24 @@ export function MediaLibrary() {
             
             {selectedFile && (
               <div className="mt-4 p-3 bg-gray-50 rounded border">
-                <p className="text-sm">Selected: {selectedFile.name}</p>
-                <Button 
-                  onClick={handleFileUpload} 
-                  disabled={uploadMutation.isPending}
-                  className="mt-2"
-                  size="sm"
-                >
-                  {uploadMutation.isPending ? (
-                    <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                  ) : null}
-                  Upload File
-                </Button>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">{selectedFile.name}</p>
+                    <p className="text-xs text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                  </div>
+                  <Button 
+                    onClick={handleFileUpload} 
+                    disabled={uploadMutation.isPending}
+                    size="sm"
+                  >
+                    {uploadMutation.isPending ? (
+                      <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                    ) : (
+                      <Upload className="h-4 w-4 mr-2" />
+                    )}
+                    Upload
+                  </Button>
+                </div>
               </div>
             )}
           </div>
@@ -616,7 +662,12 @@ export function MediaLibrary() {
                   </div>
                   <p className="text-sm font-medium truncate">{file.name}</p>
                   <p className="text-xs text-gray-500">{file.size}</p>
-                  <Button size="sm" variant="outline" className="w-full mt-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full mt-2"
+                    onClick={() => copyToClipboard(file.url)}
+                  >
                     Copy URL
                   </Button>
                 </div>

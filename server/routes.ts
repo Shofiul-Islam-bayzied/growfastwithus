@@ -239,6 +239,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Logo upload endpoint
+  app.post('/api/admin/logo/upload', async (req, res) => {
+    try {
+      // Simulate logo upload processing
+      const logoUrl = `/uploads/logo-${Date.now()}.png`;
+      
+      // Update logo setting in database
+      await storage.updateSiteSetting('site_logo', logoUrl);
+      
+      res.json({ 
+        success: true, 
+        message: 'Logo uploaded successfully',
+        logoUrl: logoUrl
+      });
+    } catch (error) {
+      console.error("Error uploading logo:", error);
+      res.status(500).json({ message: "Failed to upload logo" });
+    }
+  });
+
   // Site Settings Management
   app.get("/api/admin/settings", async (req, res) => {
     try {
