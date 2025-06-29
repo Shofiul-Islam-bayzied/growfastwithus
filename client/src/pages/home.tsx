@@ -11,7 +11,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AdvancedContactForm } from "@/components/advanced-contact-form";
 import { BookingWidget, BookingButton } from "@/components/BookingWidget";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
-import { templates } from "@/lib/templates";
+import { CurrencySelector } from "@/components/CurrencySelector";
+import { VoiceAIAddonCard } from "@/components/VoiceAIAddonCard";
+import { templates, currencies, voiceAIAddons, convertPrice, formatPrice, type Currency, type VoiceAIAddon } from "@/lib/templates";
 import { useToast } from "@/hooks/use-toast";
 import {
   Phone,
@@ -127,6 +129,8 @@ export default function Home() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [emailSubscribed, setEmailSubscribed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(currencies[0]); // Default to GBP
+  const [selectedVoiceAddons, setSelectedVoiceAddons] = useState<string[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -170,6 +174,14 @@ export default function Home() {
     "Email marketing",
   ];
 
+  const handleVoiceAddonToggle = (addonId: string) => {
+    setSelectedVoiceAddons(prev => 
+      prev.includes(addonId) 
+        ? prev.filter(id => id !== addonId)
+        : [...prev, addonId]
+    );
+  };
+
   const calculatePricing = () => {
     const baseSetup = businessSize.includes("Small") ? 2499 : 
                      businessSize.includes("Medium") ? 4999 :
@@ -179,19 +191,41 @@ export default function Home() {
       const template = templates.find(t => t.id === templateId);
       return total + (template ? template.basePrice : 0);
     }, 0);
+
+    const templateSetupCosts = selectedTemplates.reduce((total, templateId) => {
+      const template = templates.find(t => t.id === templateId);
+      return total + (template ? template.setupFee : 0);
+    }, 0);
+
+    // Voice AI addon costs
+    const voiceAddonMonthlyCosts = selectedVoiceAddons.reduce((total, addonId) => {
+      const addon = voiceAIAddons.find(a => a.id === addonId);
+      return total + (addon ? addon.monthlyPrice : 0);
+    }, 0);
+
+    const voiceAddonSetupCosts = selectedVoiceAddons.reduce((total, addonId) => {
+      const addon = voiceAIAddons.find(a => a.id === addonId);
+      return total + (addon ? addon.setupFee : 0);
+    }, 0);
     
-    const baseMonthly = painPoints.length * 150 + 299 + templateCosts;
+    const baseMonthlyGBP = painPoints.length * 150 + 299 + templateCosts + voiceAddonMonthlyCosts;
+    const totalSetupGBP = baseSetup + templateSetupCosts + voiceAddonSetupCosts;
+    
+    // Convert to selected currency
+    const monthlyFee = convertPrice(baseMonthlyGBP, 'GBP', selectedCurrency.code);
+    const setupFee = convertPrice(totalSetupGBP, 'GBP', selectedCurrency.code);
+    
     const timeSavings = timeSpent[0] * 4; // 4 weeks per month
-    const costSavings = timeSavings * 40; // £40 per hour saved
-    const roi = ((costSavings * 12 - baseSetup - baseMonthly * 12) / (baseSetup + baseMonthly * 12)) * 100;
+    const costSavings = timeSavings * 40 * selectedCurrency.rate; // Adjusted for currency
+    const roi = ((costSavings * 12 - setupFee - monthlyFee * 12) / (setupFee + monthlyFee * 12)) * 100;
     
     return {
-      setupFee: baseSetup,
-      monthlyFee: baseMonthly,
+      setupFee,
+      monthlyFee,
       timeSaved: timeSavings,
       costSavings,
       roi: Math.round(roi),
-      breakEven: Math.ceil((baseSetup + baseMonthly * 12) / costSavings),
+      breakEven: Math.ceil((setupFee + monthlyFee * 12) / costSavings),
     };
   };
 
