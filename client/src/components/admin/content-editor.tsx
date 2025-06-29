@@ -1,252 +1,298 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { Save, Upload, Image, Type, Link } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import { Trash2, Edit, Save, Plus, FileText, Settings, Eye } from "lucide-react";
 
-export function ContentEditor() {
+interface SiteSetting {
+  id: number;
+  key: string;
+  value: string;
+  category: string;
+  isActive: boolean;
+}
+
+export default function ContentEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isUploading, setIsUploading] = useState(false);
-
-  const { data: settings, isLoading } = useQuery({
-    queryKey: ["/api/admin/settings"],
+  const [activeCategory, setActiveCategory] = useState("hero");
+  const [editingItem, setEditingItem] = useState<SiteSetting | null>(null);
+  const [newSetting, setNewSetting] = useState({
+    key: "",
+    value: "",
+    category: "hero",
   });
 
-  const updateSettingMutation = useMutation({
-    mutationFn: ({ key, value }: { key: string; value: string }) =>
-      apiRequest("/api/admin/settings", "PUT", { key, value }),
+  // Fetch site settings
+  const { data: settings = [], isLoading } = useQuery({
+    queryKey: ["/api/admin/site-settings"],
+  });
+
+  // Create setting mutation
+  const createMutation = useMutation({
+    mutationFn: (data: typeof newSetting) => apiRequest("/api/admin/site-settings", "POST", data),
     onSuccess: () => {
-      toast({ title: "Settings updated successfully" });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/settings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/site-settings"] });
+      setNewSetting({ key: "", value: "", category: "hero" });
+      toast({ title: "Setting created successfully!" });
     },
     onError: () => {
-      toast({ title: "Failed to update settings", variant: "destructive" });
+      toast({ title: "Failed to create setting", variant: "destructive" });
     },
   });
 
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  // Update setting mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ key, data }: { key: string; data: Partial<SiteSetting> }) =>
+      apiRequest(`/api/admin/site-settings/${key}`, "PUT", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/site-settings"] });
+      setEditingItem(null);
+      toast({ title: "Setting updated successfully!" });
+    },
+    onError: () => {
+      toast({ title: "Failed to update setting", variant: "destructive" });
+    },
+  });
 
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('logo', file);
-      
-      const response = await fetch('/api/admin/upload-logo', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        updateSettingMutation.mutate({ key: 'logo_url', value: result.url });
-        toast({ title: "Logo uploaded successfully" });
-      }
-    } catch (error) {
-      toast({ title: "Failed to upload logo", variant: "destructive" });
-    } finally {
-      setIsUploading(false);
+  const categories = [
+    { id: "hero", label: "Hero Section", icon: FileText },
+    { id: "services", label: "Services", icon: Settings },
+    { id: "about", label: "About", icon: Eye },
+    { id: "footer", label: "Footer", icon: FileText },
+  ];
+
+  const filteredSettings = Array.isArray(settings) 
+    ? settings.filter((setting: SiteSetting) => setting.category === activeCategory)
+    : [];
+
+  const handleCreateSetting = () => {
+    if (!newSetting.key || !newSetting.value) {
+      toast({ title: "Please fill in all fields", variant: "destructive" });
+      return;
     }
+    createMutation.mutate(newSetting);
   };
 
-  const contentSections = [
-    {
-      title: "Hero Section",
-      key: "hero",
-      fields: [
-        { key: "hero_title", label: "Main Headline", type: "text" },
-        { key: "hero_subtitle", label: "Subtitle", type: "textarea" },
-        { key: "hero_cta_text", label: "Call-to-Action Button Text", type: "text" },
-        { key: "hero_cta_url", label: "Call-to-Action URL", type: "url" },
-      ]
-    },
-    {
-      title: "Company Information",
-      key: "company",
-      fields: [
-        { key: "company_name", label: "Company Name", type: "text" },
-        { key: "company_tagline", label: "Tagline", type: "text" },
-        { key: "company_description", label: "Description", type: "textarea" },
-        { key: "contact_email", label: "Contact Email", type: "email" },
-        { key: "contact_phone", label: "Contact Phone", type: "text" },
-        { key: "contact_address", label: "Address", type: "textarea" },
-      ]
-    },
-    {
-      title: "Services Section",
-      key: "services",
-      fields: [
-        { key: "services_title", label: "Services Section Title", type: "text" },
-        { key: "services_description", label: "Services Description", type: "textarea" },
-      ]
-    },
-    {
-      title: "About Section",
-      key: "about",
-      fields: [
-        { key: "about_title", label: "About Section Title", type: "text" },
-        { key: "about_content", label: "About Content", type: "textarea" },
-        { key: "about_mission", label: "Mission Statement", type: "textarea" },
-      ]
-    }
-  ];
+  const handleUpdateSetting = () => {
+    if (!editingItem) return;
+    updateMutation.mutate({
+      key: editingItem.key,
+      data: {
+        value: editingItem.value,
+        isActive: editingItem.isActive,
+      },
+    });
+  };
+
+  const handleToggleActive = (setting: SiteSetting) => {
+    updateMutation.mutate({
+      key: setting.key,
+      data: { isActive: !setting.isActive },
+    });
+  };
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="space-y-3">
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-          </div>
-        </div>
+      <div className="p-6">
+        <div className="text-white">Loading content...</div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Logo Upload Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Image className="w-5 h-5" />
-            Logo & Branding
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="logo-upload">Upload New Logo</Label>
-            <div className="mt-2 flex items-center gap-4">
-              <Input
-                id="logo-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleLogoUpload}
-                disabled={isUploading}
-                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
-              />
-              {isUploading && (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-white">Content Editor</h2>
+          <p className="text-gray-400">Manage your website content and settings</p>
+        </div>
+        <Button
+          onClick={() => window.open("/", "_blank")}
+          variant="outline"
+          className="text-white border-white/20 hover:bg-white/10"
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Preview Site
+        </Button>
+      </div>
+
+      <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+        <TabsList className="grid w-full grid-cols-4 bg-black/30">
+          {categories.map((category) => (
+            <TabsTrigger
+              key={category.id}
+              value={category.id}
+              className="text-white data-[state=active]:bg-orange-500 data-[state=active]:text-white"
+            >
+              <category.icon className="w-4 h-4 mr-2" />
+              {category.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {categories.map((category) => (
+          <TabsContent key={category.id} value={category.id} className="space-y-4">
+            {/* Add New Setting */}
+            <Card className="bg-black/30 border-white/20">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Add New {category.label} Setting
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-white">Setting Key</Label>
+                    <Input
+                      value={newSetting.key}
+                      onChange={(e) => setNewSetting({ ...newSetting, key: e.target.value })}
+                      placeholder="e.g., hero_title"
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Category</Label>
+                    <Input
+                      value={category.id}
+                      disabled
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-white">Content</Label>
+                  <Textarea
+                    value={newSetting.value}
+                    onChange={(e) => setNewSetting({ ...newSetting, value: e.target.value })}
+                    placeholder="Enter the content..."
+                    className="bg-white/10 border-white/20 text-white min-h-[100px]"
+                  />
+                </div>
+                <Button
+                  onClick={handleCreateSetting}
+                  disabled={createMutation.isPending}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Setting
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Existing Settings */}
+            <div className="space-y-4">
+              {filteredSettings.length === 0 ? (
+                <Card className="bg-black/30 border-white/20">
+                  <CardContent className="p-6 text-center">
+                    <FileText className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <p className="text-gray-400">No settings found for {category.label}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Create your first setting using the form above
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                filteredSettings.map((setting: SiteSetting) => (
+                  <Card key={setting.id} className="bg-black/30 border-white/20">
+                    <CardContent className="p-4">
+                      {editingItem?.id === setting.id ? (
+                        <div className="space-y-4">
+                          <div>
+                            <Label className="text-white">Setting Key</Label>
+                            <Input
+                              value={editingItem.key}
+                              disabled
+                              className="bg-white/10 border-white/20 text-white"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-white">Content</Label>
+                            <Textarea
+                              value={editingItem.value}
+                              onChange={(e) =>
+                                setEditingItem({ ...editingItem, value: e.target.value })
+                              }
+                              className="bg-white/10 border-white/20 text-white min-h-[100px]"
+                            />
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              checked={editingItem.isActive}
+                              onCheckedChange={(checked) =>
+                                setEditingItem({ ...editingItem, isActive: checked })
+                              }
+                            />
+                            <Label className="text-white">Active</Label>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={handleUpdateSetting}
+                              disabled={updateMutation.isPending}
+                              size="sm"
+                              className="bg-green-500 hover:bg-green-600"
+                            >
+                              <Save className="w-4 h-4 mr-2" />
+                              Save
+                            </Button>
+                            <Button
+                              onClick={() => setEditingItem(null)}
+                              variant="outline"
+                              size="sm"
+                              className="border-white/20 text-white hover:bg-white/10"
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-semibold text-white">{setting.key}</h3>
+                              <Switch
+                                checked={setting.isActive}
+                                onCheckedChange={() => handleToggleActive(setting)}
+                                size="sm"
+                              />
+                            </div>
+                            <p className="text-gray-300 text-sm mb-2">
+                              {setting.value.length > 100
+                                ? `${setting.value.substring(0, 100)}...`
+                                : setting.value}
+                            </p>
+                            <span className="text-xs text-gray-500">
+                              Category: {setting.category}
+                            </span>
+                          </div>
+                          <div className="flex gap-2 ml-4">
+                            <Button
+                              onClick={() => setEditingItem(setting)}
+                              variant="outline"
+                              size="sm"
+                              className="border-white/20 text-white hover:bg-white/10"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
               )}
             </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Upload PNG, JPG, or SVG. Recommended size: 200x80px
-            </p>
-          </div>
-          
-          {settings?.find((s: any) => s.key === 'logo_url')?.value && (
-            <div>
-              <Label>Current Logo Preview</Label>
-              <div className="mt-2 p-4 border rounded-lg bg-gray-50">
-                <img 
-                  src={settings.find((s: any) => s.key === 'logo_url')?.value} 
-                  alt="Current Logo" 
-                  className="max-h-20 object-contain"
-                />
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Content Sections */}
-      {contentSections.map((section) => (
-        <Card key={section.key}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Type className="w-5 h-5" />
-              {section.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {section.fields.map((field) => {
-              const currentValue = settings?.find((s: any) => s.key === field.key)?.value || '';
-              
-              return (
-                <div key={field.key}>
-                  <Label htmlFor={field.key}>{field.label}</Label>
-                  {field.type === 'textarea' ? (
-                    <Textarea
-                      id={field.key}
-                      defaultValue={currentValue}
-                      onBlur={(e) => {
-                        if (e.target.value !== currentValue) {
-                          updateSettingMutation.mutate({
-                            key: field.key,
-                            value: e.target.value
-                          });
-                        }
-                      }}
-                      className="mt-1"
-                      rows={3}
-                    />
-                  ) : (
-                    <Input
-                      id={field.key}
-                      type={field.type}
-                      defaultValue={currentValue}
-                      onBlur={(e) => {
-                        if (e.target.value !== currentValue) {
-                          updateSettingMutation.mutate({
-                            key: field.key,
-                            value: e.target.value
-                          });
-                        }
-                      }}
-                      className="mt-1"
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-      ))}
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Link className="w-5 h-5" />
-            Quick Actions
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              onClick={() => {
-                const newUrl = prompt("Enter new Call-to-Action URL:");
-                if (newUrl) {
-                  updateSettingMutation.mutate({ key: 'hero_cta_url', value: newUrl });
-                }
-              }}
-            >
-              Update CTA Link
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                const newEmail = prompt("Enter new contact email:");
-                if (newEmail) {
-                  updateSettingMutation.mutate({ key: 'contact_email', value: newEmail });
-                }
-              }}
-            >
-              Update Contact Email
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }
