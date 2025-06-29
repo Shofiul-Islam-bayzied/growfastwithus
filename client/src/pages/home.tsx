@@ -272,6 +272,7 @@ export default function Home() {
               <a href="#services" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
               <a href="#templates" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('templates'); }}>Templates</a>
               <a href="#pricing" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('pricing'); }}>Pricing</a>
+              <Link href="/booking" className="hover:text-primary transition-colors">Book Consultation</Link>
               <a href="#contact" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
               <Link href="/admin" className="hover:text-primary transition-colors text-sm opacity-75">Admin</Link>
             </div>
@@ -352,6 +353,13 @@ export default function Home() {
                 >
                   Pricing
                 </a>
+                <Link 
+                  href="/booking" 
+                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Book Consultation
+                </Link>
                 <a 
                   href="#contact" 
                   className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"

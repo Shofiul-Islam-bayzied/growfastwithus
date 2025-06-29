@@ -18,38 +18,37 @@ export function BookingWidget({
 }: BookingWidgetProps) {
   
   useEffect(() => {
-    // Load Cal.com embed script
-    const script = document.createElement('script');
-    script.src = 'https://app.cal.com/embed/embed.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script when component unmounts
-      const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
-      if (existingScript) {
-        document.body.removeChild(existingScript);
-      }
-    };
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
+    if (!existingScript) {
+      // Load Cal.com embed script
+      const script = document.createElement('script');
+      script.src = 'https://app.cal.com/embed/embed.js';
+      script.async = true;
+      document.head.appendChild(script);
+    }
   }, []);
 
   const openCalModal = () => {
-    // @ts-ignore - Cal.com global function
-    if (typeof window !== 'undefined' && window.Cal) {
-      // @ts-ignore
-      window.Cal("ui", {
-        styles: { branding: { brandColor: "#FF6B35" } },
-        hideEventTypeDetails: false,
-        layout: "month_view"
-      });
-      // @ts-ignore
-      window.Cal("preload", { calLink });
-      // @ts-ignore
-      window.Cal("ui", { "modal": { "height": "700px" } });
-      // @ts-ignore
-      window.Cal("openmodal", { calLink });
-    } else {
-      // Fallback to direct Cal.com link
+    try {
+      // @ts-ignore - Cal.com global function
+      if (typeof window !== 'undefined' && window.Cal) {
+        // @ts-ignore
+        window.Cal("ui", {
+          styles: { branding: { brandColor: "#FF6B35" } },
+          hideEventTypeDetails: false,
+          layout: "month_view"
+        });
+        // @ts-ignore
+        window.Cal("preload", { calLink });
+        // @ts-ignore
+        window.Cal("openmodal", { calLink });
+      } else {
+        // Fallback to direct Cal.com link
+        window.open(`https://cal.com/${calLink}`, '_blank');
+      }
+    } catch (error) {
+      // Fallback to direct Cal.com link if there's an error
       window.open(`https://cal.com/${calLink}`, '_blank');
     }
   };
@@ -100,45 +99,63 @@ export function InlineBooking({
 }: { calLink?: string; className?: string }) {
   
   useEffect(() => {
-    // Load Cal.com embed script
-    const script = document.createElement('script');
-    script.src = 'https://app.cal.com/embed/embed.js';
-    script.async = true;
-    document.body.appendChild(script);
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
+    if (!existingScript) {
+      // Load Cal.com embed script
+      const script = document.createElement('script');
+      script.src = 'https://app.cal.com/embed/embed.js';
+      script.async = true;
+      document.head.appendChild(script);
 
-    // Initialize inline embed
-    const initEmbed = () => {
-      // @ts-ignore
-      if (typeof window !== 'undefined' && window.Cal) {
-        // @ts-ignore
-        window.Cal("inline", {
-          elementOrSelector: "#cal-inline",
-          calLink,
-          layout: "month_view",
-          theme: "light",
-          styles: {
-            branding: {
-              brandColor: "#FF6B35"
+      // Initialize inline embed after script loads
+      script.onload = () => {
+        setTimeout(() => {
+          try {
+            // @ts-ignore
+            if (typeof window !== 'undefined' && window.Cal) {
+              // @ts-ignore
+              window.Cal("inline", {
+                elementOrSelector: "#cal-inline",
+                calLink,
+                layout: "month_view",
+                theme: "light",
+                styles: {
+                  branding: {
+                    brandColor: "#FF6B35"
+                  }
+                }
+              });
             }
+          } catch (error) {
+            console.log('Cal.com embed initialization error:', error);
           }
-        });
-      }
-    };
-
-    // Wait for script to load then initialize
-    script.onload = initEmbed;
-    
-    // If script already loaded
-    if (script.readyState === 'complete') {
-      initEmbed();
+        }, 500);
+      };
+    } else {
+      // Script already exists, try to initialize
+      setTimeout(() => {
+        try {
+          // @ts-ignore
+          if (typeof window !== 'undefined' && window.Cal) {
+            // @ts-ignore
+            window.Cal("inline", {
+              elementOrSelector: "#cal-inline",
+              calLink,
+              layout: "month_view",
+              theme: "light",
+              styles: {
+                branding: {
+                  brandColor: "#FF6B35"
+                }
+              }
+            });
+          }
+        } catch (error) {
+          console.log('Cal.com embed initialization error:', error);
+        }
+      }, 500);
     }
-
-    return () => {
-      const existingScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
-      if (existingScript) {
-        document.body.removeChild(existingScript);
-      }
-    };
   }, [calLink]);
 
   return (
