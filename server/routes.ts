@@ -259,6 +259,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Theme endpoint
+  app.post('/api/admin/theme', async (req, res) => {
+    try {
+      const { colors } = req.body;
+      
+      // Save theme colors as site settings
+      if (colors.primary) {
+        await storage.updateSiteSetting('primary_color', colors.primary);
+      }
+      if (colors.secondary) {
+        await storage.updateSiteSetting('secondary_color', colors.secondary);
+      }
+      if (colors.accent) {
+        await storage.updateSiteSetting('accent_color', colors.accent);
+      }
+      
+      res.json({ 
+        success: true, 
+        message: 'Theme updated successfully'
+      });
+    } catch (error) {
+      console.error("Error updating theme:", error);
+      res.status(500).json({ message: "Failed to update theme" });
+    }
+  });
+
+  // Analytics endpoint
+  app.get('/api/admin/analytics', async (req, res) => {
+    try {
+      const analytics = await storage.getAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Admin settings endpoint
+  app.post('/api/admin/settings', async (req, res) => {
+    try {
+      const settings = req.body;
+      res.json({ 
+        success: true, 
+        message: 'Settings updated successfully',
+        settings
+      });
+    } catch (error) {
+      console.error("Error updating admin settings:", error);
+      res.status(500).json({ message: "Failed to update settings" });
+    }
+  });
+
   // Site Settings Management
   app.get("/api/admin/settings", async (req, res) => {
     try {
@@ -503,113 +555,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Email Campaigns Endpoints
-  app.get("/api/admin/email-campaigns", async (req, res) => {
-    try {
-      const campaigns = await storage.getEmailCampaigns();
-      res.json(campaigns);
-    } catch (error) {
-      console.error("Error fetching email campaigns:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
 
-  app.post("/api/admin/email-campaigns", async (req, res) => {
-    try {
-      const campaign = await storage.createEmailCampaign(req.body);
-      res.json(campaign);
-    } catch (error) {
-      console.error("Error creating email campaign:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
 
-  app.put("/api/admin/email-campaigns/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const campaign = await storage.updateEmailCampaign(id, req.body);
-      res.json(campaign);
-    } catch (error) {
-      console.error("Error updating email campaign:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
 
-  app.post("/api/admin/email-campaigns/:id/send", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      await storage.sendEmailCampaign(id);
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error sending email campaign:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  // A/B Testing Endpoints
-  app.get("/api/admin/ab-tests", async (req, res) => {
-    try {
-      const tests = await storage.getAbTests();
-      res.json(tests);
-    } catch (error) {
-      console.error("Error fetching A/B tests:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  app.post("/api/admin/ab-tests", async (req, res) => {
-    try {
-      const test = await storage.createAbTest(req.body);
-      res.json(test);
-    } catch (error) {
-      console.error("Error creating A/B test:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  app.put("/api/admin/ab-tests/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const test = await storage.updateAbTest(id, req.body);
-      res.json(test);
-    } catch (error) {
-      console.error("Error updating A/B test:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  app.get("/api/admin/ab-tests/:id/results", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const results = await storage.getAbTestResults(id);
-      res.json(results);
-    } catch (error) {
-      console.error("Error fetching A/B test results:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  // Lead Scoring Endpoints
-  app.get("/api/admin/lead-scores", async (req, res) => {
-    try {
-      const scores = await storage.getLeadScores();
-      res.json(scores);
-    } catch (error) {
-      console.error("Error fetching lead scores:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
-
-  app.post("/api/admin/lead-scores/:contactId/calculate", async (req, res) => {
-    try {
-      const contactId = parseInt(req.params.contactId);
-      const score = await storage.calculateLeadScore(contactId);
-      res.json(score);
-    } catch (error) {
-      console.error("Error calculating lead score:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
 
   // Performance Monitoring Endpoints
   app.get("/api/admin/performance", async (req, res) => {

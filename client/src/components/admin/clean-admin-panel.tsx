@@ -438,7 +438,7 @@ function MediaLibrary() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {mediaFiles?.map((file: any) => (
+            {Array.isArray(mediaFiles) && mediaFiles.map((file: any) => (
               <div key={file.id} className="border rounded-lg p-3">
                 <div className="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center">
                   {file.url ? (
