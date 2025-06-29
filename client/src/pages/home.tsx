@@ -243,7 +243,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/attached_assets/white tect logo_1751155829782.png" 
+                src="/attached_assets/white tect logo_1751164300901.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-8 w-auto"
               />
@@ -284,7 +284,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.1 }}
             >
               <img 
-                src="/attached_assets/white tect logo_1751155829782.png" 
+                src="/attached_assets/white tect logo_1751164300901.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-10 w-auto"
               />

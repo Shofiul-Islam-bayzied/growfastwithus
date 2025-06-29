@@ -13,7 +13,7 @@ export default function GDPR() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/attached_assets/white tect logo_1751155829782.png" 
+                src="/attached_assets/white tect logo_1751164300901.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-8 w-auto"
               />
