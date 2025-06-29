@@ -280,7 +280,7 @@ export default function Home() {
             {/* Desktop CTA Button */}
             <BookingButton 
               className="hidden lg:block bg-primary hover:bg-primary/90 text-white shadow-lg"
-              calLink="growfastwithus/consultation"
+              calLink="grow-fast-with-us/30min"
             >
               Book Discovery Call
             </BookingButton>
@@ -387,7 +387,7 @@ export default function Home() {
                   <BookingButton 
                     size="lg"
                     className="w-full bg-primary hover:bg-primary/90 text-white"
-                    calLink="growfastwithus/consultation"
+                    calLink="grow-fast-with-us/30min"
                   >
                     Book Discovery Call
                   </BookingButton>

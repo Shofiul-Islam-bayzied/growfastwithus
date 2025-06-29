@@ -98,7 +98,7 @@ export default function Booking() {
                       Click the button below to open our booking calendar and select your preferred time slot.
                     </p>
                     <BookingWidget 
-                      calLink="growfastwithus/consultation"
+                      calLink="grow-fast-with-us/30min"
                       title="Book Your Consultation"
                       description="Select your preferred time for a 30-minute consultation"
                       className="max-w-md mx-auto"

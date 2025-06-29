@@ -64,7 +64,7 @@ export function BookingWidget({
 
 // Simple booking button component
 export function BookingButton({ 
-  calLink = "growfastwithus/consultation",
+  calLink = "grow-fast-with-us/30min",
   children = "Book Consultation",
   variant = "default",
   size = "default",
@@ -78,7 +78,7 @@ export function BookingButton({
 }) {
   
   const handleClick = () => {
-    // Simplified approach - always use direct Cal.com link
+    // Use your actual Cal.com booking link
     window.open(`https://cal.com/${calLink}`, '_blank', 'noopener,noreferrer');
   };
 
