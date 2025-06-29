@@ -274,7 +274,6 @@ export default function Home() {
               <a href="#pricing" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('pricing'); }}>Pricing</a>
               <Link href="/booking" className="hover:text-primary transition-colors">Book Consultation</Link>
               <a href="#contact" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
-              <Link href="/admin" className="hover:text-primary transition-colors text-sm opacity-75">Admin</Link>
             </div>
             
             {/* Desktop CTA Button */}
@@ -299,82 +298,68 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Mobile Navigation Menu */}
+          {/* Super Responsive Mobile Navigation Menu */}
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden mt-4 pb-4 border-t border-white/20 glass-card backdrop-blur-xl bg-black/80"
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ 
+                duration: 0.2, 
+                ease: "easeOut",
+                staggerChildren: 0.1
+              }}
+              className="lg:hidden absolute top-full left-0 right-0 z-50 mx-4 mt-2 rounded-2xl glass-card backdrop-blur-2xl bg-black/90 border border-white/10 shadow-2xl"
             >
-              <div className="flex flex-col space-y-4 pt-4">
-                <a 
-                  href="#home" 
-                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    scrollToSection('home'); 
-                    setMobileMenuOpen(false);
-                  }}
+              <div className="p-6 space-y-1">
+                {[
+                  { href: "#home", label: "Home", action: () => scrollToSection('home') },
+                  { href: "#services", label: "Services", action: () => scrollToSection('services') },
+                  { href: "#templates", label: "Templates", action: () => scrollToSection('templates') },
+                  { href: "#pricing", label: "Pricing", action: () => scrollToSection('pricing') },
+                  { href: "/booking", label: "Book Consultation", isLink: true },
+                  { href: "#contact", label: "Contact", action: () => scrollToSection('contact') }
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    {item.isLink ? (
+                      <Link
+                        href={item.href}
+                        className="flex items-center w-full px-4 py-3 text-white hover:text-primary hover:bg-white/5 rounded-xl transition-all duration-200 text-lg font-medium"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <a
+                        href={item.href}
+                        className="flex items-center w-full px-4 py-3 text-white hover:text-primary hover:bg-white/5 rounded-xl transition-all duration-200 text-lg font-medium"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          item.action?.();
+                          setMobileMenuOpen(false);
+                        }}
+                      >
+                        {item.label}
+                      </a>
+                    )}
+                  </motion.div>
+                ))}
+                
+                {/* CTA Buttons */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="pt-4 space-y-3 border-t border-white/10"
                 >
-                  Home
-                </a>
-                <a 
-                  href="#services" 
-                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    scrollToSection('services'); 
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Services
-                </a>
-                <a 
-                  href="#templates" 
-                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    scrollToSection('templates'); 
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Templates
-                </a>
-                <a 
-                  href="#pricing" 
-                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    scrollToSection('pricing'); 
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Pricing
-                </a>
-                <Link 
-                  href="/booking" 
-                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Book Consultation
-                </Link>
-                <a 
-                  href="#contact" 
-                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    scrollToSection('contact'); 
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Contact
-                </a>
-                <div className="px-2 pt-2">
                   <Button 
                     size="lg" 
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold shadow-lg hover:shadow-primary/25 transition-all duration-200"
                     onClick={() => {
                       scrollToSection('contact');
                       setMobileMenuOpen(false);
@@ -382,16 +367,14 @@ export default function Home() {
                   >
                     Get Started
                   </Button>
-                </div>
-                <div className="px-2">
                   <BookingButton 
                     size="lg"
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    className="w-full bg-gradient-to-r from-primary to-orange-600 hover:from-primary/90 hover:to-orange-600/90 text-white rounded-xl font-semibold shadow-lg hover:shadow-primary/25 transition-all duration-200"
                     calLink="grow-fast-with-us/30min"
                   >
                     Book Discovery Call
                   </BookingButton>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           )}

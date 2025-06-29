@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { 
   Settings, 
   Users, 
@@ -13,7 +15,8 @@ import {
   Upload,
   Mail,
   Monitor,
-  BarChart3
+  BarChart3,
+  LogOut
 } from "lucide-react";
 
 // Admin components will be loaded dynamically
@@ -24,10 +27,24 @@ const ContactsManager = () => <div className="p-6">Contacts Manager - Coming Soo
 const EmailSettings = () => <div className="p-6">Email Settings - Coming Soon</div>;
 
 export default function AdminDashboard() {
+  const { isAuthenticated, isLoading, logout } = useAdminAuth();
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("content");
 
-  // Temporarily bypass authentication for admin access
-  const isAdmin = true;
+  // Redirect to login if not authenticated
+  if (!isLoading && !isAuthenticated) {
+    setLocation("/admin-login");
+    return null;
+  }
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
   const isLoading = false;
 
   const { data: stats = {} } = useQuery({
