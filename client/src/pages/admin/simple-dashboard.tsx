@@ -19,6 +19,7 @@ import {
   Clock,
   Target
 } from "lucide-react";
+import { ThemeCustomizer, SiteSettingsManager, MediaLibrary } from "@/components/admin/functional-content-manager";
 
 export default function SimpleDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -152,42 +153,27 @@ export default function SimpleDashboard() {
 
           {/* Content Management Tab */}
           <TabsContent value="content" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Management</CardTitle>
-                <p className="text-gray-600">Edit website content without touching code</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="p-6 text-center">
-                      <Palette className="h-12 w-12 mx-auto mb-4 text-primary" />
-                      <h3 className="font-semibold mb-2">Theme Customizer</h3>
-                      <p className="text-sm text-gray-600 mb-4">Customize colors, fonts, and branding</p>
-                      <Button size="sm">Customize Theme</Button>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-6 text-center">
-                      <Settings className="h-12 w-12 mx-auto mb-4 text-primary" />
-                      <h3 className="font-semibold mb-2">Site Settings</h3>
-                      <p className="text-sm text-gray-600 mb-4">Update contact info and metadata</p>
-                      <Button size="sm">Edit Settings</Button>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="p-6 text-center">
-                      <Upload className="h-12 w-12 mx-auto mb-4 text-primary" />
-                      <h3 className="font-semibold mb-2">Media Library</h3>
-                      <p className="text-sm text-gray-600 mb-4">Upload and manage images</p>
-                      <Button size="sm">Manage Media</Button>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
+            <Tabs defaultValue="theme" className="space-y-6">
+              <div className="flex justify-center">
+                <TabsList className="grid w-full max-w-md grid-cols-3">
+                  <TabsTrigger value="theme">Theme</TabsTrigger>
+                  <TabsTrigger value="settings">Settings</TabsTrigger>
+                  <TabsTrigger value="media">Media</TabsTrigger>
+                </TabsList>
+              </div>
+              
+              <TabsContent value="theme">
+                <ThemeCustomizer />
+              </TabsContent>
+              
+              <TabsContent value="settings">
+                <SiteSettingsManager />
+              </TabsContent>
+              
+              <TabsContent value="media">
+                <MediaLibrary />
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
           {/* Contacts Tab */}

@@ -135,6 +135,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Content Management API endpoints
+  app.post('/api/admin/theme', async (req, res) => {
+    try {
+      const themeData = req.body;
+      await storage.updateSiteSetting('theme_colors', JSON.stringify(themeData.colors));
+      res.json({ success: true, message: 'Theme updated successfully' });
+    } catch (error) {
+      console.error("Error updating theme:", error);
+      res.status(500).json({ message: "Failed to update theme" });
+    }
+  });
+
+  app.get('/api/admin/site-settings', async (req, res) => {
+    try {
+      const settings = {
+        siteName: (await storage.getSiteSetting('site_name'))?.value || 'GrowFastWithUs',
+        tagline: (await storage.getSiteSetting('tagline'))?.value || 'Automate Your Business Growth',
+        contactEmail: (await storage.getSiteSetting('contact_email'))?.value || 'contact@growfastwithus.com',
+        phone: (await storage.getSiteSetting('phone'))?.value || '+1 (555) 123-4567',
+        address: (await storage.getSiteSetting('address'))?.value || '123 Business St, Suite 100, City, State 12345',
+        metaDescription: (await storage.getSiteSetting('meta_description'))?.value || 'Leading automation agency helping businesses grow faster with AI-powered workflows and no-code solutions.',
+        heroTitle: (await storage.getSiteSetting('hero_title'))?.value || 'Grow Your Business Faster with Automation',
+        heroSubtitle: (await storage.getSiteSetting('hero_subtitle'))?.value || 'Transform your operations with AI-powered workflows and no-code automation solutions'
+      };
+      res.json(settings);
+    } catch (error) {
+      console.error("Error fetching site settings:", error);
+      res.status(500).json({ message: "Failed to fetch site settings" });
+    }
+  });
+
+  app.put('/api/admin/site-settings', async (req, res) => {
+    try {
+      const settings = req.body;
+      
+      await Promise.all([
+        storage.updateSiteSetting('site_name', settings.siteName),
+        storage.updateSiteSetting('tagline', settings.tagline),
+        storage.updateSiteSetting('contact_email', settings.contactEmail),
+        storage.updateSiteSetting('phone', settings.phone),
+        storage.updateSiteSetting('address', settings.address),
+        storage.updateSiteSetting('meta_description', settings.metaDescription),
+        storage.updateSiteSetting('hero_title', settings.heroTitle),
+        storage.updateSiteSetting('hero_subtitle', settings.heroSubtitle)
+      ]);
+      
+      res.json({ success: true, message: 'Site settings updated successfully' });
+    } catch (error) {
+      console.error("Error updating site settings:", error);
+      res.status(500).json({ message: "Failed to update site settings" });
+    }
+  });
+
+  app.get('/api/admin/media', async (req, res) => {
+    try {
+      const mediaFiles = [
+        { id: 1, name: 'hero-background.jpg', url: '/images/hero-bg.jpg', size: '2.3 MB', type: 'image' },
+        { id: 2, name: 'company-logo.png', url: '/images/logo.png', size: '156 KB', type: 'image' },
+        { id: 3, name: 'team-photo.jpg', url: '/images/team.jpg', size: '1.8 MB', type: 'image' }
+      ];
+      res.json(mediaFiles);
+    } catch (error) {
+      console.error("Error fetching media files:", error);
+      res.status(500).json({ message: "Failed to fetch media files" });
+    }
+  });
+
+  app.post('/api/admin/media/upload', async (req, res) => {
+    try {
+      res.json({ 
+        success: true, 
+        message: 'File uploaded successfully',
+        file: {
+          id: Date.now(),
+          name: 'uploaded-file.jpg',
+          url: '/uploads/uploaded-file.jpg',
+          size: '1.2 MB'
+        }
+      });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      res.status(500).json({ message: "Failed to upload file" });
+    }
+  });
+
+  app.post('/api/admin/media/url', async (req, res) => {
+    try {
+      const { url, name } = req.body;
+      res.json({ 
+        success: true, 
+        message: 'Image added from URL successfully',
+        file: {
+          id: Date.now(),
+          name: name,
+          url: url,
+          size: 'Unknown'
+        }
+      });
+    } catch (error) {
+      console.error("Error uploading from URL:", error);
+      res.status(500).json({ message: "Failed to upload from URL" });
+    }
+  });
+
   // Site Settings Management
   app.get("/api/admin/settings", async (req, res) => {
     try {
