@@ -126,6 +126,8 @@ export default function Home() {
   const [timeSpent, setTimeSpent] = useState([20]);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
   const [scrolled, setScrolled] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [emailSubscribed, setEmailSubscribed] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -206,6 +208,17 @@ export default function Home() {
     setSelectedTemplates(prev =>
       checked ? [...prev, templateId] : prev.filter(t => t !== templateId)
     );
+  };
+
+  const handleEmailSubscription = async () => {
+    setEmailSubscribed(true);
+    // Simulate API call
+    setTimeout(() => {
+      toast({
+        title: "Successfully subscribed!",
+        description: "You'll receive weekly automation tips and exclusive content.",
+      });
+    }, 1000);
   };
 
   const scrollToSection = (elementId: string) => {
@@ -1007,15 +1020,90 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Back to Top Button */}
-      <motion.button
-        className="fixed bottom-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all z-50"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: scrolled ? 1 : 0, scale: scrolled ? 1 : 0 }}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      >
-        <ArrowUp className="w-6 h-6 text-white" />
-      </motion.button>
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+        {/* Live Chat Button */}
+        <motion.button
+          className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 transition-all group"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <MessageCircle className="w-6 h-6 text-white" />
+          <div className="absolute right-16 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Chat with us
+          </div>
+        </motion.button>
+
+        {/* Back to Top Button */}
+        <motion.button
+          className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: scrolled ? 1 : 0, scale: scrolled ? 1 : 0 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          <ArrowUp className="w-6 h-6 text-white" />
+        </motion.button>
+      </div>
+
+      {/* Trust Badges Section */}
+      <section className="py-16 bg-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-white">Trusted by Leading Companies</h2>
+            <p className="text-gray-400">Join thousands of businesses that have automated their success</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+            {/* Trust Badge Items */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
+                <Shield className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-gray-400">SOC 2 Certified</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
+                <Award className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-gray-400">Industry Leader</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
+                <Users className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-gray-400">2,500+ Clients</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
+                <Star className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-gray-400">4.9/5 Rating</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
+                <CheckCircle className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-gray-400">99.9% Uptime</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
+                <Globe className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-gray-400">Global Reach</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Newsletter Section */}
       <section className="py-20 bg-gradient-to-r from-primary/20 to-primary/10">
@@ -1034,8 +1122,19 @@ export default function Home() {
                     placeholder="Enter your email address"
                     className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-primary focus:outline-none"
                   />
-                  <Button className="bg-primary hover:bg-primary/90 text-white px-8">
-                    Subscribe
+                  <Button 
+                    className="bg-primary hover:bg-primary/90 text-white px-8"
+                    onClick={handleEmailSubscription}
+                    disabled={emailSubscribed}
+                  >
+                    {emailSubscribed ? (
+                      <div className="flex items-center space-x-2">
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Subscribed</span>
+                      </div>
+                    ) : (
+                      "Subscribe"
+                    )}
                   </Button>
                 </div>
                 <p className="text-xs text-gray-400 mt-4">
