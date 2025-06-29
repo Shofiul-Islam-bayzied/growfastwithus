@@ -185,11 +185,16 @@ export default function Home() {
   const pricing = calculatePricing();
 
   const handlePainPointChange = (painPoint: string, checked: boolean) => {
-    // Prevent scroll jumping by using requestAnimationFrame
+    // Store current scroll position to prevent jumping
+    const currentScrollY = window.scrollY;
+    
+    setPainPoints(prev => 
+      checked ? [...prev, painPoint] : prev.filter(p => p !== painPoint)
+    );
+    
+    // Restore scroll position after state update
     requestAnimationFrame(() => {
-      setPainPoints(prev => 
-        checked ? [...prev, painPoint] : prev.filter(p => p !== painPoint)
-      );
+      window.scrollTo(0, currentScrollY);
     });
   };
 

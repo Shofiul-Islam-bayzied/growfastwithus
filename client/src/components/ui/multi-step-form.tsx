@@ -93,10 +93,18 @@ export function MultiStepForm({ onSubmit }: MultiStepFormProps) {
   };
 
   const handlePainPointChange = (painPoint: string, checked: boolean) => {
+    // Prevent unwanted scrolling by capturing current position
+    const currentScrollY = window.scrollY;
+    
     const updatedPainPoints = checked
       ? [...painPoints, painPoint]
       : painPoints.filter((p) => p !== painPoint);
     setValue("painPoints", updatedPainPoints);
+    
+    // Maintain scroll position after state update
+    setTimeout(() => {
+      window.scrollTo(0, currentScrollY);
+    }, 0);
   };
 
   const progress = (currentStep / totalSteps) * 100;
