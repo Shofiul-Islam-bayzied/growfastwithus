@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AdvancedContactForm } from "@/components/advanced-contact-form";
+import { BookingWidget, BookingButton } from "@/components/BookingWidget";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { templates } from "@/lib/templates";
 import { useToast } from "@/hooks/use-toast";
@@ -276,12 +277,12 @@ export default function Home() {
             </div>
             
             {/* Desktop CTA Button */}
-            <Button 
+            <BookingButton 
               className="hidden lg:block bg-primary hover:bg-primary/90 text-white shadow-lg"
-              onClick={() => scrollToSection('contact')}
+              calLink="growfastwithus/consultation"
             >
               Book Discovery Call
-            </Button>
+            </BookingButton>
 
             {/* Mobile Menu Button */}
             <button
@@ -375,16 +376,13 @@ export default function Home() {
                   </Button>
                 </div>
                 <div className="px-2">
-                  <Button 
+                  <BookingButton 
                     size="lg"
                     className="w-full bg-primary hover:bg-primary/90 text-white"
-                    onClick={() => {
-                      scrollToSection('contact');
-                      setMobileMenuOpen(false);
-                    }}
+                    calLink="growfastwithus/consultation"
                   >
                     Book Discovery Call
-                  </Button>
+                  </BookingButton>
                 </div>
               </div>
             </motion.div>

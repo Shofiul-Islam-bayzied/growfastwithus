@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton, ShimmerSkeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 // Theme Customizer Loading Skeleton
@@ -97,11 +97,11 @@ export function MediaLibrarySkeleton() {
         {/* Media Gallery Skeleton */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="border rounded-lg p-3">
-              <Skeleton className="aspect-square w-full mb-2 rounded" />
-              <Skeleton className="h-4 w-full mb-1" />
-              <Skeleton className="h-3 w-16 mb-2" />
-              <Skeleton className="h-8 w-full" />
+            <div key={i} className={`border rounded-lg p-3 animate-stagger-${Math.min(i, 4)}`}>
+              <ShimmerSkeleton className="aspect-square w-full mb-2 rounded" />
+              <ShimmerSkeleton className="h-4 w-full mb-1" />
+              <ShimmerSkeleton className="h-3 w-16 mb-2" />
+              <ShimmerSkeleton className="h-8 w-full" />
             </div>
           ))}
         </div>

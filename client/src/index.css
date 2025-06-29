@@ -4,6 +4,46 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes stagger-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-stagger-1 {
+  animation: stagger-fade-in 0.6s ease-out 0.1s both;
+}
+
+.animate-stagger-2 {
+  animation: stagger-fade-in 0.6s ease-out 0.2s both;
+}
+
+.animate-stagger-3 {
+  animation: stagger-fade-in 0.6s ease-out 0.3s both;
+}
+
+.animate-stagger-4 {
+  animation: stagger-fade-in 0.6s ease-out 0.4s both;
+}
+
 :root {
   /* Modern Brand Color Palette */
   --background: hsl(222, 84%, 5%);
