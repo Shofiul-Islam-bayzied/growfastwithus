@@ -52,6 +52,47 @@ export interface IStorage {
   getAdminUser(clerkId: string): Promise<AdminUser | undefined>;
   createAdminUser(user: InsertAdminUser): Promise<AdminUser>;
   isAdmin(clerkId: string): Promise<boolean>;
+  
+  // Advanced Analytics
+  createAnalyticsEvent(event: any): Promise<any>;
+  getAnalytics(filters?: any): Promise<any[]>;
+  getAnalyticsStats(dateRange?: any): Promise<any>;
+  
+  // Content Scheduling
+  createScheduledContent(content: any): Promise<any>;
+  getScheduledContent(status?: string): Promise<any[]>;
+  executeScheduledContent(id: number): Promise<void>;
+  
+  // Content Backups
+  createBackup(backupData: any): Promise<any>;
+  getBackups(): Promise<any[]>;
+  restoreBackup(id: number): Promise<void>;
+  
+  // Activity Logging
+  logActivity(activity: any): Promise<any>;
+  getActivityLogs(userId?: string): Promise<any[]>;
+  
+  // Email Campaigns
+  createEmailCampaign(campaign: any): Promise<any>;
+  getEmailCampaigns(): Promise<any[]>;
+  updateEmailCampaign(id: number, updates: any): Promise<any>;
+  sendEmailCampaign(id: number): Promise<void>;
+  
+  // A/B Testing
+  createAbTest(test: any): Promise<any>;
+  getAbTests(): Promise<any[]>;
+  updateAbTest(id: number, updates: any): Promise<any>;
+  getAbTestResults(id: number): Promise<any>;
+  
+  // Lead Scoring
+  calculateLeadScore(contactId: number): Promise<any>;
+  getLeadScores(): Promise<any[]>;
+  updateLeadScore(contactId: number, score: number, factors: any): Promise<any>;
+  
+  // Performance Monitoring
+  recordPerformanceMetric(metric: any): Promise<any>;
+  getPerformanceMetrics(type?: string, timeRange?: any): Promise<any[]>;
+  getPerformanceStats(): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
