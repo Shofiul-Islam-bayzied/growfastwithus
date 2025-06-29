@@ -195,7 +195,7 @@ export class DatabaseStorage implements IStorage {
 
   async isAdmin(clerkId: string): Promise<boolean> {
     const user = await this.getAdminUser(clerkId);
-    return user ? user.isActive : false;
+    return user ? (user.isActive ?? false) : false;
   }
 }
 
