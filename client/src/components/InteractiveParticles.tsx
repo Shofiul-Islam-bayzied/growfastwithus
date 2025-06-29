@@ -71,7 +71,7 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('particleColor', new THREE.BufferAttribute(colors, 3));
 
     // Advanced particle material with custom shaders
     const particleMaterial = new THREE.ShaderMaterial({
@@ -86,12 +86,12 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
         uniform vec2 mouse;
         uniform float mouseVelocity;
         uniform float pixelRatio;
-        attribute vec3 color;
+        attribute vec3 particleColor;
         varying vec3 vColor;
         varying float vIntensity;
 
         void main() {
-          vColor = color;
+          vColor = particleColor;
           
           vec3 pos = position;
           
@@ -155,7 +155,7 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
     const lineColors = new Float32Array(particleCount * particleCount * 9);
     
     lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-    lineGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+    lineGeometry.setAttribute('lineColor', new THREE.BufferAttribute(lineColors, 3));
 
     const lineMaterial = new THREE.ShaderMaterial({
       uniforms: {
@@ -165,12 +165,12 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
       vertexShader: `
         uniform float time;
         uniform vec2 mouse;
-        attribute vec3 color;
+        attribute vec3 lineColor;
         varying vec3 vColor;
         varying float vOpacity;
 
         void main() {
-          vColor = color;
+          vColor = lineColor;
           
           vec3 pos = position;
           float distanceToMouse = distance(pos.xy, mouse * 20.0);
@@ -248,6 +248,7 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
       }
       
       // Update particle positions for organic movement
+      if (!particles.geometry.attributes.position) return;
       const positions = particles.geometry.attributes.position.array as Float32Array;
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -264,8 +265,9 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
       
       // Update connection lines
       let lineIndex = 0;
+      if (!lines.geometry.attributes.position || !lines.geometry.attributes.lineColor) return;
       const linePositions = lines.geometry.attributes.position.array as Float32Array;
-      const lineColors = lines.geometry.attributes.color.array as Float32Array;
+      const lineColors = lines.geometry.attributes.lineColor.array as Float32Array;
       
       for (let i = 0; i < particleCount; i++) {
         for (let j = i + 1; j < particleCount; j++) {
@@ -308,7 +310,7 @@ export function InteractiveParticles({ className = '', intensity = 1 }: Interact
       }
       
       lines.geometry.attributes.position.needsUpdate = true;
-      lines.geometry.attributes.color.needsUpdate = true;
+      lines.geometry.attributes.lineColor.needsUpdate = true;
       
       // Gentle camera rotation
       particles.rotation.y += 0.001;

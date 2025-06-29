@@ -301,7 +301,7 @@ export default function Home() {
       {/* Hero Section */}
       <section id="home" ref={heroRef} className="min-h-screen bg-black relative overflow-hidden">
         <div className="absolute inset-0 gradient-mesh"></div>
-        <InteractiveParticles intensity={1.2} className="opacity-80" />
+
         
         {/* Floating Particles */}
         {[...Array(5)].map((_, i) => (
