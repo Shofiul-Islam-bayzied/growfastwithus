@@ -57,7 +57,12 @@ import {
   Quote,
   Globe,
   Smartphone,
-  Monitor
+  Monitor,
+  Settings,
+  Cog,
+  Bot,
+  Puzzle,
+  Server
 } from "lucide-react";
 
 // FAQ Item Component
@@ -120,6 +125,7 @@ const iconMap = {
 
 export default function Home() {
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Templates");
   const [businessSize, setBusinessSize] = useState("Small Business (1-10 employees)");
@@ -267,10 +273,12 @@ export default function Home() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center shadow-lg">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">Digital Empire Grow Fast</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                GrowFastWithUs
+              </span>
             </div>
             
             <div className="hidden lg:flex items-center space-x-8">
@@ -319,34 +327,114 @@ export default function Home() {
         
         <div className="container mx-auto px-6 py-32 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
+            {/* Brand Badge */}
+            <motion.div
+              className="inline-flex items-center space-x-3 glass-card px-6 py-3 rounded-full mb-8"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={heroInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.8, delay: 0.1 }}
+            >
+              <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-lg font-semibold text-white">GrowFastWithUs</span>
+              <Badge className="bg-primary text-white px-3 py-1">AI-Powered</Badge>
+            </motion.div>
+
             <motion.h1
-              className="text-5xl lg:text-7xl font-bold text-white mb-6"
+              className="text-hero bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-6"
               initial={{ opacity: 0, y: 50 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Automate the Boring. <span className="text-primary">Accelerate the Brilliant.</span>
+              Automate Your Business
+              <span className="block bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                Growth & Success
+              </span>
             </motion.h1>
+            
             <motion.p
-              className="text-xl lg:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto"
+              className="text-large text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 30 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              We design, deploy, and host business automation workflows that eliminate repetitive tasks and boost efficiency for businesses worldwide.
+              Transform your workflow with intelligent automation solutions that scale your business, 
+              eliminate repetitive tasks, and unlock unprecedented growth potential through cutting-edge AI technology.
             </motion.p>
+
+            {/* Feature Highlights */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              initial={{ opacity: 0, y: 30 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="flex flex-wrap justify-center gap-4 mb-8"
+            >
+              <div className="flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
+                <CheckCircle className="w-5 h-5 text-primary" />
+                <span className="text-sm text-gray-300">2,500+ Happy Clients</span>
+              </div>
+              <div className="flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
+                <Star className="w-5 h-5 text-yellow-400" />
+                <span className="text-sm text-gray-300">4.9/5 Rating</span>
+              </div>
+              <div className="flex items-center space-x-2 glass-card px-4 py-2 rounded-full">
+                <Shield className="w-5 h-5 text-green-400" />
+                <span className="text-sm text-gray-300">Enterprise Security</span>
+              </div>
+            </motion.div>
+            <motion.div
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
               initial={{ opacity: 0, y: 30 }}
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg shadow-2xl">
+              <Button 
+                size="lg" 
+                className="btn-primary text-white text-lg px-10 py-4 rounded-xl shadow-lg"
+                onClick={() => scrollToSection('contact')}
+              >
+                <Rocket className="mr-3 w-6 h-6" />
                 Start Your Automation Journey
+                <ArrowRight className="ml-3 w-6 h-6" />
               </Button>
-              <Button size="lg" variant="ghost" className="glass-button text-white px-8 py-4 text-lg">
-                View Templates
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-2 border-gray-600 text-gray-300 hover:bg-white/10 hover:border-primary text-lg px-8 py-4 rounded-xl backdrop-blur-sm"
+                onClick={() => scrollToSection('templates')}
+              >
+                <Play className="mr-2 w-5 h-5" />
+                View Demo & Templates
               </Button>
+            </motion.div>
+
+            {/* Trust Indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={heroInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="pt-12 text-center"
+            >
+              <p className="text-sm text-gray-500 mb-6">Trusted by leading companies worldwide</p>
+              <div className="flex justify-center items-center space-x-8 opacity-60">
+                <div className="flex flex-col items-center">
+                  <div className="text-2xl font-bold text-primary">500+</div>
+                  <div className="text-xs text-gray-400">Companies</div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="text-2xl font-bold text-accent">Fortune</div>
+                  <div className="text-xs text-gray-400">500 Clients</div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="text-2xl font-bold text-secondary">Global</div>
+                  <div className="text-xs text-gray-400">Reach</div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="text-2xl font-bold text-primary">24/7</div>
+                  <div className="text-xs text-gray-400">Support</div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -362,7 +450,7 @@ export default function Home() {
       </section>
 
       {/* Services Overview */}
-      <section id="services" ref={servicesRef} className="py-20 bg-black tech-grid">
+      <section id="services" ref={servicesRef} className="py-20 section-gradient">
         <div className="container mx-auto px-6">
           <motion.div
             className="text-center mb-16"
@@ -370,9 +458,13 @@ export default function Home() {
             animate={servicesInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">What We Automate</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Transform your business operations with our comprehensive automation solutions
+            <div className="inline-flex items-center space-x-2 glass-card px-4 py-2 rounded-full mb-6">
+              <Zap className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium text-gray-300">Our Services</span>
+            </div>
+            <h2 className="text-section-title text-white mb-6">What We Automate</h2>
+            <p className="text-large text-gray-300 max-w-3xl mx-auto">
+              Transform your business operations with our comprehensive automation solutions designed for modern enterprises
             </p>
           </motion.div>
           
