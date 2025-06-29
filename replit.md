@@ -95,6 +95,11 @@ GrowFastWithUs is a modern React-based website for a digital automation agency s
 - Database schema migrations with Drizzle Kit
 
 ## Recent Changes
+- **December 29, 2024**: Created comprehensive legal pages (Privacy Policy, Terms of Service, GDPR)
+- **December 29, 2024**: Updated footer copyright to 2025 and connected all legal page links
+- **December 29, 2024**: Built detailed template showcase with individual template detail pages
+- **December 29, 2024**: Added templates overview page with category filtering and search
+- **December 29, 2024**: Fixed template icon implementation with proper Lucide React components
 - **December 29, 2024**: Redesigned website to be minimal and user-friendly
 - **December 29, 2024**: Added official GrowFastWithUs logo to header and hero sections
 - **December 29, 2024**: Simplified hero animations with reduced particle count (15 particles vs 80)

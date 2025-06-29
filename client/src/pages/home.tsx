@@ -1341,11 +1341,11 @@ export default function Home() {
           </div>
           
           <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 mb-4 md:mb-0">© 2024 GrowFastWithUs. All rights reserved.</p>
+            <p className="text-gray-400 mb-4 md:mb-0">© 2025 GrowFastWithUs. All rights reserved.</p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-primary transition-colors">GDPR</a>
+              <Link href="/privacy-policy" className="text-gray-400 hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link href="/terms-of-service" className="text-gray-400 hover:text-primary transition-colors">Terms of Service</Link>
+              <Link href="/gdpr" className="text-gray-400 hover:text-primary transition-colors">GDPR</Link>
             </div>
           </div>
         </div>
