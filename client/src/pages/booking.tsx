@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { BookingWidget } from "@/components/BookingWidget";
+import { useEffect } from "react";
+import Cal, { getCalApi } from "@calcom/embed-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -16,6 +17,13 @@ import {
 } from "lucide-react";
 
 export default function Booking() {
+  useEffect(() => {
+    (async function () {
+      const cal = await getCalApi({"namespace":"30min"});
+      cal("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    })();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
       {/* Header */}
@@ -91,17 +99,12 @@ export default function Booking() {
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-12">
-                    <Calendar className="w-16 h-16 text-primary mx-auto mb-6" />
-                    <h3 className="text-xl font-semibold text-white mb-4">Ready to Schedule?</h3>
-                    <p className="text-gray-400 mb-6">
-                      Click the button below to open our booking calendar and select your preferred time slot.
-                    </p>
-                    <BookingWidget 
+                  <div className="bg-white rounded-lg overflow-hidden" style={{minHeight: "600px"}}>
+                    <Cal 
+                      namespace="30min"
                       calLink="grow-fast-with-us/30min"
-                      title="Book Your Consultation"
-                      description="Select your preferred time for a 30-minute consultation"
-                      className="max-w-md mx-auto"
+                      style={{width:"100%",height:"600px",overflow:"scroll"}}
+                      config={{"layout":"month_view"}}
                     />
                   </div>
                 </CardContent>
@@ -186,12 +189,13 @@ export default function Booking() {
                     Can't find a suitable time? We have other options available.
                   </p>
                   
-                  <BookingWidget 
-                    calLink="growfastwithus/consultation"
-                    title="Quick Book"
-                    description="Open booking in a modal window"
-                    className="border-primary/20"
-                  />
+                  <Button 
+                    onClick={() => window.open('https://cal.com/grow-fast-with-us/30min', '_blank')}
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Quick Book (New Tab)
+                  </Button>
                   
                   <div className="pt-4 border-t border-gray-700">
                     <p className="text-gray-400 text-sm mb-2">Need immediate assistance?</p>
