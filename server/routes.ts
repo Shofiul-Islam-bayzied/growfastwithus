@@ -271,6 +271,254 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Advanced Analytics Endpoints
+  app.get("/api/admin/analytics", async (req, res) => {
+    try {
+      const analytics = await storage.getAnalytics(req.query);
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/admin/analytics/stats", async (req, res) => {
+    try {
+      const stats = await storage.getAnalyticsStats(req.query);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching analytics stats:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/analytics/event", async (req, res) => {
+    try {
+      const event = await storage.createAnalyticsEvent(req.body);
+      res.json(event);
+    } catch (error) {
+      console.error("Error creating analytics event:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Content Scheduling Endpoints
+  app.get("/api/admin/scheduled-content", async (req, res) => {
+    try {
+      const { status } = req.query;
+      const scheduledContent = await storage.getScheduledContent(status as string);
+      res.json(scheduledContent);
+    } catch (error) {
+      console.error("Error fetching scheduled content:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/scheduled-content", async (req, res) => {
+    try {
+      const content = await storage.createScheduledContent(req.body);
+      res.json(content);
+    } catch (error) {
+      console.error("Error creating scheduled content:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/scheduled-content/:id/execute", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.executeScheduledContent(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error executing scheduled content:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Content Backup Endpoints
+  app.get("/api/admin/backups", async (req, res) => {
+    try {
+      const backups = await storage.getBackups();
+      res.json(backups);
+    } catch (error) {
+      console.error("Error fetching backups:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/backups", async (req, res) => {
+    try {
+      const backup = await storage.createBackup(req.body);
+      res.json(backup);
+    } catch (error) {
+      console.error("Error creating backup:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/backups/:id/restore", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.restoreBackup(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error restoring backup:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Activity Logs Endpoints
+  app.get("/api/admin/activity-logs", async (req, res) => {
+    try {
+      const { userId } = req.query;
+      const logs = await storage.getActivityLogs(userId as string);
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching activity logs:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Email Campaigns Endpoints
+  app.get("/api/admin/email-campaigns", async (req, res) => {
+    try {
+      const campaigns = await storage.getEmailCampaigns();
+      res.json(campaigns);
+    } catch (error) {
+      console.error("Error fetching email campaigns:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/email-campaigns", async (req, res) => {
+    try {
+      const campaign = await storage.createEmailCampaign(req.body);
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error creating email campaign:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.put("/api/admin/email-campaigns/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const campaign = await storage.updateEmailCampaign(id, req.body);
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error updating email campaign:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/email-campaigns/:id/send", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.sendEmailCampaign(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error sending email campaign:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // A/B Testing Endpoints
+  app.get("/api/admin/ab-tests", async (req, res) => {
+    try {
+      const tests = await storage.getAbTests();
+      res.json(tests);
+    } catch (error) {
+      console.error("Error fetching A/B tests:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/ab-tests", async (req, res) => {
+    try {
+      const test = await storage.createAbTest(req.body);
+      res.json(test);
+    } catch (error) {
+      console.error("Error creating A/B test:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.put("/api/admin/ab-tests/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const test = await storage.updateAbTest(id, req.body);
+      res.json(test);
+    } catch (error) {
+      console.error("Error updating A/B test:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/admin/ab-tests/:id/results", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const results = await storage.getAbTestResults(id);
+      res.json(results);
+    } catch (error) {
+      console.error("Error fetching A/B test results:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Lead Scoring Endpoints
+  app.get("/api/admin/lead-scores", async (req, res) => {
+    try {
+      const scores = await storage.getLeadScores();
+      res.json(scores);
+    } catch (error) {
+      console.error("Error fetching lead scores:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/lead-scores/:contactId/calculate", async (req, res) => {
+    try {
+      const contactId = parseInt(req.params.contactId);
+      const score = await storage.calculateLeadScore(contactId);
+      res.json(score);
+    } catch (error) {
+      console.error("Error calculating lead score:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Performance Monitoring Endpoints
+  app.get("/api/admin/performance", async (req, res) => {
+    try {
+      const { type, timeRange } = req.query;
+      const metrics = await storage.getPerformanceMetrics(type as string, timeRange);
+      res.json(metrics);
+    } catch (error) {
+      console.error("Error fetching performance metrics:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/admin/performance/stats", async (req, res) => {
+    try {
+      const stats = await storage.getPerformanceStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching performance stats:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/performance/metric", async (req, res) => {
+    try {
+      const metric = await storage.recordPerformanceMetric(req.body);
+      res.json(metric);
+    } catch (error) {
+      console.error("Error recording performance metric:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
