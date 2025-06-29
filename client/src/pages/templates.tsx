@@ -78,7 +78,7 @@ export default function Templates() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden mt-4 pb-4 border-t border-white/20"
+              className="md:hidden mt-4 pb-4 border-t border-white/20 glass-card backdrop-blur-xl bg-black/80"
             >
               <div className="flex flex-col space-y-4 pt-4">
                 <Link href="/" className="block">
@@ -92,13 +92,15 @@ export default function Templates() {
                   </Button>
                 </Link>
                 <div className="px-2 pt-2">
-                  <Button 
-                    size="lg" 
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Get Started Today
-                  </Button>
+                  <Link href="/" className="block">
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Get Started Today
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </motion.div>

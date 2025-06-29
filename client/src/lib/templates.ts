@@ -1,4 +1,4 @@
-import { LucideIcon, Stethoscope, Home, ShoppingCart, Users, UtensilsCrossed, Briefcase, TrendingUp, Calendar, UserCheck, MessageCircle, Phone, Target, ShoppingBag, Dumbbell } from "lucide-react";
+import { LucideIcon, Stethoscope, Home, ShoppingCart, Users, UtensilsCrossed, Briefcase, TrendingUp, Calendar, UserCheck, Bot, Phone, Target, ShoppingBag, Dumbbell } from "lucide-react";
 
 export interface Template {
   id: string;
@@ -109,7 +109,7 @@ export const templates: Template[] = [
     description: "24/7 customer support via WhatsApp with AI-powered responses and escalation.",
     price: 399,
     category: "Customer Support",
-    icon: MessageCircle,
+    icon: Bot,
     features: ["24/7 availability", "AI responses", "Escalation management", "Multi-language"],
     popular: true,
   },

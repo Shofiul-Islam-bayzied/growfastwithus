@@ -27,7 +27,6 @@ import {
   Dumbbell,
   Calendar,
   UserCheck,
-  MessageCircle,
   Target,
   ShoppingBag,
   Users,
@@ -287,7 +286,7 @@ export default function Home() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden mt-4 pb-4 border-t border-white/20"
+              className="lg:hidden mt-4 pb-4 border-t border-white/20 glass-card backdrop-blur-xl bg-black/80"
             >
               <div className="flex flex-col space-y-4 pt-4">
                 <a 
@@ -346,15 +345,16 @@ export default function Home() {
                   Contact
                 </a>
                 <div className="px-2 pt-2">
-                  <Link href="/templates" className="block">
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-primary hover:bg-primary/90 text-white"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      View All Templates
-                    </Button>
-                  </Link>
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    onClick={() => {
+                      scrollToSection('contact');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Get Started
+                  </Button>
                 </div>
                 <div className="px-2">
                   <Button 
@@ -495,7 +495,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { icon: Zap, title: "Workflow Automation", description: "Streamline your business processes with intelligent workflow automation that works 24/7." },
-              { icon: MessageCircle, title: "AI Agent Integration", description: "Deploy intelligent AI agents that handle customer support, lead qualification, and more." },
+              { icon: Bot, title: "AI Agent Integration", description: "Deploy intelligent AI agents that handle customer support, lead qualification, and more." },
               { icon: Briefcase, title: "Custom SaaS Automation", description: "Build custom automation solutions tailored to your specific business needs." },
               { icon: BarChart3, title: "Business Intelligence", description: "Create powerful dashboards and reports that provide actionable business insights." },
               { icon: Target, title: "Pre-Built Templates", description: "Launch faster with our library of proven automation templates for every industry." },
@@ -1143,21 +1143,6 @@ export default function Home() {
 
       {/* Floating Action Buttons */}
       <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
-        {/* Live Chat Button */}
-        <motion.button
-          className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 transition-all group"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <MessageCircle className="w-6 h-6 text-white" />
-          <div className="absolute right-16 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-            Chat with us
-          </div>
-        </motion.button>
-
         {/* Back to Top Button */}
         <motion.button
           className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all"
