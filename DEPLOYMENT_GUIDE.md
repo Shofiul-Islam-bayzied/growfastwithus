@@ -302,6 +302,66 @@ npm install -g vercel
 vercel --prod
 ```
 
+### EasyPanel Deployment
+
+EasyPanel provides a user-friendly interface for Docker deployments on your VPS.
+
+#### Prerequisites
+- VPS with EasyPanel installed
+- Domain name pointing to your server
+
+#### Step 1: EasyPanel Setup
+1. Install EasyPanel on your VPS:
+```bash
+curl -sSL https://get.easypanel.io | sh
+```
+
+2. Access EasyPanel at `https://your-server-ip:3000`
+
+#### Step 2: Create Application
+1. In EasyPanel dashboard, click "Create Service"
+2. Choose "App" service type
+3. Configure the following:
+
+**Basic Settings:**
+- Name: `growfastwithus`
+- Source: Git Repository
+- Repository URL: `your-github-repo-url`
+- Branch: `main`
+
+**Build Settings:**
+- Build Command: `npm install && npm run build`
+- Start Command: `npm start`
+- Port: `3000`
+
+**Environment Variables:**
+```env
+NODE_ENV=production
+DATABASE_URL=postgresql://growfast:password@growfastwithus-db:5432/growfastwithus
+SESSION_SECRET=your-32-character-session-secret
+PORT=3000
+```
+
+#### Step 3: Add PostgreSQL Database
+1. Click "Create Service" → "Database" → "PostgreSQL"
+2. Configure:
+   - Name: `growfastwithus-db`
+   - Database: `growfastwithus`
+   - Username: `growfast`
+   - Password: `your-secure-password`
+
+#### Step 4: Domain Configuration
+1. In your app settings, go to "Domains"
+2. Add your domain name
+3. Enable SSL (automatic with Let's Encrypt)
+
+#### Step 5: Deploy
+1. Click "Deploy" in your app dashboard
+2. Monitor build logs in real-time
+3. Once deployed, run database migration:
+   - Go to app "Console" tab
+   - Run: `npm run db:push`
+
 ### Railway Deployment
 
 Create `railway.toml`:

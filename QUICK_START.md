@@ -84,6 +84,12 @@ railway login
 railway deploy
 ```
 
+### EasyPanel
+1. Install EasyPanel: `curl -sSL https://get.easypanel.io | sh`
+2. Create app service with GitHub repo
+3. Add PostgreSQL database service
+4. Configure environment variables and deploy
+
 ### DigitalOcean App Platform
 1. Connect GitHub repository
 2. Configure environment variables
