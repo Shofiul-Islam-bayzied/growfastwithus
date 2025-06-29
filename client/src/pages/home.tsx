@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { Link } from "wouter";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -701,9 +702,11 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
-              View All Templates
-            </Button>
+            <Link href="/templates">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
+                View All Templates
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
