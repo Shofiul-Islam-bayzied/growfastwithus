@@ -1,4 +1,26 @@
-import { users, contacts, templates, type User, type InsertUser, type Contact, type InsertContact, type Template, type InsertTemplate } from "@shared/schema";
+import { 
+  users, 
+  contacts, 
+  templates, 
+  siteSettings,
+  reviews,
+  emailSettings,
+  adminUsers,
+  type User, 
+  type InsertUser, 
+  type Contact, 
+  type InsertContact, 
+  type Template, 
+  type InsertTemplate,
+  type SiteSetting,
+  type InsertSiteSetting,
+  type Review,
+  type InsertReview,
+  type EmailSetting,
+  type InsertEmailSetting,
+  type AdminUser,
+  type InsertAdminUser
+} from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -13,6 +35,23 @@ export interface IStorage {
   getTemplates(): Promise<Template[]>;
   getTemplate(id: number): Promise<Template | undefined>;
   createTemplate(template: InsertTemplate): Promise<Template>;
+  
+  // Admin content management
+  getSiteSettings(): Promise<SiteSetting[]>;
+  getSiteSetting(key: string): Promise<SiteSetting | undefined>;
+  updateSiteSetting(key: string, value: string): Promise<SiteSetting>;
+  
+  getReviews(): Promise<Review[]>;
+  createReview(review: InsertReview): Promise<Review>;
+  updateReview(id: number, review: Partial<InsertReview>): Promise<Review>;
+  deleteReview(id: number): Promise<void>;
+  
+  getEmailSettings(): Promise<EmailSetting | undefined>;
+  updateEmailSettings(settings: InsertEmailSetting): Promise<EmailSetting>;
+  
+  getAdminUser(clerkId: string): Promise<AdminUser | undefined>;
+  createAdminUser(user: InsertAdminUser): Promise<AdminUser>;
+  isAdmin(clerkId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -61,6 +100,102 @@ export class DatabaseStorage implements IStorage {
       .values(insertTemplate)
       .returning();
     return template;
+  }
+
+  // Admin content management methods
+  async getSiteSettings(): Promise<SiteSetting[]> {
+    return await db.select().from(siteSettings);
+  }
+
+  async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
+    const [setting] = await db.select().from(siteSettings).where(eq(siteSettings.key, key));
+    return setting;
+  }
+
+  async updateSiteSetting(key: string, value: string): Promise<SiteSetting> {
+    const existing = await this.getSiteSetting(key);
+    if (existing) {
+      const [updated] = await db
+        .update(siteSettings)
+        .set({ value, updatedAt: new Date() })
+        .where(eq(siteSettings.key, key))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db
+        .insert(siteSettings)
+        .values({ key, value })
+        .returning();
+      return created;
+    }
+  }
+
+  async getReviews(): Promise<Review[]> {
+    return await db.select().from(reviews).where(eq(reviews.isActive, true));
+  }
+
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db
+      .insert(reviews)
+      .values(insertReview)
+      .returning();
+    return review;
+  }
+
+  async updateReview(id: number, reviewData: Partial<InsertReview>): Promise<Review> {
+    const [updated] = await db
+      .update(reviews)
+      .set({ ...reviewData, updatedAt: new Date() })
+      .where(eq(reviews.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteReview(id: number): Promise<void> {
+    await db.update(reviews)
+      .set({ isActive: false })
+      .where(eq(reviews.id, id));
+  }
+
+  async getEmailSettings(): Promise<EmailSetting | undefined> {
+    const [settings] = await db.select().from(emailSettings).where(eq(emailSettings.isActive, true));
+    return settings;
+  }
+
+  async updateEmailSettings(settings: InsertEmailSetting): Promise<EmailSetting> {
+    const existing = await this.getEmailSettings();
+    if (existing) {
+      const [updated] = await db
+        .update(emailSettings)
+        .set({ ...settings, updatedAt: new Date() })
+        .where(eq(emailSettings.id, existing.id))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db
+        .insert(emailSettings)
+        .values(settings)
+        .returning();
+      return created;
+    }
+  }
+
+  async getAdminUser(clerkId: string): Promise<AdminUser | undefined> {
+    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.clerkId, clerkId));
+    return user;
+  }
+
+  async createAdminUser(user: InsertAdminUser): Promise<AdminUser> {
+    const [created] = await db
+      .insert(adminUsers)
+      .values(user)
+      .returning();
+    return created;
+  }
+
+  async isAdmin(clerkId: string): Promise<boolean> {
+    const user = await this.getAdminUser(clerkId);
+    return user ? user.isActive : false;
   }
 }
 
