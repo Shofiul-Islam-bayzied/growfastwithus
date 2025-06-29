@@ -19,12 +19,12 @@ import {
   LogOut
 } from "lucide-react";
 
-// Admin components will be loaded dynamically
-const ContentEditor = () => <div className="p-6 text-white">Content Editor - Coming Soon</div>;
-const ThemeCustomizer = () => <div className="p-6 text-white">Theme Customizer - Coming Soon</div>;
-const ReviewsManager = () => <div className="p-6 text-white">Reviews Manager - Coming Soon</div>;
-const ContactsManager = () => <div className="p-6 text-white">Contacts Manager - Coming Soon</div>;
-const EmailSettings = () => <div className="p-6 text-white">Email Settings - Coming Soon</div>;
+// Import admin components
+import ContentEditor from "@/components/admin/content-editor";
+import ThemeCustomizer from "@/components/admin/theme-customizer";
+import ReviewsManager from "@/components/admin/reviews-manager";
+import ContactsManager from "@/components/admin/contacts-manager";
+import EmailSettings from "@/components/admin/email-settings";
 
 export default function AdminDashboard() {
   const { isAuthenticated, isLoading, logout } = useAdminAuth();

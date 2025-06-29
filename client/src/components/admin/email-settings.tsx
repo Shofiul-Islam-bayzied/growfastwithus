@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Settings, Send, TestTube, Check, X, AlertCircle, Server } from "lucide-react";
+import { Mail, Settings, Send, TestTube, Check, X, AlertCircle, Server, Save } from "lucide-react";
 
 interface EmailSetting {
   id: number;
