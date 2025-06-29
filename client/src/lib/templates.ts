@@ -128,7 +128,7 @@ export const templates: Template[] = [
     description: "Intelligent lead qualification and automatic CRM synchronization.",
     price: 249,
     category: "Sales",
-    icon: "target",
+    icon: Target,
     features: ["Lead qualification", "CRM sync", "Scoring system", "Follow-up automation"],
   },
   {
@@ -137,7 +137,7 @@ export const templates: Template[] = [
     description: "Recover abandoned carts with personalized offers and discount automation.",
     price: 199,
     category: "E-commerce",
-    icon: "shopping-bag",
+    icon: ShoppingBag,
     features: ["Cart recovery", "Personalized offers", "Discount automation", "Performance analytics"],
   },
   {
@@ -146,7 +146,7 @@ export const templates: Template[] = [
     description: "Automated recruitment process with AI-powered resume screening and candidate management.",
     price: 349,
     category: "HR",
-    icon: "users",
+    icon: Users,
     features: ["Resume screening", "Candidate management", "Interview scheduling", "Background checks"],
   },
 ];

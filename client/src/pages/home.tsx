@@ -100,23 +100,7 @@ function FAQItem({ faq, index }: { faq: { question: string; answer: string }; in
   );
 }
 
-const iconMap = {
-  stethoscope: Stethoscope,
-  home: HomeIcon,
-  "shopping-cart": ShoppingCart,
-  briefcase: Briefcase,
-  utensils: Utensils,
-  wrench: Wrench,
-  "chart-line": ChartLine,
-  dumbbell: Dumbbell,
-  calendar: Calendar,
-  "user-check": UserCheck,
-  "message-circle": MessageCircle,
-  phone: Phone,
-  target: Target,
-  "shopping-bag": ShoppingBag,
-  users: Users,
-};
+
 
 export default function Home() {
 
@@ -658,7 +642,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemplates.slice(0, 6).map((template, index) => {
-              const IconComponent = iconMap[template.icon as keyof typeof iconMap] || Cog;
+              const IconComponent = template.icon;
               return (
                 <motion.div
                   key={template.id}
