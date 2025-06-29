@@ -27,8 +27,10 @@ export function ThemeCustomizer() {
     text: "#1A1A1A",
     background: "#FFFFFF"
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [currentLogo, setCurrentLogo] = useState("/images/logo.png");
 
-  const mutation = useMutation({
+  const themeMutation = useMutation({
     mutationFn: (themeData: any) => apiRequest("/api/admin/theme", "POST", themeData),
     onSuccess: () => {
       toast({
@@ -46,12 +48,39 @@ export function ThemeCustomizer() {
     },
   });
 
+  const logoMutation = useMutation({
+    mutationFn: (formData: FormData) => apiRequest("/api/admin/logo/upload", "POST", formData),
+    onSuccess: (response: any) => {
+      toast({
+        title: "Logo Updated",
+        description: "Your website logo has been successfully updated.",
+      });
+      setCurrentLogo(response.logoUrl);
+      setLogoFile(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/theme"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to upload logo. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSaveTheme = () => {
-    mutation.mutate({ colors });
+    themeMutation.mutate({ colors });
+  };
+
+  const handleLogoUpload = () => {
+    if (!logoFile) return;
+    
+    const formData = new FormData();
+    formData.append('logo', logoFile);
+    logoMutation.mutate(formData);
   };
 
   const previewChanges = () => {
-    // Apply theme changes temporarily for preview
     const root = document.documentElement;
     root.style.setProperty('--primary', colors.primary);
     root.style.setProperty('--secondary', colors.secondary);
@@ -72,25 +101,84 @@ export function ThemeCustomizer() {
         <p className="text-gray-600">Customize your website's visual appearance</p>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="primary-color">Primary Color</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="primary-color"
-                type="color"
-                value={colors.primary}
-                onChange={(e) => setColors({ ...colors, primary: e.target.value })}
-                className="w-16 h-10 p-1 border rounded"
-              />
-              <Input
-                value={colors.primary}
-                onChange={(e) => setColors({ ...colors, primary: e.target.value })}
-                placeholder="#FF5722"
-                className="flex-1"
-              />
+        {/* Logo Upload Section */}
+        <div>
+          <Label>Website Logo</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 mt-2">
+            <div className="flex items-center gap-4">
+              <div className="w-20 h-20 border rounded-lg flex items-center justify-center bg-gray-50">
+                <img 
+                  src={currentLogo} 
+                  alt="Current Logo" 
+                  className="max-w-full max-h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+                <div className="hidden text-gray-400 text-center">
+                  <Upload className="h-8 w-8 mx-auto" />
+                  <p className="text-xs mt-1">Logo</p>
+                </div>
+              </div>
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                  className="hidden"
+                  id="logo-upload"
+                />
+                <label htmlFor="logo-upload">
+                  <Button variant="outline" className="cursor-pointer">
+                    Choose Logo
+                  </Button>
+                </label>
+                {logoFile && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-600">Selected: {logoFile.name}</p>
+                    <Button 
+                      onClick={handleLogoUpload} 
+                      disabled={logoMutation.isPending}
+                      size="sm"
+                      className="mt-2"
+                    >
+                      {logoMutation.isPending ? (
+                        <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <Upload className="h-4 w-4 mr-2" />
+                      )}
+                      Upload Logo
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Color Customization */}
+        <div>
+          <Label className="text-base font-semibold">Brand Colors</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <div>
+              <Label htmlFor="primary-color">Primary Color</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="primary-color"
+                  type="color"
+                  value={colors.primary}
+                  onChange={(e) => setColors({ ...colors, primary: e.target.value })}
+                  className="w-16 h-10 p-1 border rounded"
+                />
+                <Input
+                  value={colors.primary}
+                  onChange={(e) => setColors({ ...colors, primary: e.target.value })}
+                  placeholder="#FF5722"
+                  className="flex-1"
+                />
+              </div>
+            </div>
 
           <div>
             <Label htmlFor="secondary-color">Secondary Color</Label>
@@ -157,16 +245,17 @@ export function ThemeCustomizer() {
           </Button>
           <Button 
             onClick={handleSaveTheme} 
-            disabled={mutation.isPending}
+            disabled={themeMutation.isPending}
             className="flex items-center gap-2"
           >
-            {mutation.isPending ? (
+            {themeMutation.isPending ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
             ) : (
               <Save className="h-4 w-4" />
             )}
             Save Theme
           </Button>
+        </div>
         </div>
       </CardContent>
     </Card>
