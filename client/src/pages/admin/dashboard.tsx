@@ -101,7 +101,7 @@ export default function AdminDashboard() {
                   <MessageSquare className="w-8 h-8 text-blue-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Total Contacts</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.totalContacts || 0}</p>
+                    <p className="text-2xl font-bold text-gray-900">{(stats as any)?.totalContacts || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
                   <Star className="w-8 h-8 text-yellow-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Reviews</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.totalReviews || 0}</p>
+                    <p className="text-2xl font-bold text-gray-900">{(stats as any)?.totalReviews || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
                   <Monitor className="w-8 h-8 text-green-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Templates</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.totalTemplates || 0}</p>
+                    <p className="text-2xl font-bold text-gray-900">{(stats as any)?.totalTemplates || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
                   <BarChart3 className="w-8 h-8 text-purple-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">This Month</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.monthlyContacts || 0}</p>
+                    <p className="text-2xl font-bold text-gray-900">{(stats as any)?.monthlyContacts || 0}</p>
                   </div>
                 </div>
               </CardContent>
