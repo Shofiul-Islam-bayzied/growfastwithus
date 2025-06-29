@@ -14,12 +14,15 @@ import {
   Clock,
   Users,
   TrendingUp,
-  Zap
+  Zap,
+  Menu,
+  X
 } from "lucide-react";
 
 export default function Templates() {
   const [selectedCategory, setSelectedCategory] = useState("All Templates");
   const [searchQuery, setSearchQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const categories = ["All Templates", ...Array.from(new Set(templates.map(t => t.category)))];
   
@@ -44,12 +47,28 @@ export default function Templates() {
               />
             </div>
             
-            <Link href="/">
-              <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link href="/">
+                <Button variant="outline" className="text-white border-white/30 hover:bg-white/10">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Home
+                </Button>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden text-white p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
           </div>
         </nav>
       </header>

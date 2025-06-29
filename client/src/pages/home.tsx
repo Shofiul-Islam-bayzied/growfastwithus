@@ -114,6 +114,7 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [emailSubscribed, setEmailSubscribed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -257,13 +258,119 @@ export default function Home() {
               <a href="#contact" className="hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
             </div>
             
+            {/* Desktop CTA Button */}
             <Button 
-              className="bg-primary hover:bg-primary/90 text-white shadow-lg"
+              className="hidden lg:block bg-primary hover:bg-primary/90 text-white shadow-lg"
               onClick={() => scrollToSection('contact')}
             >
               Book Discovery Call
             </Button>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="lg:hidden text-white p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="lg:hidden mt-4 pb-4 border-t border-white/20"
+            >
+              <div className="flex flex-col space-y-4 pt-4">
+                <a 
+                  href="#home" 
+                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    scrollToSection('home'); 
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Home
+                </a>
+                <a 
+                  href="#services" 
+                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    scrollToSection('services'); 
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Services
+                </a>
+                <a 
+                  href="#templates" 
+                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    scrollToSection('templates'); 
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Templates
+                </a>
+                <a 
+                  href="#pricing" 
+                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    scrollToSection('pricing'); 
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Pricing
+                </a>
+                <a 
+                  href="#contact" 
+                  className="text-white hover:text-primary transition-colors px-2 py-2 text-lg"
+                  onClick={(e) => { 
+                    e.preventDefault(); 
+                    scrollToSection('contact'); 
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  Contact
+                </a>
+                <div className="px-2 pt-2">
+                  <Link href="/templates" className="block">
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-primary hover:bg-primary/90 text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      View All Templates
+                    </Button>
+                  </Link>
+                </div>
+                <div className="px-2">
+                  <Button 
+                    size="lg"
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    onClick={() => {
+                      scrollToSection('contact');
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Book Discovery Call
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </nav>
       </header>
 
