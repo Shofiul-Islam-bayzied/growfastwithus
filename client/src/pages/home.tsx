@@ -383,7 +383,34 @@ export default function Home() {
       <section id="home" ref={heroRef} className="min-h-screen bg-black relative overflow-hidden">
         <AnimatedBackground className="absolute inset-0" />
 
-        
+        {/* Minimal geometric shapes for visual interest */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div 
+            className="absolute top-20 left-10 w-32 h-32 border border-primary/20 rounded-full"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div 
+            className="absolute top-40 right-20 w-24 h-24 bg-primary/10 rounded-lg"
+            animate={{ rotate: -180 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div 
+            className="absolute bottom-40 left-20 w-16 h-16 border-2 border-primary/30"
+            animate={{ rotate: 45 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div 
+            className="absolute bottom-32 right-32 w-40 h-40 border border-white/10 rounded-full"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div 
+            className="absolute top-60 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-gradient-to-r from-primary/20 to-transparent rounded-full"
+            animate={{ y: [0, -20, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
 
         
         <div className="container mx-auto px-6 py-32 relative z-10">
