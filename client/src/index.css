@@ -217,12 +217,12 @@ body {
 }
 
 .floating-particle {
-  width: 4px;
-  height: 4px;
-  background: linear-gradient(45deg, hsl(238, 82%, 66%), hsl(322, 81%, 57%));
+  width: 3px;
+  height: 3px;
+  background: var(--brand-orange);
   border-radius: 50%;
   position: absolute;
-  filter: blur(1px);
+  opacity: 0.3;
 }
 
 .tech-grid {

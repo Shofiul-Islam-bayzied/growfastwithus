@@ -285,7 +285,6 @@ export default function Home() {
       {/* Hero Section */}
       <section id="home" ref={heroRef} className="min-h-screen bg-black relative overflow-hidden">
         <AnimatedBackground className="absolute inset-0" />
-        <div className="absolute inset-0 gradient-mesh"></div>
 
         
 
@@ -345,21 +344,18 @@ export default function Home() {
             >
               <Button 
                 size="lg" 
-                className="btn-primary text-white text-lg px-10 py-4 rounded-xl shadow-lg"
+                className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg"
                 onClick={() => scrollToSection('contact')}
               >
-                <Rocket className="mr-3 w-6 h-6" />
-                Start Your Automation Journey
-                <ArrowRight className="ml-3 w-6 h-6" />
+                Get Started
               </Button>
               <Button 
-                size="lg" 
                 variant="outline" 
-                className="border-2 border-gray-600 text-gray-300 hover:bg-white/10 hover:border-primary text-lg px-8 py-4 rounded-xl backdrop-blur-sm"
+                size="lg" 
+                className="text-white border-white/30 hover:bg-white/10 px-8 py-3 rounded-lg"
                 onClick={() => scrollToSection('templates')}
               >
-                <Play className="mr-2 w-5 h-5" />
-                View Demo & Templates
+                View Templates
               </Button>
             </motion.div>
 
@@ -367,28 +363,10 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={heroInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="pt-12 text-center"
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="mt-12 text-center"
             >
-              <p className="text-sm text-gray-500 mb-6">Trusted by leading companies worldwide</p>
-              <div className="flex justify-center items-center space-x-8 opacity-60">
-                <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold text-primary">500+</div>
-                  <div className="text-xs text-gray-400">Companies</div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold text-accent">Fortune</div>
-                  <div className="text-xs text-gray-400">500 Clients</div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold text-secondary">Global</div>
-                  <div className="text-xs text-gray-400">Reach</div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="text-2xl font-bold text-primary">24/7</div>
-                  <div className="text-xs text-gray-400">Support</div>
-                </div>
-              </div>
+              <p className="text-gray-500 text-sm">Trusted by 500+ companies worldwide</p>
             </motion.div>
           </div>
         </div>
