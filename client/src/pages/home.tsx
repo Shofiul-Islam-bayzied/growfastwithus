@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AdvancedContactForm } from "@/components/advanced-contact-form";
+import { ThreeBackground } from "@/components/ThreeBackground";
+import { InteractiveParticles } from "@/components/InteractiveParticles";
 import { templates } from "@/lib/templates";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -231,7 +233,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      {/* Three.js Animated Background */}
+      <ThreeBackground />
       {/* Floating Action Button */}
       <motion.div
         className="fixed bottom-6 right-6 z-50"
@@ -297,6 +301,7 @@ export default function Home() {
       {/* Hero Section */}
       <section id="home" ref={heroRef} className="min-h-screen bg-black relative overflow-hidden">
         <div className="absolute inset-0 gradient-mesh"></div>
+        <InteractiveParticles intensity={1.2} className="opacity-80" />
         
         {/* Floating Particles */}
         {[...Array(5)].map((_, i) => (
