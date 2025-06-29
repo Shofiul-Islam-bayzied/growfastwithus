@@ -72,7 +72,7 @@ export const emailSettings = pgTable("email_settings", {
 
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
-  clerkId: varchar("clerk_id", { length: 255 }).notNull().unique(),
+  username: varchar("username", { length: 100 }).notNull().unique(),
   email: varchar("email", { length: 255 }).notNull(),
   role: varchar("role", { length: 50 }).notNull().default('admin'),
   permissions: text("permissions").array().default([]),

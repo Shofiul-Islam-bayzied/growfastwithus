@@ -49,9 +49,9 @@ export interface IStorage {
   getEmailSettings(): Promise<EmailSetting | undefined>;
   updateEmailSettings(settings: InsertEmailSetting): Promise<EmailSetting>;
   
-  getAdminUser(clerkId: string): Promise<AdminUser | undefined>;
+  getAdminUser(username: string): Promise<AdminUser | undefined>;
   createAdminUser(user: InsertAdminUser): Promise<AdminUser>;
-  isAdmin(clerkId: string): Promise<boolean>;
+  isAdmin(username: string): Promise<boolean>;
   
   // Advanced Analytics
   createAnalyticsEvent(event: any): Promise<any>;
@@ -206,8 +206,8 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getAdminUser(clerkId: string): Promise<AdminUser | undefined> {
-    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.clerkId, clerkId));
+  async getAdminUser(username: string): Promise<AdminUser | undefined> {
+    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
     return user;
   }
 
@@ -219,8 +219,8 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
-  async isAdmin(clerkId: string): Promise<boolean> {
-    const user = await this.getAdminUser(clerkId);
+  async isAdmin(username: string): Promise<boolean> {
+    const user = await this.getAdminUser(username);
     return user ? (user.isActive ?? false) : false;
   }
 
