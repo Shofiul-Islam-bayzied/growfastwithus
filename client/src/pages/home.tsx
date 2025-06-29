@@ -177,7 +177,7 @@ export default function Home() {
     
     const templateCosts = selectedTemplates.reduce((total, templateId) => {
       const template = templates.find(t => t.id === templateId);
-      return total + (template ? template.price : 0);
+      return total + (template ? template.basePrice : 0);
     }, 0);
     
     const baseMonthly = painPoints.length * 150 + 299 + templateCosts;
@@ -823,7 +823,7 @@ export default function Home() {
                         ))}
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="text-3xl font-bold text-primary">£{template.price}/mo</div>
+                        <div className="text-3xl font-bold text-primary">£{template.basePrice}/mo</div>
                         <Link href={`/template/${template.id}`}>
                           <Button variant="outline" className="group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all border-gray-600 text-gray-300">
                             Learn More
@@ -953,7 +953,7 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="text-sm font-semibold text-primary">
-                            £{template.price}/mo
+                            £{template.basePrice}/mo
                           </div>
                         </div>
                       ))}
