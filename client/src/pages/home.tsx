@@ -890,10 +890,19 @@ export default function Home() {
             animate={pricingInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Calculate Your Automation Investment</h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              See your potential ROI and cost savings with our interactive calculator
-            </p>
+            <div className="flex justify-between items-start mb-8">
+              <div className="text-left">
+                <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">Calculate Your Automation Investment</h2>
+                <p className="text-xl text-gray-400 max-w-2xl">
+                  See your potential ROI and cost savings with our interactive calculator
+                </p>
+              </div>
+              <CurrencySelector 
+                selectedCurrency={selectedCurrency}
+                onCurrencyChange={setSelectedCurrency}
+                className="mt-2"
+              />
+            </div>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
@@ -987,9 +996,29 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="text-sm font-semibold text-primary">
-                            £{template.basePrice}/mo
+                            {formatPrice(convertPrice(template.basePrice, 'GBP', selectedCurrency.code), selectedCurrency.code)}/mo
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Voice AI Add-ons */}
+                  <div>
+                    <h4 className="font-semibold mb-4 text-white">Voice AI Add-ons (Optional)</h4>
+                    <p className="text-sm text-gray-400 mb-4">
+                      Add inbound & outbound AI voice calling capabilities to your automation
+                    </p>
+                    <div className="grid grid-cols-1 gap-4">
+                      {voiceAIAddons.map((addon) => (
+                        <VoiceAIAddonCard
+                          key={addon.id}
+                          addon={addon}
+                          currency={selectedCurrency}
+                          isSelected={selectedVoiceAddons.includes(addon.id)}
+                          onToggle={handleVoiceAddonToggle}
+                          className="transition-all hover:shadow-md"
+                        />
                       ))}
                     </div>
                   </div>
@@ -1012,11 +1041,11 @@ export default function Home() {
                     <div className="space-y-4">
                       <div className="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg border border-gray-700">
                         <span className="font-medium text-gray-300">Setup Fee</span>
-                        <span className="text-xl font-bold text-white">£{pricing.setupFee.toLocaleString()}</span>
+                        <span className="text-xl font-bold text-white">{formatPrice(pricing.setupFee, selectedCurrency.code)}</span>
                       </div>
                       <div className="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg border border-gray-700">
                         <span className="font-medium text-gray-300">Monthly Fee</span>
-                        <span className="text-xl font-bold text-white">£{pricing.monthlyFee.toLocaleString()}/mo</span>
+                        <span className="text-xl font-bold text-white">{formatPrice(pricing.monthlyFee, selectedCurrency.code)}/mo</span>
                       </div>
                     </div>
 
@@ -1030,11 +1059,11 @@ export default function Home() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-300">Cost Savings Monthly</span>
-                          <span className="font-semibold text-primary">£{pricing.costSavings.toLocaleString()}</span>
+                          <span className="font-semibold text-primary">{formatPrice(pricing.costSavings, selectedCurrency.code)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-300">Annual Savings</span>
-                          <span className="font-semibold text-primary">£{(pricing.costSavings * 12).toLocaleString()}</span>
+                          <span className="font-semibold text-primary">{formatPrice(pricing.costSavings * 12, selectedCurrency.code)}</span>
                         </div>
                       </div>
                     </div>
