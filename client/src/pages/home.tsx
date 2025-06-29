@@ -8,13 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AdvancedContactForm } from "@/components/advanced-contact-form";
-import { ThreeBackground } from "@/components/ThreeBackground";
-import { InteractiveParticles } from "@/components/InteractiveParticles";
+import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { templates } from "@/lib/templates";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Sun,
-  Moon,
   Phone,
   Mail,
   Clock,
@@ -234,8 +231,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
-      {/* Three.js Animated Background */}
-      <ThreeBackground />
+
       {/* Floating Action Button */}
       <motion.div
         className="fixed bottom-6 right-6 z-50"
@@ -286,6 +282,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section id="home" ref={heroRef} className="min-h-screen bg-black relative overflow-hidden">
+        <AnimatedBackground className="absolute inset-0" />
         <div className="absolute inset-0 gradient-mesh"></div>
 
         

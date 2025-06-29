@@ -30,9 +30,9 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
 
     // Brand colors
     const brandColors = [
-      new THREE.Color('#6366f1'), // Primary Indigo
-      new THREE.Color('#ec4899'), // Pink Accent
-      new THREE.Color('#ff6b35'), // Orange Secondary
+      new THREE.Color('#FF5722'), // Primary Orange
+      new THREE.Color('#FF7043'), // Orange Light
+      new THREE.Color('#E64A19'), // Orange Dark
     ];
 
     for (let i = 0; i < particleCount; i++) {
@@ -106,7 +106,7 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     // Create flowing background waves
     const waveGeometry = new THREE.PlaneGeometry(60, 60, 16, 16);
     const waveMaterial = new THREE.MeshBasicMaterial({
-      color: new THREE.Color('#6366f1'),
+      color: new THREE.Color('#FF5722'),
       transparent: true,
       opacity: 0.05,
       wireframe: true
@@ -118,7 +118,7 @@ export function AnimatedBackground({ className = '' }: AnimatedBackgroundProps) 
     scene.add(wave1);
 
     const wave2 = new THREE.Mesh(waveGeometry.clone(), waveMaterial.clone());
-    wave2.material.color.setHex(0xec4899);
+    wave2.material.color.setHex(0xFF7043);
     wave2.rotation.x = -Math.PI * 0.3;
     wave2.position.y = -12;
     wave2.position.z = -5;
