@@ -543,8 +543,8 @@ export default function Home() {
               >
                 <Card className="service-card h-full">
                   <CardContent className="p-8 relative z-10">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
-                      <service.icon className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 border-2 border-primary/30 rounded-xl flex items-center justify-center mb-6 group-hover:border-primary group-hover:bg-primary/5 transition-all duration-300">
+                      <service.icon className="w-7 h-7 text-primary group-hover:text-primary" strokeWidth={1.5} />
                     </div>
                     <h3 className="text-2xl font-bold mb-4 text-white">{service.title}</h3>
                     <p className="text-gray-400 leading-relaxed">{service.description}</p>
