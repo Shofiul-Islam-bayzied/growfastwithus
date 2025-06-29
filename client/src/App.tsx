@@ -11,7 +11,8 @@ import Booking from "@/pages/booking";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
 import GDPR from "@/pages/gdpr";
-import SimpleDashboard from "@/pages/admin/simple-dashboard";
+import AdminDashboard from "@/pages/admin/dashboard";
+import AdminLogin from "@/pages/admin-login";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,7 +22,8 @@ function Router() {
       <Route path="/templates" component={Templates} />
       <Route path="/template/:id" component={TemplateDetail} />
       <Route path="/booking" component={Booking} />
-      <Route path="/admin" component={SimpleDashboard} />
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin-login" component={AdminLogin} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/gdpr" component={GDPR} />
