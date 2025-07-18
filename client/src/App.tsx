@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TrackingCodesProvider } from "@/components/tracking-codes-provider";
 import Home from "@/pages/home";
 import Templates from "@/pages/templates";
 import TemplateDetail from "@/pages/template-detail-new";
@@ -37,6 +38,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="growfast-theme">
         <TooltipProvider>
+          <TrackingCodesProvider />
           <Toaster />
           <Router />
         </TooltipProvider>

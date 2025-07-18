@@ -5,36 +5,25 @@ export function useAdminAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = () => {
-      const authenticated = localStorage.getItem("admin_authenticated");
-      const loginTime = localStorage.getItem("admin_login_time");
-      
-      if (authenticated === "true" && loginTime) {
-        const currentTime = Date.now();
-        const loginTimestamp = parseInt(loginTime);
-        const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
-        
-        if (currentTime - loginTimestamp < sessionDuration) {
-          setIsAuthenticated(true);
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/admin/session", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          setIsAuthenticated(!!data.authenticated);
         } else {
-          // Session expired
-          localStorage.removeItem("admin_authenticated");
-          localStorage.removeItem("admin_login_time");
           setIsAuthenticated(false);
         }
-      } else {
+      } catch {
         setIsAuthenticated(false);
       }
-      
       setIsLoading(false);
     };
-
     checkAuth();
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem("admin_authenticated");
-    localStorage.removeItem("admin_login_time");
+  const logout = async () => {
+    await fetch("/api/admin/logout", { method: "POST", credentials: "include" });
     setIsAuthenticated(false);
   };
 

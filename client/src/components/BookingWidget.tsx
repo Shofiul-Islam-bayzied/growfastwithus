@@ -79,6 +79,7 @@ export function BookingButton({
   
   const handleClick = () => {
     // Use your actual Cal.com booking link
+    console.log('BookingButton clicked, opening:', `https://cal.com/${calLink}`);
     window.open(`https://cal.com/${calLink}`, '_blank', 'noopener,noreferrer');
   };
 

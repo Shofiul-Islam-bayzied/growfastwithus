@@ -1,0 +1,50 @@
+services:
+  - name: growfastwithus
+    type: app
+    source:
+      type: git
+      repository: https://github.com/Shofiul-Islam-bayzied/Growfast
+      branch: main
+    build:
+      command: npm install && npm run build
+    start:
+      command: npm start
+    ports:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://growfast:${DB_PASSWORD}@growfastwithus-db:5432/growfastwithus
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PGHOST=growfastwithus-db
+      - PGPORT=5432
+      - PGUSER=growfast
+      - PGPASSWORD=${DB_PASSWORD}
+      - PGDATABASE=growfastwithus
+    depends_on:
+      - growfastwithus-db
+    healthcheck:
+      path: /api/health
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  - name: growfastwithus-db
+    type: database
+    database: postgresql
+    environment:
+      - POSTGRES_DB=growfastwithus
+      - POSTGRES_USER=growfast
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      command: pg_isready -U growfast -d growfastwithus
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  - name: postgres_data
+    type: local 

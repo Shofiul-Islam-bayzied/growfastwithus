@@ -33,26 +33,25 @@ export default function AdminLogin() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    
     try {
-      // Simple authentication check - in production, this should be server-side
-      if (data.username === "admin" && data.password === "growfast2025") {
-        // Store auth token in localStorage
-        localStorage.setItem("admin_authenticated", "true");
-        localStorage.setItem("admin_login_time", Date.now().toString());
-        
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (res.ok) {
         toast({
-          title: "Login Successful",
-          description: "Welcome to the admin panel!",
+          title: 'Login Successful',
+          description: 'Welcome to the admin panel!',
         });
-        
-        // Redirect to admin dashboard
-        setLocation("/admin");
+        setLocation('/admin');
       } else {
+        const err = await res.json();
         toast({
-          title: "Login Failed",
-          description: "Invalid username or password",
-          variant: "destructive",
+          title: 'Login Failed',
+          description: err.error || 'Invalid username or password',
+          variant: 'destructive',
         });
       }
     } catch (error) {
@@ -69,22 +68,24 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Card className="bg-black/50 backdrop-blur-xl border-white/10 shadow-2xl">
-          <CardHeader className="text-center pb-8">
-            <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
-              <Shield className="w-8 h-8 text-primary" />
+        <Card className="bg-black/50 backdrop-blur-xl border-white/10">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
+                <Shield className="w-7 h-7 text-white" />
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Admin Panel
+              </span>
             </div>
-            <CardTitle className="text-2xl font-bold text-white">
-              Admin Access
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold text-white">Admin Login</CardTitle>
             <CardDescription className="text-gray-400">
-              Enter your credentials to access the admin panel
+              Access the GrowFastWithUs admin dashboard
             </CardDescription>
           </CardHeader>
-          
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="username"
@@ -94,17 +95,14 @@ export default function AdminLogin() {
                       <FormControl>
                         <Input
                           {...field}
-                          type="text"
-                          placeholder="Enter username"
-                          className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-primary"
-                          disabled={isLoading}
+                          placeholder="Enter your username"
+                          className="bg-white/5 border-white/20 text-white placeholder:text-gray-400"
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
                 <FormField
                   control={form.control}
                   name="password"
@@ -116,43 +114,52 @@ export default function AdminLogin() {
                           <Input
                             {...field}
                             type={showPassword ? "text" : "password"}
-                            placeholder="Enter password"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-primary pr-10"
-                            disabled={isLoading}
+                            placeholder="Enter your password"
+                            className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 pr-10"
                           />
-                          <button
+                          <Button
                             type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-white/10"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                            disabled={isLoading}
                           >
                             {showPassword ? (
-                              <EyeOff className="w-4 h-4" />
+                              <EyeOff className="h-4 w-4 text-gray-400" />
                             ) : (
-                              <Eye className="w-4 h-4" />
+                              <Eye className="h-4 w-4 text-gray-400" />
                             )}
-                          </button>
+                          </Button>
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
                 <Button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3"
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Signing In..." : "Sign In"}
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Signing in...</span>
+                    </div>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
               </form>
             </Form>
             
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500">
-                Secure access to GrowFastWithUs admin panel
-              </p>
+            <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+              <h4 className="text-sm font-semibold text-blue-400 mb-2">Admin Credentials</h4>
+              <div className="text-xs text-gray-400 space-y-1">
+                <div><strong>Username:</strong> growfast_admin</div>
+                <div><strong>Password:</strong> GrowFast2025!Admin</div>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">Secure admin access for GrowFastWithUs</p>
             </div>
           </CardContent>
         </Card>

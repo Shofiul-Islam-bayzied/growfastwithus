@@ -13,7 +13,7 @@ export default function TermsOfService() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/attached_assets/white tect logo_1751164300901.png" 
+                src="/logo.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-8 w-auto"
               />

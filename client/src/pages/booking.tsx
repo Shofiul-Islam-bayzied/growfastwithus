@@ -14,6 +14,7 @@ import {
   Phone,
   Mail
 } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export default function Booking() {
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function Booking() {
               </Link>
               <div className="flex items-center space-x-3">
                 <img 
-                  src="/attached_assets/white tect logo_1751164300901.png" 
+                  src="/logo.png" 
                   alt="GrowFastWithUs Logo" 
                   className="h-8 w-auto"
                 />
@@ -290,6 +291,9 @@ export default function Booking() {
           </div>
         </div>
       </main>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

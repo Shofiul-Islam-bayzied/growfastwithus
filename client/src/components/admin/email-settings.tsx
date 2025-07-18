@@ -83,7 +83,7 @@ Urgency: {{urgency}}`,
   });
 
   // Fetch email settings
-  const { data: settings = {}, isLoading } = useQuery({
+  const { data: settings = {} as EmailSetting, isLoading } = useQuery({
     queryKey: ["/api/admin/email-settings"],
   });
 
@@ -199,16 +199,16 @@ Urgency: {{urgency}}`,
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${settings.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+              <div className={`w-3 h-3 rounded-full ${(settings as EmailSetting).isActive ? 'bg-green-500' : 'bg-red-500'}`} />
               <div>
                 <p className="text-white font-medium">Email Service Status</p>
                 <p className="text-sm text-gray-400">
-                  {settings.isActive ? 'Active and ready to send emails' : 'Inactive - Configure settings below'}
+                  {(settings as EmailSetting).isActive ? 'Active and ready to send emails' : 'Inactive - Configure settings below'}
                 </p>
               </div>
             </div>
-            <Badge variant={settings.isActive ? "default" : "destructive"}>
-              {settings.isActive ? 'Active' : 'Inactive'}
+            <Badge variant={(settings as EmailSetting).isActive ? "default" : "destructive"}>
+              {(settings as EmailSetting).isActive ? 'Active' : 'Inactive'}
             </Badge>
           </div>
         </CardContent>

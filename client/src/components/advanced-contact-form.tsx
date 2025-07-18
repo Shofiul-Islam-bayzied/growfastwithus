@@ -119,8 +119,48 @@ export function AdvancedContactForm() {
     }, 0);
   };
 
-  const onSubmit = (data: ContactFormData) => {
-    createContactMutation.mutate(data);
+  const onSubmit = async (data: ContactFormData) => {
+    try {
+      // Send to backend email endpoint
+      await fetch("/api/send-contact-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      // Send to Brevo
+      await fetch("https://api.brevo.com/v3/contacts", {
+        method: "POST",
+        headers: {
+          "accept": "application/json",
+          "api-key": "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",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          email: data.email,
+          attributes: {
+            FIRSTNAME: data.name,
+            COMPANY: data.company,
+            PHONE: data.phone,
+            INDUSTRY: data.industry,
+            BUSINESS_SIZE: data.businessSize,
+            TIME_SPENT: data.timeSpent,
+            MESSAGE: data.message
+          },
+          updateEnabled: true
+        })
+      });
+      setIsSubmitted(true);
+      toast({
+        title: "Application Submitted Successfully!",
+        description: "We'll contact you within 24 hours to schedule your discovery call.",
+      });
+    } catch (error) {
+      toast({
+        title: "Submission Failed",
+        description: "Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    }
   };
 
   const progress = (currentStep / totalSteps) * 100;
@@ -140,14 +180,22 @@ export function AdvancedContactForm() {
           Your application has been submitted successfully. We'll contact you within 24 hours to schedule your free discovery call.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
-            <Calendar className="w-5 h-5 mr-2" />
-            Schedule Call Now
-          </Button>
-          <Button size="lg" variant="outline">
-            <Phone className="w-5 h-5 mr-2" />
-            Call Us Directly
-          </Button>
+          <a href="/booking" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="bg-primary hover:bg-primary/90">
+              <Calendar className="w-5 h-5 mr-2" />
+              Schedule Call Now
+            </Button>
+          </a>
+          <a href="tel:+8801647267027">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="hover:bg-orange-100 hover:text-orange-700 transition-colors"
+            >
+              <Phone className="w-5 h-5 mr-2" />
+              Call Us Directly
+            </Button>
+          </a>
         </div>
       </motion.div>
     );
@@ -281,26 +329,6 @@ export function AdvancedContactForm() {
                   ))}
                 </div>
               </div>
-
-              <div>
-                <Label>Current Pain Points (Select all that apply)</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                  {painPointOptions.map((painPoint) => (
-                    <div key={painPoint} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={painPoint}
-                        checked={painPoints.includes(painPoint)}
-                        onCheckedChange={(checked) =>
-                          handlePainPointChange(painPoint, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={painPoint} className="text-sm">
-                        {painPoint}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </motion.div>
           )}
 
@@ -385,16 +413,6 @@ export function AdvancedContactForm() {
                       </div>
                     )}
                   </div>
-                  {painPoints.length > 0 && (
-                    <div>
-                      <span className="font-medium">Pain Points:</span>
-                      <ul className="list-disc list-inside text-sm mt-1">
-                        {painPoints.map((point) => (
-                          <li key={point}>{point}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                   <div>
                     <span className="font-medium">Weekly manual hours:</span> {timeSpent}
                   </div>

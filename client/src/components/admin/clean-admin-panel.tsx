@@ -13,7 +13,6 @@ import {
   Settings,
   Palette,
   Upload,
-  Star,
   BarChart3,
   Mail,
   Shield,
@@ -482,179 +481,7 @@ function MediaLibrary() {
   );
 }
 
-// Review Management
-function ReviewManager() {
-  const { toast } = useToast();
-  const [newReview, setNewReview] = useState({
-    customerName: "",
-    rating: 5,
-    reviewText: "",
-    company: ""
-  });
 
-  const { data: reviews, isLoading } = useQuery({
-    queryKey: ["/api/admin/reviews"],
-  });
-
-  const createMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/admin/reviews", "POST", data),
-    onSuccess: () => {
-      toast({
-        title: "Review Added",
-        description: "New review has been added successfully.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/reviews"] });
-      setNewReview({ customerName: "", rating: 5, reviewText: "", company: "" });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/admin/reviews/${id}`, "DELETE"),
-    onSuccess: () => {
-      toast({
-        title: "Review Deleted",
-        description: "Review has been removed successfully.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/reviews"] });
-    },
-  });
-
-  const handleSubmit = () => {
-    if (!newReview.customerName || !newReview.reviewText) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in customer name and review text.",
-        variant: "destructive",
-      });
-      return;
-    }
-    createMutation.mutate(newReview);
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Star className="h-5 w-5" />
-          Review Management
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Add New Review */}
-        <div className="p-4 border rounded-lg">
-          <h3 className="font-semibold mb-4">Add New Review</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="customer-name">Customer Name</Label>
-              <Input
-                id="customer-name"
-                value={newReview.customerName}
-                onChange={(e) => setNewReview({...newReview, customerName: e.target.value})}
-                placeholder="John Smith"
-              />
-            </div>
-            <div>
-              <Label htmlFor="company">Company (Optional)</Label>
-              <Input
-                id="company"
-                value={newReview.company}
-                onChange={(e) => setNewReview({...newReview, company: e.target.value})}
-                placeholder="Tech Corp"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-4">
-            <Label htmlFor="rating">Rating</Label>
-            <select
-              id="rating"
-              className="w-full p-2 border rounded-md"
-              value={newReview.rating}
-              onChange={(e) => setNewReview({...newReview, rating: parseInt(e.target.value)})}
-            >
-              {[5, 4, 3, 2, 1].map(num => (
-                <option key={num} value={num}>{num} Star{num !== 1 ? 's' : ''}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="mt-4">
-            <Label htmlFor="review-text">Review Text</Label>
-            <Textarea
-              id="review-text"
-              value={newReview.reviewText}
-              onChange={(e) => setNewReview({...newReview, reviewText: e.target.value})}
-              placeholder="Great service and amazing results..."
-              rows={3}
-            />
-          </div>
-          
-          <Button onClick={handleSubmit} disabled={createMutation.isPending} className="mt-4 flex items-center gap-2">
-            {createMutation.isPending ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            Add Review
-          </Button>
-        </div>
-
-        {/* Reviews List */}
-        {isLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="border rounded-lg p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <div key={star} className="h-4 w-4 bg-gray-200 rounded-full animate-pulse"></div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="h-16 w-full bg-gray-200 rounded animate-pulse"></div>
-                  </div>
-                  <div className="h-8 w-8 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {Array.isArray(reviews) && reviews.map((review: any) => (
-              <div key={review.id} className="border rounded-lg p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-semibold">{review.customerName}</span>
-                      {review.company && <span className="text-gray-500">• {review.company}</span>}
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-gray-700">{review.reviewText}</p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteMutation.mutate(review.id)}
-                    disabled={deleteMutation.isPending}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
 
 // Analytics Dashboard
 function Analytics() {
@@ -798,13 +625,12 @@ export default function CleanAdminPanel() {
         </div>
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="contacts">Contacts</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
+                  <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="content">Content</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="contacts">Contacts</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
 
           <TabsContent value="content" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -814,9 +640,7 @@ export default function CleanAdminPanel() {
             <MediaLibrary />
           </TabsContent>
 
-          <TabsContent value="reviews">
-            <ReviewManager />
-          </TabsContent>
+
 
           <TabsContent value="analytics">
             <Analytics />

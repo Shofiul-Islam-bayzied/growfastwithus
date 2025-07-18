@@ -261,7 +261,6 @@ export default function ContentEditor() {
                               <Switch
                                 checked={setting.isActive}
                                 onCheckedChange={() => handleToggleActive(setting)}
-                                size="sm"
                               />
                             </div>
                             <p className="text-gray-300 text-sm mb-2">

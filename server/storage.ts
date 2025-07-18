@@ -6,6 +6,13 @@ import {
   reviews,
   emailSettings,
   adminUsers,
+  trackingCodes,
+  roles,
+  permissions,
+  userSessions,
+  auditLogs,
+  securityEvents,
+  systemConfig,
   type User, 
   type InsertUser, 
   type Contact, 
@@ -19,12 +26,28 @@ import {
   type EmailSetting,
   type InsertEmailSetting,
   type AdminUser,
-  type InsertAdminUser
+  type InsertAdminUser,
+  type TrackingCode,
+  type InsertTrackingCode,
+  type Role,
+  type InsertRole,
+  type Permission,
+  type InsertPermission,
+  type UserSession,
+  type InsertUserSession,
+  type AuditLog,
+  type InsertAuditLog,
+  type SecurityEvent,
+  type InsertSecurityEvent,
+  type SystemConfig,
+  type InsertSystemConfig
 } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and, gte, lte } from "drizzle-orm";
+import { MariaDBStorage } from './storage-mariadb';
 
 export interface IStorage {
+  // Existing methods
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
@@ -72,12 +95,78 @@ export interface IStorage {
   logActivity(activity: any): Promise<any>;
   getActivityLogs(userId?: string): Promise<any[]>;
   
-
-  
   // Performance Monitoring
   recordPerformanceMetric(metric: any): Promise<any>;
   getPerformanceMetrics(type?: string, timeRange?: any): Promise<any[]>;
   getPerformanceStats(): Promise<any>;
+
+  getAdminUserByEmail(email: string): Promise<AdminUser | undefined>;
+  getAdminUserById(id: number): Promise<AdminUser | undefined>;
+  updateAdminUserPassword(id: number, newPasswordHash: string): Promise<void>;
+  updateAdminUserFailedAttempts(id: number, failedAttempts: number): Promise<void>;
+  updateAdminUserLocked(id: number, isLocked: boolean): Promise<void>;
+  updateAdminUserLastLogin(id: number): Promise<void>;
+  
+  // Tracking Codes Management
+  getTrackingCodes(): Promise<TrackingCode[]>;
+  getTrackingCode(id: number): Promise<TrackingCode | undefined>;
+  createTrackingCode(trackingCode: InsertTrackingCode): Promise<TrackingCode>;
+  updateTrackingCode(id: number, trackingCode: Partial<InsertTrackingCode>): Promise<TrackingCode>;
+  deleteTrackingCode(id: number): Promise<void>;
+  getActiveTrackingCodes(): Promise<TrackingCode[]>;
+
+  // New RBAC Methods
+  getRoleById(id: number): Promise<Role | undefined>;
+  getRoleByName(name: string): Promise<Role | undefined>;
+  createRole(role: InsertRole): Promise<Role>;
+  updateRole(id: number, role: Partial<InsertRole>): Promise<Role>;
+  deleteRole(id: number): Promise<void>;
+  getAllRoles(): Promise<Role[]>;
+  getActiveRoles(): Promise<Role[]>;
+
+  // Permission Methods
+  getPermissionById(id: number): Promise<Permission | undefined>;
+  getPermissionByName(name: string): Promise<Permission | undefined>;
+  createPermission(permission: InsertPermission): Promise<Permission>;
+  updatePermission(id: number, permission: Partial<InsertPermission>): Promise<Permission>;
+  deletePermission(id: number): Promise<void>;
+  getAllPermissions(): Promise<Permission[]>;
+  getPermissionsByResource(resource: string): Promise<Permission[]>;
+
+
+
+  // Session Management
+  getSessionByToken(sessionToken: string): Promise<UserSession | undefined>;
+  createUserSession(session: InsertUserSession): Promise<UserSession>;
+  updateSessionActivity(sessionId: number): Promise<void>;
+  updateSessionToken(sessionId: number, sessionToken: string, expiresAt: Date): Promise<void>;
+  revokeSession(sessionId: number): Promise<void>;
+  revokeSessionByToken(sessionToken: string): Promise<void>;
+  revokeAllUserSessions(userId: number): Promise<void>;
+  getActiveSessions(userId: number): Promise<UserSession[]>;
+  cleanupExpiredSessions(): Promise<void>;
+
+  // Audit Logging
+  createAuditLog(auditLog: InsertAuditLog): Promise<AuditLog>;
+  getAuditLogs(filters?: any): Promise<AuditLog[]>;
+  getAuditLogById(id: number): Promise<AuditLog | undefined>;
+  deleteAuditLog(id: number): Promise<void>;
+  cleanupOldAuditLogs(daysToKeep: number): Promise<void>;
+
+  // Security Events
+  createSecurityEvent(securityEvent: InsertSecurityEvent): Promise<SecurityEvent>;
+  getSecurityEvents(filters?: any): Promise<SecurityEvent[]>;
+  getSecurityEventById(id: number): Promise<SecurityEvent | undefined>;
+  updateSecurityEvent(id: number, updates: Partial<InsertSecurityEvent>): Promise<SecurityEvent>;
+  deleteSecurityEvent(id: number): Promise<void>;
+
+  // System Configuration
+  getSystemConfig(key: string): Promise<SystemConfig | undefined>;
+  getAllSystemConfigs(): Promise<SystemConfig[]>;
+  createSystemConfig(config: InsertSystemConfig): Promise<SystemConfig>;
+  updateSystemConfig(key: string, value: string, updatedBy?: number): Promise<SystemConfig>;
+  deleteSystemConfig(key: string): Promise<void>;
+  getSystemConfigsByCategory(category: string): Promise<SystemConfig[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -208,177 +297,458 @@ export class DatabaseStorage implements IStorage {
 
   async getAdminUser(username: string): Promise<AdminUser | undefined> {
     const [user] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
-    return user;
+    return user || undefined;
   }
 
   async createAdminUser(user: InsertAdminUser): Promise<AdminUser> {
-    const [created] = await db
+    const [createdUser] = await db
       .insert(adminUsers)
       .values(user)
       .returning();
-    return created;
+    return createdUser;
   }
 
   async isAdmin(username: string): Promise<boolean> {
     const user = await this.getAdminUser(username);
-    return user ? (user.isActive ?? false) : false;
+    return user?.isActive || false;
   }
 
-  // Advanced Analytics Implementation
+  // New RBAC Methods
+  async getRoleById(id: number): Promise<Role | undefined> {
+    const [role] = await db.select().from(roles).where(eq(roles.id, id));
+    return role || undefined;
+  }
+
+  async getRoleByName(name: string): Promise<Role | undefined> {
+    const [role] = await db.select().from(roles).where(eq(roles.name, name));
+    return role || undefined;
+  }
+
+  async createRole(role: InsertRole): Promise<Role> {
+    const [createdRole] = await db
+      .insert(roles)
+      .values(role)
+      .returning();
+    return createdRole;
+  }
+
+  async updateRole(id: number, roleData: Partial<InsertRole>): Promise<Role> {
+    const [updated] = await db
+      .update(roles)
+      .set({ ...roleData, updatedAt: new Date() })
+      .where(eq(roles.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteRole(id: number): Promise<void> {
+    await db.delete(roles).where(eq(roles.id, id));
+  }
+
+  async getAllRoles(): Promise<Role[]> {
+    return await db.select().from(roles);
+  }
+
+  async getActiveRoles(): Promise<Role[]> {
+    return await db.select().from(roles).where(eq(roles.isActive, true));
+  }
+
+  // Permission Methods
+  async getPermissionById(id: number): Promise<Permission | undefined> {
+    const [permission] = await db.select().from(permissions).where(eq(permissions.id, id));
+    return permission || undefined;
+  }
+
+  async getPermissionByName(name: string): Promise<Permission | undefined> {
+    const [permission] = await db.select().from(permissions).where(eq(permissions.name, name));
+    return permission || undefined;
+  }
+
+  async createPermission(permission: InsertPermission): Promise<Permission> {
+    const [createdPermission] = await db
+      .insert(permissions)
+      .values(permission)
+      .returning();
+    return createdPermission;
+  }
+
+  async updatePermission(id: number, permissionData: Partial<InsertPermission>): Promise<Permission> {
+    const [updated] = await db
+      .update(permissions)
+      .set({ ...permissionData, updatedAt: new Date() })
+      .where(eq(permissions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deletePermission(id: number): Promise<void> {
+    await db.delete(permissions).where(eq(permissions.id, id));
+  }
+
+  async getAllPermissions(): Promise<Permission[]> {
+    return await db.select().from(permissions);
+  }
+
+  async getPermissionsByResource(resource: string): Promise<Permission[]> {
+    return await db.select().from(permissions).where(eq(permissions.resource, resource));
+  }
+
+
+
+  // Session Management
+  async getSessionByToken(sessionToken: string): Promise<UserSession | undefined> {
+    const [session] = await db.select().from(userSessions).where(eq(userSessions.sessionToken, sessionToken));
+    return session || undefined;
+  }
+
+  async createUserSession(session: InsertUserSession): Promise<UserSession> {
+    const [created] = await db
+      .insert(userSessions)
+      .values(session)
+      .returning();
+    return created;
+  }
+
+  async updateSessionActivity(sessionId: number): Promise<void> {
+    await db
+      .update(userSessions)
+      .set({ lastActivity: new Date() })
+      .where(eq(userSessions.id, sessionId));
+  }
+
+  async updateSessionToken(sessionId: number, sessionToken: string, expiresAt: Date): Promise<void> {
+    await db
+      .update(userSessions)
+      .set({ sessionToken, expiresAt, updatedAt: new Date() })
+      .where(eq(userSessions.id, sessionId));
+  }
+
+  async revokeSession(sessionId: number): Promise<void> {
+    await db
+      .update(userSessions)
+      .set({ isActive: false, updatedAt: new Date() })
+      .where(eq(userSessions.id, sessionId));
+  }
+
+  async revokeSessionByToken(sessionToken: string): Promise<void> {
+    await db
+      .update(userSessions)
+      .set({ isActive: false, updatedAt: new Date() })
+      .where(eq(userSessions.sessionToken, sessionToken));
+  }
+
+  async revokeAllUserSessions(userId: number): Promise<void> {
+    await db
+      .update(userSessions)
+      .set({ isActive: false, updatedAt: new Date() })
+      .where(eq(userSessions.userId, userId));
+  }
+
+  async getActiveSessions(userId: number): Promise<UserSession[]> {
+    return await db
+      .select()
+      .from(userSessions)
+      .where(and(eq(userSessions.userId, userId), eq(userSessions.isActive, true)));
+  }
+
+  async cleanupExpiredSessions(): Promise<void> {
+    const now = new Date();
+    await db
+      .update(userSessions)
+      .set({ isActive: false, updatedAt: now })
+      .where(lte(userSessions.expiresAt, now));
+  }
+
+  // Audit Logging
+  async createAuditLog(auditLog: InsertAuditLog): Promise<AuditLog> {
+    const [created] = await db
+      .insert(auditLogs)
+      .values(auditLog)
+      .returning();
+    return created;
+  }
+
+  async getAuditLogs(filters?: any): Promise<AuditLog[]> {
+    let query = db.select().from(auditLogs);
+    
+    if (filters) {
+      const conditions = [];
+      if (filters.userId) conditions.push(eq(auditLogs.userId, filters.userId));
+      if (filters.action) conditions.push(eq(auditLogs.action, filters.action));
+      if (filters.resourceType) conditions.push(eq(auditLogs.resourceType, filters.resourceType));
+      if (filters.severity) conditions.push(eq(auditLogs.severity, filters.severity));
+      if (filters.startDate) conditions.push(gte(auditLogs.createdAt, filters.startDate));
+      if (filters.endDate) conditions.push(lte(auditLogs.createdAt, filters.endDate));
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
+    }
+    
+    return await query.orderBy(auditLogs.createdAt);
+  }
+
+  async getAuditLogById(id: number): Promise<AuditLog | undefined> {
+    const [log] = await db.select().from(auditLogs).where(eq(auditLogs.id, id));
+    return log || undefined;
+  }
+
+  async deleteAuditLog(id: number): Promise<void> {
+    await db.delete(auditLogs).where(eq(auditLogs.id, id));
+  }
+
+  async cleanupOldAuditLogs(daysToKeep: number): Promise<void> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
+    
+    await db.delete(auditLogs).where(lte(auditLogs.createdAt, cutoffDate));
+  }
+
+  // Security Events
+  async createSecurityEvent(securityEvent: InsertSecurityEvent): Promise<SecurityEvent> {
+    const [created] = await db
+      .insert(securityEvents)
+      .values(securityEvent)
+      .returning();
+    return created;
+  }
+
+  async getSecurityEvents(filters?: any): Promise<SecurityEvent[]> {
+    let query = db.select().from(securityEvents);
+    
+    if (filters) {
+      const conditions = [];
+      if (filters.userId) conditions.push(eq(securityEvents.userId, filters.userId));
+      if (filters.eventType) conditions.push(eq(securityEvents.eventType, filters.eventType));
+      if (filters.riskScore) conditions.push(eq(securityEvents.riskScore, filters.riskScore));
+      if (filters.startDate) conditions.push(gte(securityEvents.createdAt, filters.startDate));
+      if (filters.endDate) conditions.push(lte(securityEvents.createdAt, filters.endDate));
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
+    }
+    
+    return await query.orderBy(securityEvents.createdAt);
+  }
+
+  async getSecurityEventById(id: number): Promise<SecurityEvent | undefined> {
+    const [event] = await db.select().from(securityEvents).where(eq(securityEvents.id, id));
+    return event || undefined;
+  }
+
+  async updateSecurityEvent(id: number, updates: Partial<InsertSecurityEvent>): Promise<SecurityEvent> {
+    const [updated] = await db
+      .update(securityEvents)
+      .set(updates)
+      .where(eq(securityEvents.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteSecurityEvent(id: number): Promise<void> {
+    await db.delete(securityEvents).where(eq(securityEvents.id, id));
+  }
+
+  // System Configuration
+  async getSystemConfig(key: string): Promise<SystemConfig | undefined> {
+    const [config] = await db.select().from(systemConfig).where(eq(systemConfig.key, key));
+    return config || undefined;
+  }
+
+  async getAllSystemConfigs(): Promise<SystemConfig[]> {
+    return await db.select().from(systemConfig);
+  }
+
+  async createSystemConfig(config: InsertSystemConfig): Promise<SystemConfig> {
+    const [created] = await db
+      .insert(systemConfig)
+      .values(config)
+      .returning();
+    return created;
+  }
+
+  async updateSystemConfig(key: string, value: string, updatedBy?: number): Promise<SystemConfig> {
+    const existing = await this.getSystemConfig(key);
+    if (existing) {
+      const [updated] = await db
+        .update(systemConfig)
+        .set({ value, updatedBy, updatedAt: new Date() })
+        .where(eq(systemConfig.key, key))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db
+        .insert(systemConfig)
+        .values({ key, value, updatedBy })
+        .returning();
+      return created;
+    }
+  }
+
+  async deleteSystemConfig(key: string): Promise<void> {
+    await db.delete(systemConfig).where(eq(systemConfig.key, key));
+  }
+
+  async getSystemConfigsByCategory(category: string): Promise<SystemConfig[]> {
+    return await db.select().from(systemConfig).where(eq(systemConfig.category, category));
+  }
+
+  // Existing methods (keeping for compatibility)
+  async getAdminUserByEmail(email: string): Promise<AdminUser | undefined> {
+    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.email, email));
+    return user || undefined;
+  }
+
+  async getAdminUserById(id: number): Promise<AdminUser | undefined> {
+    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, id));
+    return user || undefined;
+  }
+
+  async updateAdminUserPassword(id: number, newPasswordHash: string): Promise<void> {
+    await db
+      .update(adminUsers)
+      .set({ 
+        password: newPasswordHash, 
+        lastPasswordChange: new Date(),
+        updatedAt: new Date() 
+      })
+      .where(eq(adminUsers.id, id));
+  }
+
+  async updateAdminUserFailedAttempts(id: number, failedAttempts: number): Promise<void> {
+    await db
+      .update(adminUsers)
+      .set({ 
+        failedLoginAttempts: failedAttempts,
+        updatedAt: new Date() 
+      })
+      .where(eq(adminUsers.id, id));
+  }
+
+  async updateAdminUserLocked(id: number, isLocked: boolean): Promise<void> {
+    await db
+      .update(adminUsers)
+      .set({ 
+        isLocked,
+        updatedAt: new Date() 
+      })
+      .where(eq(adminUsers.id, id));
+  }
+
+  async updateAdminUserLastLogin(id: number): Promise<void> {
+    await db
+      .update(adminUsers)
+      .set({ 
+        lastLogin: new Date(),
+        updatedAt: new Date() 
+      })
+      .where(eq(adminUsers.id, id));
+  }
+
+  async getTrackingCodes(): Promise<TrackingCode[]> {
+    return await db.select().from(trackingCodes);
+  }
+
+  async getTrackingCode(id: number): Promise<TrackingCode | undefined> {
+    const [code] = await db.select().from(trackingCodes).where(eq(trackingCodes.id, id));
+    return code || undefined;
+  }
+
+  async createTrackingCode(trackingCode: InsertTrackingCode): Promise<TrackingCode> {
+      const [created] = await db
+        .insert(trackingCodes)
+        .values(trackingCode)
+        .returning();
+      return created;
+  }
+
+  async updateTrackingCode(id: number, trackingCodeData: Partial<InsertTrackingCode>): Promise<TrackingCode> {
+      const [updated] = await db
+        .update(trackingCodes)
+        .set({ ...trackingCodeData, updatedAt: new Date() })
+        .where(eq(trackingCodes.id, id))
+        .returning();
+      return updated;
+  }
+
+  async deleteTrackingCode(id: number): Promise<void> {
+      await db.delete(trackingCodes).where(eq(trackingCodes.id, id));
+  }
+
+  async getActiveTrackingCodes(): Promise<TrackingCode[]> {
+      return await db.select().from(trackingCodes).where(eq(trackingCodes.isActive, true));
+  }
+
+  // Placeholder methods for compatibility
   async createAnalyticsEvent(event: any): Promise<any> {
-    return { id: Date.now(), ...event, createdAt: new Date() };
+    // Implementation for analytics events
+    return event;
   }
 
   async getAnalytics(filters?: any): Promise<any[]> {
-    return [
-      { eventType: 'page_view', count: 1250, date: '2024-12-29' },
-      { eventType: 'contact_form', count: 89, date: '2024-12-29' },
-      { eventType: 'template_view', count: 456, date: '2024-12-29' }
-    ];
+    // Implementation for analytics
+    return [];
   }
 
   async getAnalyticsStats(dateRange?: any): Promise<any> {
-    return {
-      totalPageViews: 12450,
-      uniqueVisitors: 3200,
-      bounceRate: 0.32,
-      avgSessionDuration: 185,
-      conversionRate: 0.071
-    };
+    // Implementation for analytics stats
+    return {};
   }
 
-  // Content Scheduling Implementation
   async createScheduledContent(content: any): Promise<any> {
-    return { id: Date.now(), ...content, status: 'pending', createdAt: new Date() };
+    // Implementation for scheduled content
+    return content;
   }
 
   async getScheduledContent(status?: string): Promise<any[]> {
-    const mockScheduled = [
-      { id: 1, contentType: 'review', scheduledAction: 'publish', status: 'pending' },
-      { id: 2, contentType: 'site_setting', scheduledAction: 'update', status: 'pending' }
-    ];
-    return status ? mockScheduled.filter(s => s.status === status) : mockScheduled;
+    // Implementation for scheduled content
+    return [];
   }
 
   async executeScheduledContent(id: number): Promise<void> {
-    console.log(`Executing scheduled content ${id}`);
+    // Implementation for executing scheduled content
   }
 
-  // Content Backups Implementation
   async createBackup(backupData: any): Promise<any> {
-    return { id: Date.now(), backupType: 'full', createdBy: 'admin', createdAt: new Date() };
+    // Implementation for backups
+    return backupData;
   }
 
   async getBackups(): Promise<any[]> {
-    return [
-      { id: 1, backupType: 'full', backupSize: 2450000, createdAt: new Date(Date.now() - 86400000) },
-      { id: 2, backupType: 'incremental', backupSize: 890000, createdAt: new Date(Date.now() - 172800000) }
-    ];
+    // Implementation for backups
+    return [];
   }
 
   async restoreBackup(id: number): Promise<void> {
-    console.log(`Restoring backup ${id}`);
+    // Implementation for backup restoration
   }
 
-  // Activity Logging Implementation
   async logActivity(activity: any): Promise<any> {
-    return { id: Date.now(), ...activity, createdAt: new Date() };
+    // Implementation for activity logging
+    return activity;
   }
 
   async getActivityLogs(userId?: string): Promise<any[]> {
-    return [
-      { id: 1, userId: 'admin', action: 'update_review', resourceType: 'review', createdAt: new Date(Date.now() - 3600000) },
-      { id: 2, userId: 'admin', action: 'create_template', resourceType: 'template', createdAt: new Date(Date.now() - 7200000) }
-    ];
+    // Implementation for activity logs
+    return [];
   }
 
-  // Email Campaigns Implementation
-  async createEmailCampaign(campaign: any): Promise<any> {
-    return { id: Date.now(), status: 'draft', recipientCount: 0, createdAt: new Date(), ...campaign };
-  }
-
-  async getEmailCampaigns(): Promise<any[]> {
-    return [
-      { id: 1, name: 'Welcome Series', subject: 'Welcome to GrowFastWithUs!', status: 'sent', recipientCount: 125, openRate: 0.34 },
-      { id: 2, name: 'Monthly Newsletter', subject: 'December Updates', status: 'scheduled', recipientCount: 890 }
-    ];
-  }
-
-  async updateEmailCampaign(id: number, updates: any): Promise<any> {
-    return { id, ...updates, updatedAt: new Date() };
-  }
-
-  async sendEmailCampaign(id: number): Promise<void> {
-    console.log(`Sending email campaign ${id}`);
-  }
-
-  // A/B Testing Implementation
-  async createAbTest(test: any): Promise<any> {
-    return { id: Date.now(), status: 'draft', trafficSplit: 50, createdAt: new Date(), ...test };
-  }
-
-  async getAbTests(): Promise<any[]> {
-    return [
-      { id: 1, name: 'Hero CTA Button Test', testType: 'cta_button', status: 'running', results: { variantA: { conversions: 45 }, variantB: { conversions: 62 } } },
-      { id: 2, name: 'Pricing Page Layout', testType: 'pricing', status: 'completed', results: { variantA: { conversions: 89 }, variantB: { conversions: 103 } } }
-    ];
-  }
-
-  async updateAbTest(id: number, updates: any): Promise<any> {
-    return { id, ...updates, updatedAt: new Date() };
-  }
-
-  async getAbTestResults(id: number): Promise<any> {
-    return { id, winner: 'variant_b', statistical_significance: 0.95, recommendations: 'Implement Variant B for 18% improvement' };
-  }
-
-  // Lead Scoring Implementation
-  async calculateLeadScore(contactId: number): Promise<any> {
-    const contacts = await this.getContacts();
-    const contact = contacts.find(c => c.id === contactId);
-    if (!contact) return null;
-    
-    const score = Math.floor(Math.random() * 100);
-    return { contactId, score, scoringFactors: { businessSize: 25, painPoints: 20, timeSpent: 15 }, lastCalculated: new Date() };
-  }
-
-  async getLeadScores(): Promise<any[]> {
-    const contacts = await this.getContacts();
-    return contacts.slice(0, 5).map(contact => ({
-      contactId: contact.id,
-      score: Math.floor(Math.random() * 100),
-      lastCalculated: new Date(Date.now() - Math.random() * 86400000)
-    }));
-  }
-
-  async updateLeadScore(contactId: number, score: number, factors: any): Promise<any> {
-    return { contactId, score, scoringFactors: factors, lastCalculated: new Date() };
-  }
-
-  // Performance Monitoring Implementation
   async recordPerformanceMetric(metric: any): Promise<any> {
-    return { id: Date.now(), timestamp: new Date(), ...metric };
+    // Implementation for performance metrics
+    return metric;
   }
 
   async getPerformanceMetrics(type?: string, timeRange?: any): Promise<any[]> {
-    const metrics = [
-      { metricType: 'page_load', value: 1250, unit: 'ms', page: '/' },
-      { metricType: 'api_response', value: 189, unit: 'ms', page: '/api/contacts' },
-      { metricType: 'error_rate', value: 0.02, unit: 'percentage', page: '/templates' }
-    ];
-    return type ? metrics.filter(m => m.metricType === type) : metrics;
+    // Implementation for performance metrics
+    return [];
   }
 
   async getPerformanceStats(): Promise<any> {
-    return {
-      avgPageLoad: 1180,
-      avgApiResponse: 245,
-      errorRate: 0.018,
-      uptime: 99.97,
-      totalRequests: 45600,
-      optimizationScore: 87
-    };
+    // Implementation for performance stats
+    return {};
   }
 }
 
+// Export the storage instance
 export const storage = new DatabaseStorage();

@@ -70,15 +70,107 @@ export const emailSettings = pgTable("email_settings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Enhanced RBAC System
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
   username: varchar("username", { length: 100 }).notNull().unique(),
-  email: varchar("email", { length: 255 }).notNull(),
-  role: varchar("role", { length: 50 }).notNull().default('admin'),
-  permissions: text("permissions").array().default([]),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  firstName: varchar("first_name", { length: 100 }),
+  lastName: varchar("last_name", { length: 100 }),
+  roleId: integer("role_id").notNull(),
   isActive: boolean("is_active").default(true),
+  isLocked: boolean("is_locked").default(false),
+  failedLoginAttempts: integer("failed_login_attempts").default(0),
   lastLogin: timestamp("last_login"),
+  lastPasswordChange: timestamp("last_password_change"),
+  passwordExpiresAt: timestamp("password_expires_at"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// RBAC Roles
+export const roles = pgTable("roles", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  permissions: jsonb("permissions").notNull().default([]),
+  isSystem: boolean("is_system").default(false),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// RBAC Permissions
+export const permissions = pgTable("permissions", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  resource: varchar("resource", { length: 100 }).notNull(),
+  action: varchar("action", { length: 50 }).notNull(), // create, read, update, delete, manage
+  conditions: jsonb("conditions"), // JSON conditions for fine-grained permissions
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+
+
+// Session Management
+export const userSessions = pgTable("user_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  sessionToken: varchar("session_token", { length: 255 }).notNull().unique(),
+  refreshToken: varchar("refresh_token", { length: 255 }),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  expiresAt: timestamp("expires_at").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  lastActivity: timestamp("last_activity").defaultNow(),
+});
+
+// Comprehensive Audit Logging
+export const auditLogs = pgTable("audit_logs", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id"),
+  sessionId: varchar("session_id", { length: 255 }),
+  action: varchar("action", { length: 100 }).notNull(),
+  resourceType: varchar("resource_type", { length: 100 }),
+  resourceId: varchar("resource_id", { length: 100 }),
+  oldValues: jsonb("old_values"),
+  newValues: jsonb("new_values"),
+  metadata: jsonb("metadata"),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  severity: varchar("severity", { length: 20 }).default('info'), // info, warning, error, critical
+  status: varchar("status", { length: 20 }).default('success'), // success, failure, pending
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Security Events
+export const securityEvents = pgTable("security_events", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id"),
+  eventType: varchar("event_type", { length: 100 }).notNull(), // login, logout, failed_login, password_change, etc.
+  description: text("description"),
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  location: jsonb("location"), // GeoIP data
+  riskScore: integer("risk_score").default(0),
+  isBlocked: boolean("is_blocked").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Configuration Management
+export const systemConfig = pgTable("system_config", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(),
+  value: text("value").notNull(),
+  type: varchar("type", { length: 50 }).notNull().default('string'), // string, number, boolean, json
+  category: varchar("category", { length: 100 }).notNull().default('general'),
+  description: text("description"),
+  isSensitive: boolean("is_sensitive").default(false),
+  updatedBy: integer("updated_by"),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
@@ -93,6 +185,20 @@ export const analytics = pgTable("analytics", {
   userAgent: varchar("user_agent"),
   referrer: varchar("referrer"),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Tracking codes management
+export const trackingCodes = pgTable("tracking_codes", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // gtm, facebook_pixel, google_analytics, etc.
+  code: text("code").notNull(),
+  placement: varchar("placement", { length: 50 }).notNull().default('head'), // head, body, both
+  isActive: boolean("is_active").default(true),
+  description: text("description"),
+  createdBy: varchar("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Content scheduling
@@ -185,96 +291,32 @@ export const leadScoring = pgTable("lead_scoring", {
 export const performanceMetrics = pgTable("performance_metrics", {
   id: serial("id").primaryKey(),
   metricType: varchar("metric_type").notNull(),
-  value: decimal("value").notNull(),
-  unit: varchar("unit"),
-  page: varchar("page"),
-  timestamp: timestamp("timestamp").defaultNow(),
+  metricValue: decimal("metric_value").notNull(),
+  metricUnit: varchar("metric_unit"),
+  timestamp: timestamp("timestamp").notNull(),
   metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
+// Zod schemas for validation
+export const insertUserSchema = createInsertSchema(users);
+export const insertContactSchema = createInsertSchema(contacts);
+export const insertTemplateSchema = createInsertSchema(templates);
+export const insertSiteSettingSchema = createInsertSchema(siteSettings);
+export const insertReviewSchema = createInsertSchema(reviews);
+export const insertEmailSettingSchema = createInsertSchema(emailSettings);
+export const insertAdminUserSchema = createInsertSchema(adminUsers);
+export const insertTrackingCodeSchema = createInsertSchema(trackingCodes);
 
-export const insertContactSchema = createInsertSchema(contacts).omit({
-  id: true,
-  createdAt: true,
-});
+// New RBAC schemas
+export const insertRoleSchema = createInsertSchema(roles);
+export const insertPermissionSchema = createInsertSchema(permissions);
+export const insertUserSessionSchema = createInsertSchema(userSessions);
+export const insertAuditLogSchema = createInsertSchema(auditLogs);
+export const insertSecurityEventSchema = createInsertSchema(securityEvents);
+export const insertSystemConfigSchema = createInsertSchema(systemConfig);
 
-export const insertTemplateSchema = createInsertSchema(templates).omit({
-  id: true,
-});
-
-export const insertSiteSettingSchema = createInsertSchema(siteSettings).omit({
-  id: true,
-  updatedAt: true,
-});
-
-export const insertReviewSchema = createInsertSchema(reviews).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertEmailSettingSchema = createInsertSchema(emailSettings).omit({
-  id: true,
-  updatedAt: true,
-});
-
-export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertAnalyticsSchema = createInsertSchema(analytics).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertScheduledContentSchema = createInsertSchema(scheduledContent).omit({
-  id: true,
-  createdAt: true,
-  executedAt: true,
-});
-
-export const insertContentBackupSchema = createInsertSchema(contentBackups).omit({
-  id: true,
-  createdAt: true,
-  restoredAt: true,
-});
-
-export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertEmailCampaignSchema = createInsertSchema(emailCampaigns).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  sentAt: true,
-});
-
-export const insertAbTestSchema = createInsertSchema(abTests).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertLeadScoringSchema = createInsertSchema(leadScoring).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  lastCalculated: true,
-});
-
-export const insertPerformanceMetricSchema = createInsertSchema(performanceMetrics).omit({
-  id: true,
-  timestamp: true,
-});
-
+// Type exports
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertContact = z.infer<typeof insertContactSchema>;
@@ -289,3 +331,19 @@ export type InsertEmailSetting = z.infer<typeof insertEmailSettingSchema>;
 export type EmailSetting = typeof emailSettings.$inferSelect;
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type AdminUser = typeof adminUsers.$inferSelect;
+export type InsertTrackingCode = z.infer<typeof insertTrackingCodeSchema>;
+export type TrackingCode = typeof trackingCodes.$inferSelect;
+
+// New RBAC types
+export type InsertRole = z.infer<typeof insertRoleSchema>;
+export type Role = typeof roles.$inferSelect;
+export type InsertPermission = z.infer<typeof insertPermissionSchema>;
+export type Permission = typeof permissions.$inferSelect;
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
+export type UserSession = typeof userSessions.$inferSelect;
+export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
+export type AuditLog = typeof auditLogs.$inferSelect;
+export type InsertSecurityEvent = z.infer<typeof insertSecurityEventSchema>;
+export type SecurityEvent = typeof securityEvents.$inferSelect;
+export type InsertSystemConfig = z.infer<typeof insertSystemConfigSchema>;
+export type SystemConfig = typeof systemConfig.$inferSelect;

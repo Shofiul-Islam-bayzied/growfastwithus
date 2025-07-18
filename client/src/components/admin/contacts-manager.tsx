@@ -106,10 +106,12 @@ export default function ContactsManager() {
 
   const getBusinessTypeStats = () => {
     const types: Record<string, number> = {};
-    contacts.forEach((contact: Contact) => {
-      const type = contact.businessType || "Unknown";
-      types[type] = (types[type] || 0) + 1;
-    });
+    if (contacts && Array.isArray(contacts)) {
+      contacts.forEach((contact: Contact) => {
+        const type = contact.businessType || "Unknown";
+        types[type] = (types[type] || 0) + 1;
+      });
+    }
     return Object.entries(types).map(([type, count]) => ({ type, count }));
   };
 
@@ -149,7 +151,7 @@ export default function ContactsManager() {
               <Users className="w-8 h-8 text-blue-400 mr-3" />
               <div>
                 <p className="text-sm text-gray-400">Total Contacts</p>
-                <p className="text-2xl font-bold text-white">{contacts.length}</p>
+                <p className="text-2xl font-bold text-white">{Array.isArray(contacts) ? contacts.length : 0}</p>
               </div>
             </div>
           </CardContent>
@@ -162,9 +164,9 @@ export default function ContactsManager() {
               <div>
                 <p className="text-sm text-gray-400">This Month</p>
                 <p className="text-2xl font-bold text-white">
-                  {contacts.filter((c: Contact) => 
+                  {Array.isArray(contacts) ? contacts.filter((c: Contact) => 
                     new Date(c.createdAt).getMonth() === new Date().getMonth()
-                  ).length}
+                  ).length : 0}
                 </p>
               </div>
             </div>
@@ -178,7 +180,7 @@ export default function ContactsManager() {
               <div>
                 <p className="text-sm text-gray-400">With Email</p>
                 <p className="text-2xl font-bold text-white">
-                  {contacts.filter((c: Contact) => c.email).length}
+                  {Array.isArray(contacts) ? contacts.filter((c: Contact) => c.email).length : 0}
                 </p>
               </div>
             </div>
@@ -192,7 +194,7 @@ export default function ContactsManager() {
               <div>
                 <p className="text-sm text-gray-400">With Phone</p>
                 <p className="text-2xl font-bold text-white">
-                  {contacts.filter((c: Contact) => c.phone).length}
+                  {Array.isArray(contacts) ? contacts.filter((c: Contact) => c.phone).length : 0}
                 </p>
               </div>
             </div>
@@ -244,7 +246,7 @@ export default function ContactsManager() {
             </Select>
 
             <Badge variant="outline" className="text-white border-white/20">
-              {filteredContacts.length} of {contacts.length} contacts
+              {filteredContacts.length} of {Array.isArray(contacts) ? contacts.length : 0} contacts
             </Badge>
           </div>
         </CardContent>
@@ -309,15 +311,15 @@ export default function ContactsManager() {
                       </div>
                     </div>
 
-                    {(contact.painPoints?.length > 0 || contact.automationGoals?.length > 0) && (
+                    {((contact.painPoints && contact.painPoints.length > 0) || (contact.automationGoals && contact.automationGoals.length > 0)) && (
                       <div className="mt-3 space-y-1">
-                        {contact.painPoints?.length > 0 && (
+                        {contact.painPoints && contact.painPoints.length > 0 && (
                           <p className="text-sm text-gray-400">
                             <span className="font-medium">Pain Points:</span> {contact.painPoints.slice(0, 2).join(", ")}
                             {contact.painPoints.length > 2 && "..."}
                           </p>
                         )}
-                        {contact.automationGoals?.length > 0 && (
+                        {contact.automationGoals && contact.automationGoals.length > 0 && (
                           <p className="text-sm text-gray-400">
                             <span className="font-medium">Goals:</span> {contact.automationGoals.slice(0, 2).join(", ")}
                             {contact.automationGoals.length > 2 && "..."}
@@ -388,7 +390,7 @@ export default function ContactsManager() {
                             </div>
 
                             {/* Pain Points */}
-                            {selectedContact.painPoints?.length > 0 && (
+                            {selectedContact.painPoints && selectedContact.painPoints.length > 0 && (
                               <div>
                                 <h4 className="font-semibold mb-2 text-orange-400">Pain Points</h4>
                                 <div className="flex flex-wrap gap-2">
@@ -402,7 +404,7 @@ export default function ContactsManager() {
                             )}
 
                             {/* Automation Goals */}
-                            {selectedContact.automationGoals?.length > 0 && (
+                            {selectedContact.automationGoals && selectedContact.automationGoals.length > 0 && (
                               <div>
                                 <h4 className="font-semibold mb-2 text-orange-400">Automation Goals</h4>
                                 <div className="flex flex-wrap gap-2">

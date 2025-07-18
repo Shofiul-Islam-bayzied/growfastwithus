@@ -189,12 +189,12 @@ export default function Home() {
     
     const templateCosts = selectedTemplates.reduce((total, templateId) => {
       const template = templates.find(t => t.id === templateId);
-      return total + (template ? template.basePrice : 0);
+      return total + (template ? template.tiers[0].monthlyFee : 0);
     }, 0);
 
     const templateSetupCosts = selectedTemplates.reduce((total, templateId) => {
       const template = templates.find(t => t.id === templateId);
-      return total + (template ? template.setupFee : 0);
+      return total + (template ? template.tiers[0].setupFee : 0);
     }, 0);
 
     // Voice AI addon costs
@@ -208,16 +208,30 @@ export default function Home() {
       return total + (addon ? addon.setupFee : 0);
     }, 0);
     
-    const baseMonthlyGBP = painPoints.length * 150 + 299 + templateCosts + voiceAddonMonthlyCosts;
-    const totalSetupGBP = baseSetup + templateSetupCosts + voiceAddonSetupCosts;
+    const baseMonthlyEUR = painPoints.length * 150 + 299 + templateCosts + voiceAddonMonthlyCosts;
+    const totalSetupEUR = baseSetup + templateSetupCosts + voiceAddonSetupCosts;
     
     // Convert to selected currency
-    const monthlyFee = convertPrice(baseMonthlyGBP, 'GBP', selectedCurrency.code);
-    const setupFee = convertPrice(totalSetupGBP, 'GBP', selectedCurrency.code);
+    const monthlyFee = convertPrice(baseMonthlyEUR, 'EUR', selectedCurrency.code);
+    const setupFee = convertPrice(totalSetupEUR, 'EUR', selectedCurrency.code);
     
     const timeSavings = timeSpent[0] * 4; // 4 weeks per month
     const costSavings = timeSavings * 40 * selectedCurrency.rate; // Adjusted for currency
-    const roi = ((costSavings * 12 - setupFee - monthlyFee * 12) / (setupFee + monthlyFee * 12)) * 100;
+    
+    // Calculate ROI with proper error handling
+    const totalInvestment = setupFee + monthlyFee * 12;
+    const totalSavings = costSavings * 12;
+    
+    let roi = 0;
+    if (totalInvestment > 0) {
+      roi = ((totalSavings - totalInvestment) / totalInvestment) * 100;
+    }
+    
+    // Calculate break-even months
+    let breakEven = 0;
+    if (costSavings > 0) {
+      breakEven = Math.ceil(totalInvestment / costSavings);
+    }
     
     return {
       setupFee,
@@ -225,7 +239,7 @@ export default function Home() {
       timeSaved: timeSavings,
       costSavings,
       roi: Math.round(roi),
-      breakEven: Math.ceil((setupFee + monthlyFee * 12) / costSavings),
+      breakEven: breakEven,
     };
   };
 
@@ -263,9 +277,12 @@ export default function Home() {
   };
 
   const scrollToSection = (elementId: string) => {
+    console.log('scrollToSection called with:', elementId);
     const element = document.getElementById(elementId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      console.warn('Element not found:', elementId);
     }
   };
 
@@ -278,13 +295,13 @@ export default function Home() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        <Button 
+        <BookingButton 
           className="glass-button shadow-lg animate-pulse-glow px-6 py-3 rounded-full font-semibold"
-          onClick={() => scrollToSection('contact')}
+          calLink="grow-fast-with-us/30min"
         >
           <Phone className="w-4 h-4 mr-2" />
           Book Discovery Call
-        </Button>
+        </BookingButton>
       </motion.div>
 
 
@@ -295,7 +312,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/attached_assets/white tect logo_1751164300901.png" 
+                src="/logo.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-8 w-auto"
               />
@@ -459,7 +476,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.1 }}
             >
               <img 
-                src="/attached_assets/white tect logo_1751164300901.png" 
+                src="/logo.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-10 w-auto"
               />
@@ -502,13 +519,14 @@ export default function Home() {
               animate={heroInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg"
-                onClick={() => scrollToSection('contact')}
-              >
-                Get Started
-              </Button>
+              <Link href="/booking">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg"
+                >
+                  Get Started
+                </Button>
+              </Link>
               <Button 
                 variant="outline" 
                 size="lg" 
@@ -826,7 +844,6 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemplates.slice(0, 6).map((template, index) => {
-              const IconComponent = template.icon;
               return (
                 <motion.div
                   key={template.id}
@@ -837,19 +854,14 @@ export default function Home() {
                   className="group"
                 >
                   <Card className="service-card h-full relative overflow-hidden">
-                    {template.popular && (
-                      <Badge className="absolute top-4 right-4 bg-primary/20 text-primary border-primary/30 z-20">
-                        Popular
-                      </Badge>
-                    )}
                     <CardContent className="p-8 relative z-10">
                       <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/50 transition-all duration-300">
-                        <IconComponent className="w-8 h-8 text-white" />
+                        <Zap className="w-8 h-8 text-white" />
                       </div>
                       <h3 className="text-2xl font-bold mb-4 text-white">{template.title}</h3>
                       <p className="text-gray-400 mb-6 leading-relaxed">{template.description}</p>
                       <div className="space-y-2 mb-6">
-                        {template.features.slice(0, 3).map((feature) => (
+                        {template.tiers[0].features.slice(0, 3).map((feature) => (
                           <div key={feature} className="flex items-center text-sm text-gray-300">
                             <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
                             {feature}
@@ -857,7 +869,7 @@ export default function Home() {
                         ))}
                       </div>
                       <div className="flex items-center justify-between">
-                        <div className="text-3xl font-bold text-primary">£{template.basePrice}/mo</div>
+                        <div className="text-3xl font-bold text-primary">€{template.tiers[0].monthlyFee}/mo</div>
                         <Link href={`/template/${template.id}`}>
                           <Button variant="outline" className="group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all border-gray-600 text-gray-300">
                             Learn More
@@ -996,7 +1008,7 @@ export default function Home() {
                             </div>
                           </div>
                           <div className="text-sm font-semibold text-primary">
-                            {formatPrice(convertPrice(template.basePrice, 'GBP', selectedCurrency.code), selectedCurrency.code)}/mo
+                            {formatPrice(convertPrice(template.tiers[0].monthlyFee, 'EUR', selectedCurrency.code), selectedCurrency.code)}/mo
                           </div>
                         </div>
                       ))}
@@ -1493,16 +1505,19 @@ export default function Home() {
               {/* Social Media Links */}
               <div className="flex space-x-4">
                 <a href="https://linkedin.com/company/growfastwithus" target="_blank" rel="noopener noreferrer" 
-                   className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg">
-                  <ExternalLink className="w-6 h-6 text-gray-400 group-hover:text-white" />
+                   className="w-12 h-12 bg-gradient-to-r from-blue-700 to-blue-500 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg"
+                   aria-label="LinkedIn">
+                  <svg className="w-6 h-6 text-white group-hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.025-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.968v5.699h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.841-1.563 3.039 0 3.601 2.001 3.601 4.601v5.595z"/></svg>
                 </a>
                 <a href="https://twitter.com/growfastwithus" target="_blank" rel="noopener noreferrer"
-                   className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg">
-                  <ExternalLink className="w-6 h-6 text-gray-400 group-hover:text-white" />
+                   className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg"
+                   aria-label="Twitter">
+                  <svg className="w-6 h-6 text-white group-hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557a9.93 9.93 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724c-.951.564-2.005.974-3.127 1.195a4.92 4.92 0 0 0-8.384 4.482c-4.086-.205-7.713-2.164-10.141-5.144a4.822 4.822 0 0 0-.666 2.475c0 1.708.87 3.216 2.188 4.099a4.904 4.904 0 0 1-2.229-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.936 4.936 0 0 1-2.224.084c.627 1.956 2.444 3.377 4.6 3.417a9.867 9.867 0 0 1-6.102 2.104c-.396 0-.787-.023-1.175-.069a13.945 13.945 0 0 0 7.548 2.212c9.057 0 14.009-7.513 14.009-14.009 0-.213-.005-.425-.014-.636a10.012 10.012 0 0 0 2.457-2.548z"/></svg>
                 </a>
                 <a href="https://youtube.com/@growfastwithus" target="_blank" rel="noopener noreferrer"
-                   className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg">
-                  <ExternalLink className="w-6 h-6 text-gray-400 group-hover:text-white" />
+                   className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-400 rounded-xl flex items-center justify-center hover:from-primary hover:to-accent transition-all duration-300 group shadow-lg"
+                   aria-label="YouTube">
+                  <svg className="w-6 h-6 text-white group-hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.112-2.112c-1.863-.502-9.386-.502-9.386-.502s-7.523 0-9.386.502a2.994 2.994 0 0 0-2.112 2.112c-.502 1.863-.502 5.754-.502 5.754s0 3.891.502 5.754a2.994 2.994 0 0 0 2.112 2.112c1.863.502 9.386.502 9.386.502s7.523 0 9.386-.502a2.994 2.994 0 0 0 2.112-2.112c.502-1.863.502-5.754.502-5.754s0-3.891-.502-5.754zm-13.498 9.814v-7l6.5 3.5-6.5 3.5z"/></svg>
                 </a>
               </div>
             </div>

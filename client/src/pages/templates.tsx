@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { templates } from "@/lib/templates";
+import Footer from "@/components/Footer";
 import {
   ArrowLeft,
   Search,
@@ -41,7 +42,7 @@ export default function Templates() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
-                src="/attached_assets/white tect logo_1751164300901.png" 
+                src="/logo.png" 
                 alt="GrowFastWithUs Logo" 
                 className="h-8 w-auto"
               />
@@ -92,7 +93,7 @@ export default function Templates() {
                   </Button>
                 </Link>
                 <div className="px-2 pt-2">
-                  <Link href="/" className="block">
+                  <Link href="/booking" className="block">
                     <Button 
                       size="lg" 
                       className="w-full bg-primary hover:bg-primary/90 text-white"
@@ -215,12 +216,6 @@ export default function Templates() {
                           </Badge>
                         </div>
                       </div>
-                      {template.popular && (
-                        <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                          <Star className="w-3 h-3 mr-1" />
-                          Popular
-                        </Badge>
-                      )}
                     </div>
 
                     {/* Description */}
@@ -232,15 +227,15 @@ export default function Templates() {
                     <div className="mb-6">
                       <h4 className="text-sm font-medium text-white mb-3">Key Features:</h4>
                       <div className="space-y-2">
-                        {template.features.slice(0, 3).map((feature, idx) => (
+                        {template.tiers[0].features.slice(0, 3).map((feature, idx) => (
                           <div key={idx} className="flex items-center space-x-2">
                             <CheckCircle className="w-4 h-4 text-primary" />
                             <span className="text-gray-300 text-sm">{feature}</span>
                           </div>
                         ))}
-                        {template.features.length > 3 && (
+                        {template.tiers[0].features.length > 3 && (
                           <div className="text-gray-400 text-xs">
-                            +{template.features.length - 3} more features
+                            +{template.tiers[0].features.length - 3} more features
                           </div>
                         )}
                       </div>
@@ -269,9 +264,12 @@ export default function Templates() {
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="text-2xl font-bold text-primary">
-                          £{template.price}
+                          €{template.tiers[0].monthlyFee}
                         </span>
                         <span className="text-gray-400 text-sm">/month</span>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {template.tiers.length} tiers available
+                        </div>
                       </div>
                       <Link href={`/template/${template.id}`}>
                         <Button className="bg-primary hover:bg-primary/90 text-white">
@@ -326,6 +324,9 @@ export default function Templates() {
           </motion.div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

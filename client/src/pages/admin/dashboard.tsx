@@ -5,57 +5,29 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { 
-  Settings, 
-  Users, 
-  MessageSquare, 
-  Star, 
-  Palette, 
-  Upload,
-  Mail,
-  Monitor,
-  BarChart3,
-  LogOut
-} from "lucide-react";
-
-// Import admin components
+import { LogOut, Settings, Users, MessageSquare, Star, Palette, Upload, Mail, Monitor, BarChart3, Code } from "lucide-react";
 import ContentEditor from "@/components/admin/content-editor";
 import ThemeCustomizer from "@/components/admin/theme-customizer";
-import ReviewsManager from "@/components/admin/reviews-manager";
+
 import ContactsManager from "@/components/admin/contacts-manager";
 import EmailSettings from "@/components/admin/email-settings";
+import TrackingCodesManager from "@/components/admin/tracking-codes-manager";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState("content");
   const { isAuthenticated, isLoading, logout } = useAdminAuth();
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("content");
-
-  // All hooks must be called before any conditional returns
   const { data: stats = {} } = useQuery({
     queryKey: ["/api/admin/stats"],
-    enabled: isAuthenticated,
+    enabled: true,
   });
 
-  // Redirect to login if not authenticated
-  if (!isLoading && !isAuthenticated) {
+  if (isLoading) return null;
+  if (!isAuthenticated) {
     setLocation("/admin-login");
     return null;
   }
-
-  // Show loading while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
-  }
-
-  const handleLogout = () => {
-    logout();
-    setLocation("/");
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
@@ -68,7 +40,7 @@ export default function AdminDashboard() {
               <p className="text-gray-400">Manage your GrowFastWithUs website</p>
             </div>
             <Button
-              onClick={handleLogout}
+              onClick={logout}
               variant="outline"
               className="bg-transparent border-white/20 text-white hover:bg-white/10"
             >
@@ -88,7 +60,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-400">Total Contacts</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalContacts || 0}</p>
+                  <p className="text-2xl font-bold text-white">{(stats as any).totalContacts || 0}</p>
                 </div>
                 <Users className="w-8 h-8 text-primary" />
               </div>
@@ -100,7 +72,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-400">Templates</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalTemplates || 15}</p>
+                  <p className="text-2xl font-bold text-white">{(stats as any).totalTemplates || 15}</p>
                 </div>
                 <Upload className="w-8 h-8 text-primary" />
               </div>
@@ -112,7 +84,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-400">Reviews</p>
-                  <p className="text-2xl font-bold text-white">{stats.totalReviews || 0}</p>
+                  <p className="text-2xl font-bold text-white">{(stats as any).totalReviews || 0}</p>
                 </div>
                 <Star className="w-8 h-8 text-primary" />
               </div>
@@ -138,7 +110,7 @@ export default function AdminDashboard() {
         <Card className="bg-black/50 backdrop-blur-xl border-white/10">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <CardHeader>
-              <TabsList className="grid w-full grid-cols-5 bg-white/5">
+              <TabsList className="grid w-full grid-cols-6 bg-white/5">
                 <TabsTrigger value="content" className="data-[state=active]:bg-primary">
                   <Upload className="w-4 h-4 mr-2" />
                   Content
@@ -147,13 +119,14 @@ export default function AdminDashboard() {
                   <Users className="w-4 h-4 mr-2" />
                   Contacts
                 </TabsTrigger>
-                <TabsTrigger value="reviews" className="data-[state=active]:bg-primary">
-                  <Star className="w-4 h-4 mr-2" />
-                  Reviews
-                </TabsTrigger>
+
                 <TabsTrigger value="theme" className="data-[state=active]:bg-primary">
                   <Palette className="w-4 h-4 mr-2" />
                   Theme
+                </TabsTrigger>
+                <TabsTrigger value="tracking" className="data-[state=active]:bg-primary">
+                  <Code className="w-4 h-4 mr-2" />
+                  Tracking
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="data-[state=active]:bg-primary">
                   <Settings className="w-4 h-4 mr-2" />
@@ -171,12 +144,14 @@ export default function AdminDashboard() {
                 <ContactsManager />
               </TabsContent>
 
-              <TabsContent value="reviews" className="space-y-4">
-                <ReviewsManager />
-              </TabsContent>
+
 
               <TabsContent value="theme" className="space-y-4">
                 <ThemeCustomizer />
+              </TabsContent>
+
+              <TabsContent value="tracking" className="space-y-4">
+                <TrackingCodesManager />
               </TabsContent>
 
               <TabsContent value="settings" className="space-y-4">

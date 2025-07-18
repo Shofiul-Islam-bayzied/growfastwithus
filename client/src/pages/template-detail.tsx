@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { templates } from "@/lib/templates";
+import Footer from "@/components/Footer";
 import {
   ArrowLeft,
   CheckCircle,
@@ -41,7 +42,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Healthcare"
+    industry: "Healthcare",
+    whatItDoes: [
+      "Automatically schedules appointments based on provider availability",
+      "Sends SMS and email reminders to reduce no-shows",
+      "Handles post-visit follow-up communications",
+      "Integrates with existing calendar systems"
+    ],
+    whatYouNeed: [
+      "Access to your current appointment system",
+      "Provider availability schedules",
+      "Patient contact information",
+      "HIPAA compliance requirements"
+    ],
+    support: "24/7 technical support with dedicated healthcare specialists"
   },
   "real-estate-sales-funnel": {
     overview: "Convert more buyers and tenants with automated lead capture, follow-up, and CRM updates. Our Real Estate Sales Funnel keeps agents organized and proactive.",
@@ -61,7 +75,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Real Estate"
+    industry: "Real Estate",
+    whatItDoes: [
+      "Captures leads from multiple sources automatically",
+      "Sends personalized property information to prospects",
+      "Schedules property viewings and follow-ups",
+      "Updates CRM systems with prospect activity"
+    ],
+    whatYouNeed: [
+      "Access to your CRM system",
+      "Property listing information",
+      "Agent availability schedules",
+      "Marketing materials and property photos"
+    ],
+    support: "24/7 support with real estate industry specialists"
   },
   "ecommerce-smart-ops": {
     overview: "Running an online store is chaos without automation. E-Commerce Smart Ops syncs your inventory, manages orders, and helps your team focus on growth instead of spreadsheets.",
@@ -81,7 +108,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "E-commerce"
+    industry: "E-commerce",
+    whatItDoes: [
+      "Synchronizes inventory across all sales channels",
+      "Automatically processes and fulfills orders",
+      "Sends customer updates and tracking information",
+      "Manages supplier relationships and reordering"
+    ],
+    whatYouNeed: [
+      "Access to your e-commerce platforms",
+      "Inventory management system",
+      "Supplier contact information",
+      "Shipping carrier accounts"
+    ],
+    support: "24/7 support with e-commerce specialists"
   },
   "professional-services-crm": {
     overview: "Client-facing businesses juggle tons of manual tasks. Professional Services CRM Flow automates onboarding, document collection, project tracking, and billing.",
@@ -101,7 +141,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Professional Services"
+    industry: "Professional Services",
+    whatItDoes: [
+      "Automates client onboarding and data collection",
+      "Tracks project milestones and deliverables",
+      "Generates and sends invoices automatically",
+      "Manages document collection and storage"
+    ],
+    whatYouNeed: [
+      "Access to your current CRM system",
+      "Client contact information",
+      "Project management workflows",
+      "Billing and payment systems"
+    ],
+    support: "24/7 support with professional services specialists"
   },
   "restaurant-automation": {
     overview: "Your kitchen should focus on great food — not chaos. Our automation system consolidates orders, manages kitchen workflows, and turns customer feedback into actionable insights.",
@@ -121,7 +174,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Restaurant"
+    industry: "Restaurant",
+    whatItDoes: [
+      "Consolidates orders from multiple delivery platforms",
+      "Streamlines kitchen ticket management",
+      "Analyzes customer feedback automatically",
+      "Monitors inventory and alerts when low"
+    ],
+    whatYouNeed: [
+      "Access to your delivery platform accounts",
+      "Kitchen management system",
+      "Inventory tracking system",
+      "Customer feedback channels"
+    ],
+    support: "24/7 support with restaurant industry specialists"
   },
   "home-services-scheduler": {
     overview: "Stop drowning in phone calls. This automation schedules technicians, assigns jobs, and keeps customers informed.",
@@ -141,7 +207,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Home Services"
+    industry: "Home Services",
+    whatItDoes: [
+      "Schedules service appointments automatically",
+      "Assigns technicians based on skills and location",
+      "Sends customer updates and arrival times",
+      "Tracks job completion and billing"
+    ],
+    whatYouNeed: [
+      "Technician contact information",
+      "Service area definitions",
+      "Pricing and billing systems",
+      "Customer contact databases"
+    ],
+    support: "24/7 support with home services specialists"
   },
   "digital-marketing-system": {
     overview: "Marketing should be creative — not repetitive. Our system automates client onboarding, campaign setups, reporting, and ROI tracking.",
@@ -161,7 +240,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Marketing"
+    industry: "Marketing",
+    whatItDoes: [
+      "Automates campaign setup and management",
+      "Tracks lead scoring and engagement",
+      "Generates performance reports automatically",
+      "Provides client portal access"
+    ],
+    whatYouNeed: [
+      "Access to advertising platforms",
+      "Client contact information",
+      "Campaign performance data",
+      "Reporting requirements"
+    ],
+    support: "24/7 support with marketing specialists"
   },
   "fitness-member-system": {
     overview: "Keep your studio full and your members happy. This system automates bookings, tracks progress, and simplifies communication.",
@@ -181,7 +273,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Fitness"
+    industry: "Fitness",
+    whatItDoes: [
+      "Manages member profiles and memberships",
+      "Handles class booking and scheduling",
+      "Tracks fitness progress and goals",
+      "Automates billing and renewals"
+    ],
+    whatYouNeed: [
+      "Member contact information",
+      "Class schedules and capacity",
+      "Billing and payment systems",
+      "Fitness tracking requirements"
+    ],
+    support: "24/7 support with fitness industry specialists"
   },
   "event-planning-bot": {
     overview: "Event planning is stressful — our bot handles vendors, timelines, and guest communication so you stay organized and proactive.",
@@ -201,7 +306,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Events"
+    industry: "Events",
+    whatItDoes: [
+      "Creates event timelines automatically",
+      "Manages vendor communications and tasks",
+      "Handles guest invitations and RSVPs",
+      "Collects post-event feedback and photos"
+    ],
+    whatYouNeed: [
+      "Event details and requirements",
+      "Vendor contact information",
+      "Guest lists and contact details",
+      "Event timeline and milestones"
+    ],
+    support: "24/7 support with event planning specialists"
   },
   "coaching-client-portal": {
     overview: "Give clients a premium coaching experience with automated onboarding, resource sharing, and progress tracking.",
@@ -221,7 +339,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Coaching"
+    industry: "Coaching",
+    whatItDoes: [
+      "Automates client onboarding process",
+      "Manages session scheduling and calendars",
+      "Tracks client progress and goals",
+      "Shares resources and materials securely"
+    ],
+    whatYouNeed: [
+      "Client contact information",
+      "Coaching materials and resources",
+      "Calendar and scheduling systems",
+      "Progress tracking requirements"
+    ],
+    support: "24/7 support with coaching specialists"
   },
   "whatsapp-support-agent": {
     overview: "Serve customers 24/7 without hiring more agents. Our WhatsApp AI answers FAQs, handles simple queries, and escalates complex issues to your human team.",
@@ -241,7 +372,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Customer Support"
+    industry: "Customer Support",
+    whatItDoes: [
+      "Answers customer questions 24/7",
+      "Handles simple support requests automatically",
+      "Escalates complex issues to human agents",
+      "Provides multilingual support"
+    ],
+    whatYouNeed: [
+      "WhatsApp Business API access",
+      "Knowledge base and FAQs",
+      "Support team contact information",
+      "Common customer questions"
+    ],
+    support: "24/7 support with customer service specialists"
   },
   "voice-reminder-bot": {
     overview: "Ensure clients never miss an appointment or payment. This bot calls clients with natural-sounding AI voices and logs every interaction.",
@@ -261,7 +405,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Communication"
+    industry: "Communication",
+    whatItDoes: [
+      "Makes personalized voice calls to clients",
+      "Sends appointment reminders automatically",
+      "Follows up on payment reminders",
+      "Logs all call interactions and outcomes"
+    ],
+    whatYouNeed: [
+      "Client contact information",
+      "Appointment and payment schedules",
+      "Voice calling system access",
+      "Call script templates"
+    ],
+    support: "24/7 support with communication specialists"
   },
   "lead-qualifier-crm": {
     overview: "Stop wasting time on bad leads. This workflow automatically filters, scores, and pushes only qualified leads into your CRM.",
@@ -281,7 +438,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "Sales"
+    industry: "Sales",
+    whatItDoes: [
+      "Analyzes and qualifies incoming leads",
+      "Scores leads based on engagement and fit",
+      "Syncs qualified leads to CRM automatically",
+      "Notifies sales team of hot prospects"
+    ],
+    whatYouNeed: [
+      "Access to your CRM system",
+      "Lead qualification criteria",
+      "Sales team contact information",
+      "Lead scoring parameters"
+    ],
+    support: "24/7 support with sales specialists"
   },
   "cart-recovery-system": {
     overview: "Turn almost-customers into real buyers. This workflow triggers personalized emails/SMS with discounts to recover lost carts.",
@@ -301,7 +471,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "E-commerce"
+    industry: "E-commerce",
+    whatItDoes: [
+      "Detects abandoned shopping carts automatically",
+      "Sends personalized recovery messages",
+      "Creates unique discount codes",
+      "Tracks recovery success and ROI"
+    ],
+    whatYouNeed: [
+      "Access to your e-commerce platform",
+      "Customer contact information",
+      "Discount and coupon systems",
+      "Email/SMS marketing tools"
+    ],
+    support: "24/7 support with e-commerce specialists"
   },
   "recruitment-flow": {
     overview: "Streamline hiring with AI. Automatically collect applications, score resumes, and schedule interviews so your HR team can focus on people — not paperwork.",
@@ -321,7 +504,20 @@ const templateDetails = {
     setupTime: "1-2 days",
     roi: "Achievable in 30 days",
     saves: "20+ hours/week",
-    industry: "HR"
+    industry: "HR",
+    whatItDoes: [
+      "Screens and ranks candidate resumes",
+      "Manages candidate communications",
+      "Schedules interviews automatically",
+      "Evaluates candidates using custom criteria"
+    ],
+    whatYouNeed: [
+      "Job posting requirements",
+      "Candidate evaluation criteria",
+      "Interview team contact information",
+      "Recruitment workflow processes"
+    ],
+    support: "24/7 support with HR specialists"
   }
 };
 
@@ -396,12 +592,6 @@ export default function TemplateDetail() {
                 <h1 className="text-4xl md:text-5xl font-bold text-left">{template.title}</h1>
                 <div className="flex items-center space-x-3 mt-2">
                   <Badge variant="outline">{template.category}</Badge>
-                  {template.popular && (
-                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                      <Star className="w-3 h-3 mr-1" />
-                      Popular Choice
-                    </Badge>
-                  )}
                 </div>
               </div>
             </div>
@@ -537,7 +727,7 @@ export default function TemplateDetail() {
                   <CardContent className="p-8 text-center">
                     <h3 className="text-2xl font-bold mb-4">Get Started Today</h3>
                     <div className="mb-6">
-                      <span className="text-4xl font-bold text-primary">£{template.price}</span>
+                      <span className="text-4xl font-bold text-primary">£599</span>
                       <span className="text-gray-400">/month</span>
                     </div>
                     <div className="space-y-3 mb-6 text-sm text-gray-300">
@@ -554,7 +744,7 @@ export default function TemplateDetail() {
                         <span>24/7 support included</span>
                       </div>
                     </div>
-                    <Link href="/#contact">
+                    <Link href="/booking">
                       <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-white mb-4">
                         Start Implementation
                       </Button>
@@ -642,7 +832,7 @@ export default function TemplateDetail() {
               Our team will handle the complete setup and ensure everything works perfectly.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/#contact">
+              <Link href="/booking">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
                   Get Started Now
                 </Button>
@@ -656,6 +846,9 @@ export default function TemplateDetail() {
           </motion.div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
