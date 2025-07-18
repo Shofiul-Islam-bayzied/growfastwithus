@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Link } from "wouter";
 
 import { Button } from "@/components/ui/button";
+import { SEOHead, seoTemplates } from "@/components/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
@@ -288,6 +289,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      <SEOHead {...seoTemplates.homepage} />
 
       {/* Floating Action Button */}
       <motion.div

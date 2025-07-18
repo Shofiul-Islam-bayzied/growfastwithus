@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { SEOHead, seoTemplates } from "@/components/SEOHead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -74,6 +75,7 @@ export default function Booking() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
+      <SEOHead {...seoTemplates.booking} />
       {/* Header */}
       <header className="glass-card shadow-lg">
         <nav className="container mx-auto px-6 py-4">

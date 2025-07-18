@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
+import { SEOHead, seoTemplates } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,7 @@ export default function Templates() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <SEOHead {...seoTemplates.templates} />
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 glass-card shadow-lg">
         <nav className="container mx-auto px-6 py-4">

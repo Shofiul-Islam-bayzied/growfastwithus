@@ -1,6 +1,14 @@
 # GrowFastWithUs - Business Automation Website
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node.js](https://img.shields.io/badge/node.js-18+-green.svg)
+![React](https://img.shields.io/badge/react-18+-blue.svg)
+![TypeScript](https://img.shields.io/badge/typescript-5+-blue.svg)
+![PostgreSQL](https://img.shields.io/badge/postgresql-13+-blue.svg)
+
 A full-stack business automation website built with React, Node.js, and PostgreSQL. This application helps businesses automate their growth processes with AI-powered workflows and no-code solutions.
+
+🌟 **Star this repository if you find it helpful!**
 
 ## 🚀 Features
 
