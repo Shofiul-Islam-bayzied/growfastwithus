@@ -51,7 +51,7 @@ curl -sSL https://get.easypanel.io | sh
    - [📖 EasyPanel Quick Start Guide](docs/EASYPANEL_QUICKSTART.md)
    - Complete setup in under 10 minutes
    - Automatic SSL certificates
-   - Built-in monitoring and backups
+   - Built-in monitoring an backups
 
 3. **Or use the automated setup:**
    - Create PostgreSQL database service
