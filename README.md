@@ -40,7 +40,7 @@ curl -sSL https://get.easypanel.io | sh
 ```
 
 2. **Follow the EasyPanel Quick Start Guide:**
-   - [📖 EasyPanel Quick Start Guide](EASYPANEL_QUICK_START.md)
+   - [📖 EasyPanel Quick Start Guide](readme_filse/EASYPANEL_QUICKSTART.md)
    - Complete setup in under 10 minutes
    - Automatic SSL certificates
    - Built-in monitoring and backups
@@ -174,8 +174,9 @@ docker run -p 3000:3000 --env-file .env growfastwithus
 ### Option 1: EasyPanel (Recommended)
 
 **Best for beginners and quick deployment:**
-- [📖 EasyPanel Quick Start Guide](EASYPANEL_QUICK_START.md)
-- [📖 EasyPanel Full Guide](EASYPANEL_GUIDE.md)
+- [📖 EasyPanel Quick Start Guide](readme_filse/EASYPANEL_QUICKSTART.md)
+- [📖 EasyPanel Full Guide](readme_filse/EASYPANEL_DEPLOY.md)
+- [📚 All Documentation](readme_filse/) - Complete documentation directory
 
 ### Option 2: VPS Deployment
 

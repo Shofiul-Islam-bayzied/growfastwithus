@@ -54,3 +54,10 @@ replit.nix
 
 # Embedded git repositories
 Growfast/
+
+# Keep EasyPanel deployment files
+!docker-compose.easypanel.yml
+!Dockerfile.easypanel
+!easypanel.yml
+!easypanel.env.example
+!EASYPANEL_*.md
