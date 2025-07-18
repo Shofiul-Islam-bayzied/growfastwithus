@@ -111,6 +111,7 @@ export const permissions = pgTable("permissions", {
   conditions: jsonb("conditions"), // JSON conditions for fine-grained permissions
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 
@@ -127,6 +128,7 @@ export const userSessions = pgTable("user_sessions", {
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   lastActivity: timestamp("last_activity").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Comprehensive Audit Logging

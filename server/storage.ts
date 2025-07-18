@@ -46,6 +46,14 @@ import { db } from "./db";
 import { eq, and, gte, lte } from "drizzle-orm";
 import { MariaDBStorage } from './storage-mariadb';
 
+// Utility function to check database availability
+function ensureDb() {
+  if (!db) {
+    throw new Error('Database not available. Please check DATABASE_URL configuration.');
+  }
+  return db;
+}
+
 export interface IStorage {
   // Existing methods
   getUser(id: number): Promise<User | undefined>;
@@ -171,17 +179,25 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
+    if (!db) {
+      console.warn('Database not available');
+      return undefined;
+    }
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
+    if (!db) {
+      console.warn('Database not available');
+      return undefined;
+    }
     const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
+    const [user] = await ensureDb()
       .insert(users)
       .values(insertUser)
       .returning();
@@ -189,7 +205,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createContact(insertContact: InsertContact): Promise<Contact> {
-    const [contact] = await db
+    const [contact] = await ensureDb()
       .insert(contacts)
       .values(insertContact)
       .returning();
@@ -197,20 +213,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getContacts(): Promise<Contact[]> {
-    return await db.select().from(contacts).orderBy(contacts.createdAt);
+    return await ensureDb().select().from(contacts).orderBy(contacts.createdAt);
   }
 
   async getTemplates(): Promise<Template[]> {
-    return await db.select().from(templates);
+    return await ensureDb().select().from(templates);
   }
 
   async getTemplate(id: number): Promise<Template | undefined> {
-    const [template] = await db.select().from(templates).where(eq(templates.id, id));
+    const [template] = await ensureDb().select().from(templates).where(eq(templates.id, id));
     return template || undefined;
   }
 
   async createTemplate(insertTemplate: InsertTemplate): Promise<Template> {
-    const [template] = await db
+    const [template] = await ensureDb()
       .insert(templates)
       .values(insertTemplate)
       .returning();
@@ -219,25 +235,25 @@ export class DatabaseStorage implements IStorage {
 
   // Admin content management methods
   async getSiteSettings(): Promise<SiteSetting[]> {
-    return await db.select().from(siteSettings);
+    return await ensureDb().select().from(siteSettings);
   }
 
   async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
-    const [setting] = await db.select().from(siteSettings).where(eq(siteSettings.key, key));
+    const [setting] = await ensureDb().select().from(siteSettings).where(eq(siteSettings.key, key));
     return setting;
   }
 
   async updateSiteSetting(key: string, value: string): Promise<SiteSetting> {
     const existing = await this.getSiteSetting(key);
     if (existing) {
-      const [updated] = await db
+      const [updated] = await ensureDb()
         .update(siteSettings)
         .set({ value, updatedAt: new Date() })
         .where(eq(siteSettings.key, key))
         .returning();
       return updated;
     } else {
-      const [created] = await db
+      const [created] = await ensureDb()
         .insert(siteSettings)
         .values({ key, value })
         .returning();
@@ -246,11 +262,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getReviews(): Promise<Review[]> {
-    return await db.select().from(reviews).where(eq(reviews.isActive, true));
+    return await ensureDb().select().from(reviews).where(eq(reviews.isActive, true));
   }
 
   async createReview(insertReview: InsertReview): Promise<Review> {
-    const [review] = await db
+    const [review] = await ensureDb()
       .insert(reviews)
       .values(insertReview)
       .returning();
@@ -258,7 +274,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateReview(id: number, reviewData: Partial<InsertReview>): Promise<Review> {
-    const [updated] = await db
+    const [updated] = await ensureDb()
       .update(reviews)
       .set({ ...reviewData, updatedAt: new Date() })
       .where(eq(reviews.id, id))
@@ -267,27 +283,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteReview(id: number): Promise<void> {
-    await db.update(reviews)
+    await ensureDb().update(reviews)
       .set({ isActive: false })
       .where(eq(reviews.id, id));
   }
 
   async getEmailSettings(): Promise<EmailSetting | undefined> {
-    const [settings] = await db.select().from(emailSettings).where(eq(emailSettings.isActive, true));
+    const [settings] = await ensureDb().select().from(emailSettings).where(eq(emailSettings.isActive, true));
     return settings;
   }
 
   async updateEmailSettings(settings: InsertEmailSetting): Promise<EmailSetting> {
     const existing = await this.getEmailSettings();
     if (existing) {
-      const [updated] = await db
+      const [updated] = await ensureDb()
         .update(emailSettings)
         .set({ ...settings, updatedAt: new Date() })
         .where(eq(emailSettings.id, existing.id))
         .returning();
       return updated;
     } else {
-      const [created] = await db
+      const [created] = await ensureDb()
         .insert(emailSettings)
         .values(settings)
         .returning();
@@ -296,12 +312,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAdminUser(username: string): Promise<AdminUser | undefined> {
-    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
+    const [user] = await ensureDb().select().from(adminUsers).where(eq(adminUsers.username, username));
     return user || undefined;
   }
 
   async createAdminUser(user: InsertAdminUser): Promise<AdminUser> {
-    const [createdUser] = await db
+    const [createdUser] = await ensureDb()
       .insert(adminUsers)
       .values(user)
       .returning();
@@ -315,17 +331,17 @@ export class DatabaseStorage implements IStorage {
 
   // New RBAC Methods
   async getRoleById(id: number): Promise<Role | undefined> {
-    const [role] = await db.select().from(roles).where(eq(roles.id, id));
+    const [role] = await ensureDb().select().from(roles).where(eq(roles.id, id));
     return role || undefined;
   }
 
   async getRoleByName(name: string): Promise<Role | undefined> {
-    const [role] = await db.select().from(roles).where(eq(roles.name, name));
+    const [role] = await ensureDb().select().from(roles).where(eq(roles.name, name));
     return role || undefined;
   }
 
   async createRole(role: InsertRole): Promise<Role> {
-    const [createdRole] = await db
+    const [createdRole] = await ensureDb()
       .insert(roles)
       .values(role)
       .returning();
@@ -333,7 +349,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateRole(id: number, roleData: Partial<InsertRole>): Promise<Role> {
-    const [updated] = await db
+    const [updated] = await ensureDb()
       .update(roles)
       .set({ ...roleData, updatedAt: new Date() })
       .where(eq(roles.id, id))
@@ -342,30 +358,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteRole(id: number): Promise<void> {
-    await db.delete(roles).where(eq(roles.id, id));
+    await ensureDb().delete(roles).where(eq(roles.id, id));
   }
 
   async getAllRoles(): Promise<Role[]> {
-    return await db.select().from(roles);
+    return await ensureDb().select().from(roles);
   }
 
   async getActiveRoles(): Promise<Role[]> {
-    return await db.select().from(roles).where(eq(roles.isActive, true));
+    return await ensureDb().select().from(roles).where(eq(roles.isActive, true));
   }
 
   // Permission Methods
   async getPermissionById(id: number): Promise<Permission | undefined> {
-    const [permission] = await db.select().from(permissions).where(eq(permissions.id, id));
+    const [permission] = await ensureDb().select().from(permissions).where(eq(permissions.id, id));
     return permission || undefined;
   }
 
   async getPermissionByName(name: string): Promise<Permission | undefined> {
-    const [permission] = await db.select().from(permissions).where(eq(permissions.name, name));
+    const [permission] = await ensureDb().select().from(permissions).where(eq(permissions.name, name));
     return permission || undefined;
   }
 
   async createPermission(permission: InsertPermission): Promise<Permission> {
-    const [createdPermission] = await db
+    const [createdPermission] = await ensureDb()
       .insert(permissions)
       .values(permission)
       .returning();
@@ -373,7 +389,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updatePermission(id: number, permissionData: Partial<InsertPermission>): Promise<Permission> {
-    const [updated] = await db
+    const [updated] = await ensureDb()
       .update(permissions)
       .set({ ...permissionData, updatedAt: new Date() })
       .where(eq(permissions.id, id))
@@ -382,27 +398,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePermission(id: number): Promise<void> {
-    await db.delete(permissions).where(eq(permissions.id, id));
+    await ensureDb().delete(permissions).where(eq(permissions.id, id));
   }
 
   async getAllPermissions(): Promise<Permission[]> {
-    return await db.select().from(permissions);
+    return await ensureDb().select().from(permissions);
   }
 
   async getPermissionsByResource(resource: string): Promise<Permission[]> {
-    return await db.select().from(permissions).where(eq(permissions.resource, resource));
+    return await ensureDb().select().from(permissions).where(eq(permissions.resource, resource));
   }
 
 
 
   // Session Management
   async getSessionByToken(sessionToken: string): Promise<UserSession | undefined> {
-    const [session] = await db.select().from(userSessions).where(eq(userSessions.sessionToken, sessionToken));
+    const [session] = await ensureDb().select().from(userSessions).where(eq(userSessions.sessionToken, sessionToken));
     return session || undefined;
   }
 
   async createUserSession(session: InsertUserSession): Promise<UserSession> {
-    const [created] = await db
+    const [created] = await ensureDb()
       .insert(userSessions)
       .values(session)
       .returning();
@@ -410,42 +426,42 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSessionActivity(sessionId: number): Promise<void> {
-    await db
+    await ensureDb()
       .update(userSessions)
       .set({ lastActivity: new Date() })
       .where(eq(userSessions.id, sessionId));
   }
 
   async updateSessionToken(sessionId: number, sessionToken: string, expiresAt: Date): Promise<void> {
-    await db
+    await ensureDb()
       .update(userSessions)
       .set({ sessionToken, expiresAt, updatedAt: new Date() })
       .where(eq(userSessions.id, sessionId));
   }
 
   async revokeSession(sessionId: number): Promise<void> {
-    await db
+    await ensureDb()
       .update(userSessions)
       .set({ isActive: false, updatedAt: new Date() })
       .where(eq(userSessions.id, sessionId));
   }
 
   async revokeSessionByToken(sessionToken: string): Promise<void> {
-    await db
+    await ensureDb()
       .update(userSessions)
       .set({ isActive: false, updatedAt: new Date() })
       .where(eq(userSessions.sessionToken, sessionToken));
   }
 
   async revokeAllUserSessions(userId: number): Promise<void> {
-    await db
+    await ensureDb()
       .update(userSessions)
       .set({ isActive: false, updatedAt: new Date() })
       .where(eq(userSessions.userId, userId));
   }
 
   async getActiveSessions(userId: number): Promise<UserSession[]> {
-    return await db
+    return await ensureDb()
       .select()
       .from(userSessions)
       .where(and(eq(userSessions.userId, userId), eq(userSessions.isActive, true)));
@@ -453,7 +469,7 @@ export class DatabaseStorage implements IStorage {
 
   async cleanupExpiredSessions(): Promise<void> {
     const now = new Date();
-    await db
+    await ensureDb()
       .update(userSessions)
       .set({ isActive: false, updatedAt: now })
       .where(lte(userSessions.expiresAt, now));
@@ -461,7 +477,7 @@ export class DatabaseStorage implements IStorage {
 
   // Audit Logging
   async createAuditLog(auditLog: InsertAuditLog): Promise<AuditLog> {
-    const [created] = await db
+    const [created] = await ensureDb()
       .insert(auditLogs)
       .values(auditLog)
       .returning();
@@ -469,7 +485,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAuditLogs(filters?: any): Promise<AuditLog[]> {
-    let query = db.select().from(auditLogs);
+    let query = ensureDb().select().from(auditLogs);
     
     if (filters) {
       const conditions = [];
@@ -489,24 +505,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAuditLogById(id: number): Promise<AuditLog | undefined> {
-    const [log] = await db.select().from(auditLogs).where(eq(auditLogs.id, id));
+    const [log] = await ensureDb().select().from(auditLogs).where(eq(auditLogs.id, id));
     return log || undefined;
   }
 
   async deleteAuditLog(id: number): Promise<void> {
-    await db.delete(auditLogs).where(eq(auditLogs.id, id));
+    await ensureDb().delete(auditLogs).where(eq(auditLogs.id, id));
   }
 
   async cleanupOldAuditLogs(daysToKeep: number): Promise<void> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
     
-    await db.delete(auditLogs).where(lte(auditLogs.createdAt, cutoffDate));
+    await ensureDb().delete(auditLogs).where(lte(auditLogs.createdAt, cutoffDate));
   }
 
   // Security Events
   async createSecurityEvent(securityEvent: InsertSecurityEvent): Promise<SecurityEvent> {
-    const [created] = await db
+    const [created] = await ensureDb()
       .insert(securityEvents)
       .values(securityEvent)
       .returning();
@@ -514,7 +530,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSecurityEvents(filters?: any): Promise<SecurityEvent[]> {
-    let query = db.select().from(securityEvents);
+    let query = ensureDb().select().from(securityEvents);
     
     if (filters) {
       const conditions = [];
@@ -533,12 +549,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSecurityEventById(id: number): Promise<SecurityEvent | undefined> {
-    const [event] = await db.select().from(securityEvents).where(eq(securityEvents.id, id));
+    const [event] = await ensureDb().select().from(securityEvents).where(eq(securityEvents.id, id));
     return event || undefined;
   }
 
   async updateSecurityEvent(id: number, updates: Partial<InsertSecurityEvent>): Promise<SecurityEvent> {
-    const [updated] = await db
+    const [updated] = await ensureDb()
       .update(securityEvents)
       .set(updates)
       .where(eq(securityEvents.id, id))
@@ -547,21 +563,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteSecurityEvent(id: number): Promise<void> {
-    await db.delete(securityEvents).where(eq(securityEvents.id, id));
+    await ensureDb().delete(securityEvents).where(eq(securityEvents.id, id));
   }
 
   // System Configuration
   async getSystemConfig(key: string): Promise<SystemConfig | undefined> {
-    const [config] = await db.select().from(systemConfig).where(eq(systemConfig.key, key));
+    const [config] = await ensureDb().select().from(systemConfig).where(eq(systemConfig.key, key));
     return config || undefined;
   }
 
   async getAllSystemConfigs(): Promise<SystemConfig[]> {
-    return await db.select().from(systemConfig);
+    return await ensureDb().select().from(systemConfig);
   }
 
   async createSystemConfig(config: InsertSystemConfig): Promise<SystemConfig> {
-    const [created] = await db
+    const [created] = await ensureDb()
       .insert(systemConfig)
       .values(config)
       .returning();
@@ -587,21 +603,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteSystemConfig(key: string): Promise<void> {
-    await db.delete(systemConfig).where(eq(systemConfig.key, key));
+    await ensureDb().delete(systemConfig).where(eq(systemConfig.key, key));
   }
 
   async getSystemConfigsByCategory(category: string): Promise<SystemConfig[]> {
-    return await db.select().from(systemConfig).where(eq(systemConfig.category, category));
+    return await ensureDb().select().from(systemConfig).where(eq(systemConfig.category, category));
   }
 
   // Existing methods (keeping for compatibility)
   async getAdminUserByEmail(email: string): Promise<AdminUser | undefined> {
-    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.email, email));
+    const [user] = await ensureDb().select().from(adminUsers).where(eq(adminUsers.email, email));
     return user || undefined;
   }
 
   async getAdminUserById(id: number): Promise<AdminUser | undefined> {
-    const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, id));
+    const [user] = await ensureDb().select().from(adminUsers).where(eq(adminUsers.id, id));
     return user || undefined;
   }
 
@@ -647,16 +663,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTrackingCodes(): Promise<TrackingCode[]> {
-    return await db.select().from(trackingCodes);
+    return await ensureDb().select().from(trackingCodes);
   }
 
   async getTrackingCode(id: number): Promise<TrackingCode | undefined> {
-    const [code] = await db.select().from(trackingCodes).where(eq(trackingCodes.id, id));
+    const [code] = await ensureDb().select().from(trackingCodes).where(eq(trackingCodes.id, id));
     return code || undefined;
   }
 
   async createTrackingCode(trackingCode: InsertTrackingCode): Promise<TrackingCode> {
-      const [created] = await db
+      const [created] = await ensureDb()
         .insert(trackingCodes)
         .values(trackingCode)
         .returning();
@@ -664,7 +680,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTrackingCode(id: number, trackingCodeData: Partial<InsertTrackingCode>): Promise<TrackingCode> {
-      const [updated] = await db
+      const [updated] = await ensureDb()
         .update(trackingCodes)
         .set({ ...trackingCodeData, updatedAt: new Date() })
         .where(eq(trackingCodes.id, id))
@@ -673,11 +689,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteTrackingCode(id: number): Promise<void> {
-      await db.delete(trackingCodes).where(eq(trackingCodes.id, id));
+      await ensureDb().delete(trackingCodes).where(eq(trackingCodes.id, id));
   }
 
   async getActiveTrackingCodes(): Promise<TrackingCode[]> {
-      return await db.select().from(trackingCodes).where(eq(trackingCodes.isActive, true));
+      return await ensureDb().select().from(trackingCodes).where(eq(trackingCodes.isActive, true));
   }
 
   // Placeholder methods for compatibility

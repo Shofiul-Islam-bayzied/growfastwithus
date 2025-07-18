@@ -277,7 +277,7 @@ export default function Home() {
   };
 
   const scrollToSection = (elementId: string) => {
-    console.log('scrollToSection called with:', elementId);
+    // Scroll to section functionality
     const element = document.getElementById(elementId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

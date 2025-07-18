@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { LogOut, Settings, Users, MessageSquare, Star, Palette, Upload, Mail, Monitor, BarChart3, Code } from "lucide-react";
 import ContentEditor from "@/components/admin/content-editor";
 import ThemeCustomizer from "@/components/admin/theme-customizer";
-
+import AdminProfileManagement from "@/components/admin/admin-profile-management";
 import ContactsManager from "@/components/admin/contacts-manager";
 import EmailSettings from "@/components/admin/email-settings";
 import TrackingCodesManager from "@/components/admin/tracking-codes-manager";
@@ -156,6 +156,7 @@ export default function AdminDashboard() {
 
               <TabsContent value="settings" className="space-y-4">
                 <EmailSettings />
+                <AdminProfileManagement />
               </TabsContent>
             </CardContent>
           </Tabs>

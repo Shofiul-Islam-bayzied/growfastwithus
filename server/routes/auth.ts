@@ -308,6 +308,46 @@ router.post('/change-password', RBACMiddleware.authenticate, async (req: any, re
     // Update password
     await storage.updateAdminUserPassword(user.id, hashedPassword);
     
+    // Send email confirmation
+    try {
+      const nodemailer = await import('nodemailer');
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: { 
+          user: process.env.SMTP_USER || '90e6e5001@smtp-brevo.com', 
+          pass: process.env.SMTP_PASS || 'OBZJD06dUHnKbWhP' 
+        }
+      });
+
+      await transporter.sendMail({
+        from: 'GrowFastWithUs <no-reply@growfastwithus.com>',
+        to: user.email,
+        subject: 'Password Successfully Changed',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">Password Changed Successfully</h2>
+            <p>Hello ${user.firstName || user.username},</p>
+            <p>Your admin password has been successfully changed at <strong>${new Date().toLocaleString()}</strong>.</p>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <p style="margin: 0;"><strong>Security Notice:</strong></p>
+              <ul style="margin: 10px 0;">
+                <li>If you did not request this change, please contact support immediately</li>
+                <li>All active sessions have been logged out for security</li>
+                <li>You will need to log in again with your new password</li>
+              </ul>
+            </div>
+            <p>If you have any concerns about this change, please contact our support team.</p>
+            <p>Best regards,<br>The GrowFastWithUs Team</p>
+          </div>
+        `
+      });
+    } catch (emailError) {
+      console.error('Failed to send password change confirmation email:', emailError);
+      // Continue with password change even if email fails
+    }
+    
     // Revoke all sessions to force re-login
     await revokeAllUserSessions(user.id);
     
@@ -319,7 +359,7 @@ router.post('/change-password', RBACMiddleware.authenticate, async (req: any, re
       severity: 'info'
     });
     
-    res.json({ success: true });
+    res.json({ success: true, message: 'Password changed successfully. Confirmation email sent.' });
   } catch (error) {
     console.error('Change password error:', error);
     if (error instanceof z.ZodError) {

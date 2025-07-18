@@ -148,13 +148,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin stats dashboard
   app.get("/api/admin/stats", async (req, res) => {
     try {
-      console.log("Fetching contacts...");
-      const contacts = await storage.getContacts();
-      console.log("Contacts fetched:", contacts.length);
-
-      console.log("Fetching templates...");
-      const templates = await storage.getTemplates();
-      console.log("Templates fetched:", templates.length);
+        const contacts = await storage.getContacts();
+  const templates = await storage.getTemplates();
       
       const now = new Date();
       const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -425,7 +420,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/test-email", async (req, res) => {
     try {
       const { email } = req.body;
-      console.log(`Test email would be sent to: ${email}`);
+              // Test email functionality
       res.json({ success: true, message: "Test email sent successfully" });
     } catch (error) {
       console.error("Error sending test email:", error);
@@ -707,17 +702,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Login admin
   app.post('/api/admin/login', async (req, res) => {
     try {
-      console.log('=== LOGIN ATTEMPT ===');
-      console.log('Request body:', req.body);
-      
       const { username, password } = req.body;
       
       if (!username || !password) {
-        console.log('Missing username or password');
         return res.status(400).json({ error: 'Username and password are required' });
       }
-      
-      console.log('Credentials received:', { username, password });
       
       // Check database for admin user first
       try {
@@ -731,16 +720,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       } catch (dbError) {
-        console.log('Database check failed, falling back to hardcoded admin');
+        // Database check failed, using fallback admin
       }
       
       // Fallback to hardcoded admin for development
       if (username === 'growfast_admin' && password === 'GrowFast2025!Admin') {
         req.session.adminUserId = 999; // Special ID for hardcoded admin
-        console.log('Hardcoded admin login successful');
         res.json({ success: true });
       } else {
-        console.log('Login failed - invalid credentials');
         res.status(401).json({ error: 'Invalid credentials' });
       }
     } catch (error) {

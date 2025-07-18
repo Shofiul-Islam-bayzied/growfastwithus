@@ -551,6 +551,15 @@ function AdminSettings() {
     backups: true,
     security: false
   });
+  
+  // Password change state
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
 
   const settingsMutation = useMutation({
     mutationFn: (data: any) => apiRequest("/api/admin/settings", "POST", data),
@@ -562,55 +571,209 @@ function AdminSettings() {
     },
   });
 
+  // Password change mutation
+  const passwordMutation = useMutation({
+    mutationFn: (data: any) => apiRequest("/api/auth/change-password", "POST", data),
+    onSuccess: () => {
+      toast({
+        title: "Password Changed Successfully",
+        description: "Your password has been updated. A confirmation email has been sent.",
+      });
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setShowPasswordSection(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Password Change Failed",
+        description: error.response?.data?.error || "Failed to change password",
+        variant: "destructive"
+      });
+    },
+  });
+
   const handleSaveSettings = () => {
     settingsMutation.mutate(emailSettings);
   };
 
+  const handlePasswordChange = () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "New passwords do not match",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (passwordData.newPassword.length < 8) {
+      toast({
+        title: "Password Too Short",
+        description: "Password must be at least 8 characters long",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    passwordMutation.mutate({
+      currentPassword: passwordData.currentPassword,
+      newPassword: passwordData.newPassword
+    });
+    setIsChangingPassword(false);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          Admin Settings
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div>
-              <h3 className="font-semibold flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                Email Notifications
-              </h3>
-              <p className="text-sm text-gray-600">Receive alerts for new contacts and reviews</p>
+    <div className="space-y-6">
+      {/* Admin Profile Management Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Admin Profile Management
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            {/* Password Management Section */}
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Change Password
+                </h3>
+                <p className="text-sm text-gray-600">Update your admin password with email verification</p>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowPasswordSection(!showPasswordSection)}
+              >
+                {showPasswordSection ? 'Cancel' : 'Change Password'}
+              </Button>
             </div>
-            <Button variant="outline">Configure</Button>
-          </div>
 
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div>
-              <h3 className="font-semibold flex items-center gap-2">
-                <Database className="h-4 w-4" />
-                Backup Settings
-              </h3>
-              <p className="text-sm text-gray-600">Automatic daily backups enabled</p>
-            </div>
-            <Button variant="outline">Manage</Button>
-          </div>
+            {/* Password Change Form */}
+            {showPasswordSection && (
+              <div className="border rounded-lg p-4 bg-gray-50 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currentPassword">Current Password</Label>
+                  <Input
+                    id="currentPassword"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                    placeholder="Enter current password"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                    placeholder="Enter new password (min 8 characters)"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handlePasswordChange}
+                    disabled={isChangingPassword || !passwordData.currentPassword || !passwordData.newPassword}
+                    className="flex items-center gap-2"
+                  >
+                    {isChangingPassword && <RefreshCw className="h-4 w-4 animate-spin" />}
+                    Update Password
+                  </Button>
+                </div>
+                
+                <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded">
+                  <p className="font-medium">Password Requirements:</p>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>Minimum 8 characters</li>
+                    <li>Email confirmation will be sent after successful change</li>
+                    <li>You'll be logged out after password change for security</li>
+                  </ul>
+                </div>
+              </div>
+            )}
 
-          <div className="flex items-center justify-between p-4 border rounded-lg">
-            <div>
-              <h3 className="font-semibold flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Security Settings
-              </h3>
-              <p className="text-sm text-gray-600">Two-factor authentication</p>
+            {/* Forgot Password Link */}
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Forgot Password
+                </h3>
+                <p className="text-sm text-gray-600">Reset password via email verification</p>
+              </div>
+              <Button variant="outline" asChild>
+                <a href="/admin-forgot-password" target="_blank">
+                  Reset via Email
+                </a>
+              </Button>
             </div>
-            <Button variant="outline">Setup</Button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* System Settings Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            System Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Email Notifications
+                </h3>
+                <p className="text-sm text-gray-600">Receive alerts for new contacts and reviews</p>
+              </div>
+              <Button variant="outline">Configure</Button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Database className="h-4 w-4" />
+                  Backup Settings
+                </h3>
+                <p className="text-sm text-gray-600">Automatic daily backups enabled</p>
+              </div>
+              <Button variant="outline">Manage</Button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Security Settings
+                </h3>
+                <p className="text-sm text-gray-600">Two-factor authentication</p>
+              </div>
+              <Button variant="outline">Setup</Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 

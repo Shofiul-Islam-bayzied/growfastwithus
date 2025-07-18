@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { storage } from '../storage';
 import { logAuditEvent, logSecurityEvent } from '../utils/audit';
 import { generateSessionToken, validateSessionToken } from '../utils/session';
@@ -15,10 +15,6 @@ export interface AuthenticatedRequest extends Request {
       permissions: string[];
     };
     permissions: string[];
-  };
-  session?: {
-    userId?: number;
-    sessionToken?: string;
   };
 }
 

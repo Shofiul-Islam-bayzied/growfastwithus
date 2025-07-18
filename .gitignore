@@ -51,3 +51,6 @@ temp/
 # Replit specific
 .replit
 replit.nix
+
+# Embedded git repositories
+Growfast/
