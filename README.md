@@ -40,7 +40,7 @@ curl -sSL https://get.easypanel.io | sh
 ```
 
 2. **Follow the EasyPanel Quick Start Guide:**
-   - [📖 EasyPanel Quick Start Guide](readme_filse/EASYPANEL_QUICKSTART.md)
+   - [📖 EasyPanel Quick Start Guide](docs/EASYPANEL_QUICKSTART.md)
    - Complete setup in under 10 minutes
    - Automatic SSL certificates
    - Built-in monitoring and backups
@@ -174,9 +174,9 @@ docker run -p 3000:3000 --env-file .env growfastwithus
 ### Option 1: EasyPanel (Recommended)
 
 **Best for beginners and quick deployment:**
-- [📖 EasyPanel Quick Start Guide](readme_filse/EASYPANEL_QUICKSTART.md)
-- [📖 EasyPanel Full Guide](readme_filse/EASYPANEL_DEPLOY.md)
-- [📚 All Documentation](readme_filse/) - Complete documentation directory
+- [📖 EasyPanel Quick Start Guide](docs/EASYPANEL_QUICKSTART.md)
+- [📖 EasyPanel Full Guide](docs/EASYPANEL_DEPLOY.md)
+- [📚 All Documentation](docs/) - Complete documentation directory
 
 ### Option 2: VPS Deployment
 
@@ -325,6 +325,20 @@ growfastwithus/
 | `npm run check` | TypeScript type checking |
 | `npm run easypanel:deploy` | EasyPanel deployment script |
 
+## 📚 Documentation
+
+For detailed deployment guides and documentation, visit the [docs](docs/) directory:
+
+| Your Situation | Recommended Guide | Time Needed |
+|---------------|------------------|-------------|
+| **First-time user, want easy deployment** | [EasyPanel QuickStart](docs/EASYPANEL_QUICKSTART.md) | 5-10 min |
+| **Want to compare options first** | [Deployment Summary](docs/DEPLOYMENT_SUMMARY.md) | 5 min read |
+| **Need detailed EasyPanel setup** | [EasyPanel Deploy](docs/EASYPANEL_DEPLOY.md) | 15-30 min |
+| **Prefer manual/traditional setup** | [Quick Start](docs/QUICK_START.md) | 30-60 min |
+| **Want to understand all files** | [Files Overview](docs/EASYPANEL_FILES_OVERVIEW.md) | 10 min read |
+
+**💡 Recommended Path**: Start with [Deployment Summary](docs/DEPLOYMENT_SUMMARY.md) (5 min) → [EasyPanel QuickStart](docs/EASYPANEL_QUICKSTART.md) (10 min) → Total time to production: ~15 minutes ⚡
+
 ## 🔐 Security
 
 - Change default admin password immediately
@@ -353,11 +367,11 @@ MIT License - see LICENSE file for details
 
 ## 🆘 Support
 
-- Check the documentation in `/docs`
+- Check the documentation in [docs/](docs/)
 - Review deployment guides
 - Open an issue for bugs
 - Contact for custom development
 
 ---
 
-**Happy coding! 🚀** 
+**Happy coding! 🚀**
