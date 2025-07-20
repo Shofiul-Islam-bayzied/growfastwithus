@@ -50,8 +50,7 @@ COPY --from=builder /app/package-lock.json* ./
 RUN npm ci --only=production --ignore-scripts && npm cache clean --force
 
 # Copy necessary static files
-COPY --from=builder /app/client/public ./client/public 2>/dev/null || true
-COPY --from=builder /app/public ./public 2>/dev/null || true
+COPY --from=builder /app/client/public ./client/public
 
 # Create necessary directories and set permissions
 RUN mkdir -p /app/logs && chown -R appuser:nodejs /app
