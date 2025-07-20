@@ -52,6 +52,10 @@ RUN npm ci --only=production --ignore-scripts && npm cache clean --force
 # Copy necessary static files
 COPY --from=builder /app/client/public ./client/public
 
+# Copy schema and config files needed for migrations
+COPY --from=builder /app/shared ./shared
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+
 # Create necessary directories and set permissions
 RUN mkdir -p /app/logs && chown -R appuser:nodejs /app
 
