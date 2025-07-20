@@ -14,7 +14,18 @@ RUN npm ci && npm cache clean --force
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+
+# Copy all source files needed for build
+COPY package.json package-lock.json* ./
+COPY client/ ./client/
+COPY server/ ./server/
+COPY shared/ ./shared/
+COPY vite.config.ts ./
+COPY tsconfig.json ./
+COPY tailwind.config.ts ./
+COPY postcss.config.js ./
+COPY components.json ./
+COPY drizzle.config.ts ./
 
 # Build the application
 RUN npm run build
