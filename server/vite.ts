@@ -43,6 +43,12 @@ export async function setupVite(app: Express, server: Server) {
         "index.html",
       );
 
+      // Check if the client template exists (should only be in development)
+      if (!fs.existsSync(clientTemplate)) {
+        console.error(`Client template not found at ${clientTemplate}. This suggests the app is running in development mode in a production environment.`);
+        return res.status(500).send("Development server configuration error. Please set NODE_ENV=production.");
+      }
+
       // always reload the index.html file from disk incase it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(

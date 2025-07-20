@@ -70,13 +70,19 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  const isDevelopment = process.env.NODE_ENV === "development" || app.get("env") === "development";
+  const nodeEnv = process.env.NODE_ENV || 'development';
+  const expressEnv = app.get("env") || 'development';
+  const isDevelopment = nodeEnv === "development" || expressEnv === "development";
+  
+  log(`Environment check: NODE_ENV=${nodeEnv}, Express env=${expressEnv}, isDevelopment=${isDevelopment}`);
   
   if (isDevelopment) {
+    log("Starting in DEVELOPMENT mode with Vite dev server");
     // Dynamic import only in development - this won't be bundled by esbuild
     const { setupVite } = await import("./vite");
     await setupVite(app, server);
   } else {
+    log("Starting in PRODUCTION mode with static file serving");
     // Use production module that has no vite dependencies
     const { serveStatic } = await import("./production");
     serveStatic(app);

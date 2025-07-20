@@ -35,7 +35,10 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=3000
+
+# Debug environment variables
+RUN echo "Building with NODE_ENV=$NODE_ENV and PORT=$PORT"
 
 # Create user for security
 RUN addgroup --system --gid 1001 nodejs
