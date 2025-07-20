@@ -75,11 +75,13 @@ export default function TemplateDetail() {
         <nav className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <img 
-                src="/logo.png" 
-                alt="GrowFastWithUs Logo" 
-                className="h-6 sm:h-8 w-auto"
-              />
+              <Link href="/">
+                <img 
+                  src="/logo.png" 
+                  alt="GrowFastWithUs Logo" 
+                  className="h-6 sm:h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+                />
+              </Link>
             </div>
             
             {/* Desktop Navigation */}

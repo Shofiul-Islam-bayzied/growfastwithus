@@ -546,11 +546,13 @@ export default function TemplateDetail() {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <img 
-                src="/attached_assets/white tect logo_1751155829782.png" 
-                alt="GrowFastWithUs Logo" 
-                className="h-8 w-auto"
-              />
+              <Link href="/">
+                <img 
+                  src="/attached_assets/white tect logo_1751155829782.png" 
+                  alt="GrowFastWithUs Logo" 
+                  className="h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+                />
+              </Link>
             </div>
             
             <div className="flex items-center space-x-4">
