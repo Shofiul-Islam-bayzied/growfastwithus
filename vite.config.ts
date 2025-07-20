@@ -33,5 +33,14 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
+    allowedHosts: [
+      "localhost",
+      "127.0.0.1",
+      "growfastwithus.com",
+      ".growfastwithus.com",
+      "my-personal-sites-grfwu-main.luup7t.easypanel.host",
+      ".easypanel.host",
+      ".easypanel.io"
+    ],
   },
 });
