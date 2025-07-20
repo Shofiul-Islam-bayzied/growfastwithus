@@ -1,6 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
 import session from 'express-session';
 
 const app = express();
@@ -14,6 +13,18 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
+
+// Simple logging function
+function log(message: string, source = "express") {
+  const formattedTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  console.log(`${formattedTime} [${source}] ${message}`);
+}
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -62,8 +73,12 @@ app.use((req, res, next) => {
   const isDevelopment = process.env.NODE_ENV === "development" || app.get("env") === "development";
   
   if (isDevelopment) {
+    // Dynamic import only in development - this won't be bundled by esbuild
+    const { setupVite } = await import("./vite");
     await setupVite(app, server);
   } else {
+    // Use production module that has no vite dependencies
+    const { serveStatic } = await import("./production");
     serveStatic(app);
   }
 
