@@ -5,6 +5,7 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -22,12 +23,20 @@ if (allowedOrigins.length > 0) {
   }));
 }
 
-// Session middleware
+// Session middleware (legacy admin endpoints)
+const nodeEnvForSession = process.env.NODE_ENV || 'development';
+const isProdForSession = nodeEnvForSession === 'production';
+const hasCorsOrigins = allowedOrigins.length > 0;
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
+  cookie: {
+    httpOnly: true,
+    secure: isProdForSession || hasCorsOrigins,
+    sameSite: hasCorsOrigins ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000,
+  }
 }));
 
 // Simple logging function
@@ -92,12 +101,17 @@ app.use((req, res, next) => {
   
   log(`Environment check: NODE_ENV=${nodeEnv}, Express env=${expressEnv}, isDevelopment=${isDevelopment}`);
   
-  if (isDevelopment) {
+  if (isDevelopment && process.env.DISABLE_VITE !== '1') {
     log("Starting in DEVELOPMENT mode with Vite dev server");
     // Dynamic import only in development - this won't be bundled by esbuild
     const { setupVite } = await import("./vite");
     await setupVite(app, server);
   } else {
+    if (isDevelopment) {
+      log("Skipping Vite dev middleware (API-only dev mode)");
+    } else {
+      log("Starting in PRODUCTION mode with static file serving");
+    }
     log("Starting in PRODUCTION mode with static file serving");
     // Use production module that has no vite dependencies
     const { serveStatic } = await import("./production");

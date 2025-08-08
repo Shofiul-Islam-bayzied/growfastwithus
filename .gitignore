@@ -61,3 +61,5 @@ Growfast/
 !easypanel.yml
 !easypanel.env.example
 !EASYPANEL_*.md
+
+web/.env.local

@@ -1,15 +1,14 @@
 [build]
-  publish = "dist/public"
-  command = "npm ci && npm run build"
+  base = "web"
+  command = "npm install && npm run build"
+  publish = ".next"
 
-[[redirects]]
-  from = "/api/*"
-  to = "https://YOUR_API_BASE/api/:splat"
-  status = 200
-  force = true
+[build.environment]
+  NODE_VERSION = "20"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Set NEXT_PUBLIC_API_BASE_URL in Netlify UI to your API domain
+# No redirects are needed if your frontend calls the API via NEXT_PUBLIC_API_BASE_URL
 

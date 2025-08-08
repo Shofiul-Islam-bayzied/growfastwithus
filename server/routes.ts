@@ -714,6 +714,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (adminUser && adminUser.isActive) {
           const isValid = await bcrypt.compare(password, adminUser.password);
           if (isValid) {
+            // ensure cookie is sent with proper attributes
             req.session.adminUserId = adminUser.id;
             console.log('Database login successful');
             return res.json({ success: true });
@@ -735,6 +736,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Logout admin
   app.post('/api/admin/logout', (req, res) => {
     req.session.destroy(() => {
+      res.setHeader('Clear-Site-Data', '"cookies"');
       res.json({ success: true });
     });
   });
