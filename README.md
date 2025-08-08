@@ -123,7 +123,6 @@ npm run dev
 7. **Visit the application**
 - Website: http://localhost:5000
 - Admin Panel: http://localhost:5000/admin-login
-- Default Admin: `admin` / `growfast2025`
 
 ## 🗄️ Database Setup Options
 
@@ -274,7 +273,7 @@ sudo systemctl restart nginx
 
 **Vercel:**
 1. Connect GitHub repository
-2. Add environment variables
+2. Set env: `VITE_API_BASE_URL=https://your-api-domain` (if API is separate)
 3. Deploy automatically
 
 **Railway:**
@@ -294,6 +293,8 @@ railway deploy
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `CORS_ORIGINS` | Comma-separated list of frontend origins | For split frontend/API |
+| `COOKIE_SAMESITE` | strict / lax / none (cookie policy) | For split frontend/API |
 | `NODE_ENV` | Environment (development/production) | Yes |
 | `PORT` | Server port (default: 5000) | No |
 | `SESSION_SECRET` | Session encryption secret | Yes |

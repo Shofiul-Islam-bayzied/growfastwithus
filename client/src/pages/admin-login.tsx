@@ -153,14 +153,7 @@ export default function AdminLogin() {
               </form>
             </Form>
             
-            <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-              <h4 className="text-sm font-semibold text-blue-400 mb-2">Admin Credentials</h4>
-              <div className="text-xs text-gray-400 space-y-1">
-                <div><strong>Username:</strong> growfast_admin</div>
-                <div><strong>Password:</strong> GrowFast2025!Admin</div>
-              </div>
-              <p className="text-xs text-gray-500 mt-2">Secure admin access for GrowFastWithUs</p>
-            </div>
+            {/* Credentials hint removed for production security */}
           </CardContent>
         </Card>
       </div>

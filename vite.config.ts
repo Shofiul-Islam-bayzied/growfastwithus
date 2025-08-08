@@ -27,6 +27,22 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom"],
+          ui: [
+            "@tanstack/react-query",
+            "lucide-react",
+            "clsx",
+            "class-variance-authority"
+          ],
+          animation: ["framer-motion", "gsap", "lottie-react"],
+          three: ["three"],
+        }
+      }
+    }
   },
   server: {
     fs: {

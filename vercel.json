@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist/public" } }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "https://YOUR_API_BASE/api/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "env": {
+    "VITE_API_BASE_URL": "https://YOUR_API_BASE"
+  }
+}
+

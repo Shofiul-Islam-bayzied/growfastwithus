@@ -147,11 +147,13 @@ router.post('/login', async (req: Request, res: Response) => {
     const sessionToken = await createUserSession(user.id, req.ip, req.get('User-Agent'));
     
     // Set session cookie
+    const sameSite = (process.env.COOKIE_SAMESITE as 'strict'|'lax'|'none'|undefined) || 'lax';
+    const isSecure = process.env.NODE_ENV === 'production' || sameSite === 'none';
     res.cookie('sessionToken', sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      sameSite: 'strict'
+      secure: isSecure,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite,
     });
 
     logAuditEvent({

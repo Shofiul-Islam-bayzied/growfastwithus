@@ -723,13 +723,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Database check failed, using fallback admin
       }
       
-      // Fallback to hardcoded admin for development
-      if (username === 'growfast_admin' && password === 'GrowFast2025!Admin') {
-        req.session.adminUserId = 999; // Special ID for hardcoded admin
-        res.json({ success: true });
-      } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-      }
+      // Production: do not allow hardcoded fallback credentials
+      res.status(401).json({ error: 'Invalid credentials' });
     } catch (error) {
       console.error('Login error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
